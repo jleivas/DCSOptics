@@ -10,6 +10,8 @@ import entities.Lente;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import sync.SyncBd;
 
@@ -97,7 +99,13 @@ public class LcBdLente implements SyncBd{
 
     @Override
     public boolean add(Object object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("LcBdLente::add(Object object)");
+        try {
+            return update((Lente)object);
+        } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
+            Logger.getLogger(LcBdLente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override

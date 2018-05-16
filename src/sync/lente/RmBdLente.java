@@ -439,6 +439,7 @@ public class RmBdLente implements SyncBd{
 
     @Override
     public boolean add(Object object) {
+        System.out.println("RmBdLente::add(Object object)");
         try {
             return update((Lente)object);
         } catch (SQLException | ClassNotFoundException ex) {

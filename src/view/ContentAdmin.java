@@ -10,7 +10,7 @@ import fn.FnFicha;
 import fn.FnInfo;
 import fn.GlobalValues;
 import fn.Icons;
-import fn.OptionPane2;
+import fn.OptionPane;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -44,7 +44,7 @@ public class ContentAdmin extends javax.swing.JFrame {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.lblUserName.setText(GlobalValues.USERNAME);
         this.lblName.setText("OptiData v"+GlobalValues.VERSION);
-        this.lblTitle.setText(GlobalValues.TITLE);
+        this.lblTitle.setText(GlobalValues.PROJECTNAME);
         load.probarConexion();
         centrarPantalla();
         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/icon.png"));
@@ -570,7 +570,7 @@ public class ContentAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDoctoresMouseClicked
 
     private void btnListarFichasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnListarFichasMouseClicked
-        OptionPane2.showPanel(new OpanelSelectDate(), "Seleccione un estado y un rango de fechas");
+        OptionPane.showPanel(new OpanelSelectDate(), "Seleccione un estado y un rango de fechas");
     }//GEN-LAST:event_btnListarFichasMouseClicked
 
     private void btnVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVentasMouseClicked

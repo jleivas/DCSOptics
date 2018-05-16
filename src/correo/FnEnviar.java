@@ -98,8 +98,8 @@ public class FnEnviar {
         
         
         Correo c = new Correo();
-        c.setPass("qwpzedzqucvpyjzt");
-        c.setUsuario("sdx.respaldo.bd@gmail.com");
+        c.setPass(GlobalValues.getMailSystemPass());
+        c.setUsuario(GlobalValues.getMailSystemName());
         c.setAsunto("COMPROBANTE DE COMPRA Y RETIRO – "+empresa.getNombre().toUpperCase());
         c.setMensaje("\n" +
 "Estimado Cliente, Muchas Gracias por Preferirnos, el detalle de su compra y retiro de sus lentes ópticos es el siguiente:\n\n\n" +

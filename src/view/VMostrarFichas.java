@@ -11,7 +11,7 @@ import fn.FnFicha;
 import fn.FnInfo;
 import fn.GlobalValues;
 import fn.Icons;
-import fn.OptionPane2;
+import fn.OptionPane;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -397,7 +397,7 @@ public class VMostrarFichas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnExportarExcel1MouseClicked
 
     private void btnFiltrar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFiltrar1MouseClicked
-        OptionPane2.showPanel(new OpanelSelectDate(), "Seleccione un estado y un rango de fechas");
+        OptionPane.showPanel(new OpanelSelectDate(), "Seleccione un estado y un rango de fechas");
     }//GEN-LAST:event_btnFiltrar1MouseClicked
 
     private void btnFiltrar1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFiltrar1MouseEntered

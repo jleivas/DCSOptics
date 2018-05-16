@@ -16,15 +16,11 @@ import java.sql.SQLException;
  */
 public class RmBd {
     private static Connection conn = null;
-    public static String bdUrl = GlobalValues.getBdUrl();
-    public static String bdName = GlobalValues.getBdName();
-    public static String user = GlobalValues.getBdUser();
-    public static String pass = GlobalValues.getBdPass();
     
     public static Connection obtener() throws ClassNotFoundException, SQLException
     {
         Class.forName("com.mysql.jdbc.Driver");
-        conn = DriverManager.getConnection("jdbc:mysql://"+bdUrl+"/"+bdName,user,pass);
+        conn = DriverManager.getConnection("jdbc:mysql://"+GlobalValues.getRemoteBdUrl()+"/"+GlobalValues.getRemoteBdName(),GlobalValues.getRemoteBdUser(),GlobalValues.getRemoteBdPass());
         if(conn == null)
             System.out.println("bd.RmBd::obtener(): ERROR BD.");
         else

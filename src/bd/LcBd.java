@@ -5,6 +5,7 @@
  */
 package bd;
 
+import fn.GlobalValues;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,7 +20,7 @@ public class LcBd {
     public static Connection obtener() throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException
     {
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-        conn = DriverManager.getConnection("jdbc:derby://localhost:1527/odm4","odm4","odm4");
+        conn = DriverManager.getConnection("jdbc:derby://"+GlobalValues.getLocalBdUrl()+"/"+GlobalValues.getLocalBdName(),GlobalValues.getLocalBdUser(),GlobalValues.getLocalBdPass());
         if(conn == null)
             System.out.println("bd.LcBd::obtener(): ERROR BD."); 
         else

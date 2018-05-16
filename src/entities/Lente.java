@@ -125,7 +125,13 @@ public class Lente {
     }
 
     public void setCodigo(String id, String marca, String color) {
-        this.codigo = id + "-" + marca + "-" + color;
+        if(id == null || id.equals(""))
+            id = "00";
+        if(marca == null || marca.equals(""))
+            marca = "00";
+        if(color == null || color.equals(""))
+            color = "00";
+        this.codigo = id.trim().replaceAll("-", "") + "-" + marca.trim().replaceAll("-", "") + "-" + color.trim().replaceAll("-", "");
     }
 
     public String getId() {

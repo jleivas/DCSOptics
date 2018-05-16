@@ -189,6 +189,7 @@ public class LenteDao {
                                ,datos.getInt("len_precio_act")
                                ,datos.getInt("len_stock")
                                ,datos.getInt("len_stock_min")
+                                ,datos.getDate("len_last_update")
                                ,datos.getInt("len_estado")));
         }
         BD.cerrar();

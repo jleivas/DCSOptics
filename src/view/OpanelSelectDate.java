@@ -9,7 +9,7 @@ import fn.Boton;
 import fn.FnFicha;
 import fn.GlobalValues;
 import fn.Icons;
-import fn.OptionPane2;
+import fn.OptionPane;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.logging.Level;
@@ -176,7 +176,7 @@ public class OpanelSelectDate extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSyncronize19MouseClicked
 
     private void btnCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseClicked
-        OptionPane2 op = new OptionPane2();
+        OptionPane op = new OptionPane();
         op.closeOPanel();
     }//GEN-LAST:event_btnCancelMouseClicked
 
