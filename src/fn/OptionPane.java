@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import static view.OPanel.OpanelContent;
+import view.opanel.OpanelMessage;
 
 /**
  *
@@ -26,6 +27,29 @@ public class OptionPane {
         GlobalValues.INFOPANEL.setVisible(true);
         p1.setSize(ancho, alto);
         p1.setLocation(locat, locat);
+        OpanelContent.removeAll();
+        OpanelContent.add(p1,BorderLayout.CENTER);
+        OpanelContent.revalidate();
+        OpanelContent.repaint();
+    }
+    
+    public static void showMsg(String title, String message, int statusMsg){
+        if(title.length() > 40){
+            message = title.toUpperCase()+"\n\n"+message;
+            title = title.substring(0,38)+"...";
+        }
+        GlobalValues.MSG_STATUS = statusMsg;
+        OpanelMessage p1 = new OpanelMessage();
+        GlobalValues.INFOPANEL.lblTitle.setText(title);
+        if(p1 instanceof OpanelMessage){
+            ((OpanelMessage) p1).lblTitle.setText(title);
+            ((OpanelMessage) p1).lblMessage.setText(message);
+        }
+        
+        GlobalValues.INFOPANEL.setVisible(true);
+        p1.setSize(ancho, alto);
+        p1.setLocation(locat, locat);
+        
         OpanelContent.removeAll();
         OpanelContent.add(p1,BorderLayout.CENTER);
         OpanelContent.revalidate();

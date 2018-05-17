@@ -42,6 +42,7 @@ public class GlobalValues {
     public static String PASS;
     
     /* LICENCIA */
+    public static String COMPANY_NAME;
     public static boolean LICENCE = true;
     public static String EXP_DATE = "00-00-0000";
     public static String API_URI;
@@ -52,8 +53,9 @@ public class GlobalValues {
     public static String URL_UPDATE;
     
     /* Mail */
-    public static String MAIL_ADDRES = "qwpzedzqucvpyjzt";
-    public static String MAIL_PASS= "sdx.respaldo.bd@gmail.com";
+    public static String MAIL_ADDRES = "sdx.respaldo.bd@gmail.com";
+    public static String MAIL_PASS= "qwpzedzqucvpyjzt";
+    public static String MAIL_REPORT= "softdirex@gmail.com";
     
     /* Direcciones de fichero*/
     public static String FILES_PATH = "";
@@ -75,6 +77,10 @@ public class GlobalValues {
     /* Joption Pane del sistema */
     public static OPanel INFOPANEL = new OPanel();
     public static String PANELTITLE ="";
+    public static int MSG_STATUS;
+    public static String ICON_INFO = "/icons/show_info_50px.png";
+    public static String ICON_WARN = "/icons/show_warning_50px.png";
+    public static String ICON_ERROR = "/icons/show_error_50px.png";
     
     
     

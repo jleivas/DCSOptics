@@ -6,7 +6,6 @@
 package view;
 
 import fn.Boton;
-import fn.FnFicha;
 import fn.FnInfo;
 import fn.GlobalValues;
 import fn.Icons;
@@ -15,7 +14,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
