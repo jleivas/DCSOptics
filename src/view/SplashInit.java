@@ -5,11 +5,7 @@
  */
 package view;
 
-import com.sun.awt.AWTUtilities;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -23,12 +19,9 @@ public class SplashInit extends javax.swing.JFrame implements Runnable{
      */
     public SplashInit() {
         initComponents();
-        int ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
-        int alto = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
-//        this.setBounds((ancho / 2) - (this.getWidth() / 2), (alto / 2) - (this.getHeight() / 2), 450, 300);
+
         this.setLocationRelativeTo(null);
         
-        AWTUtilities.setWindowOpaque(this, false);
         tiempo = new Thread(this);
         tiempo.start();
     }
@@ -117,7 +110,6 @@ public class SplashInit extends javax.swing.JFrame implements Runnable{
 
     @Override
     public void run() {
-        int cont=0;
         while(tiempo != null){
             try {
                 
@@ -126,7 +118,7 @@ public class SplashInit extends javax.swing.JFrame implements Runnable{
                 this.dispose();
                 return;
             } catch (InterruptedException ex) {
-                Logger.getLogger(SplashInit.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(SplashInit.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         tiempo = null;
