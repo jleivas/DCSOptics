@@ -5,25 +5,26 @@
  */
 package entities;
 
+import entities.abstractclasses.SyncIntId;
+import java.util.Date;
+
 /**
  *
  * @author Lenovo G470
  */
-public class Institucion {
+public class Institucion extends SyncIntId{
     
-    private int id;
     private String nombre;
     private String telefono;
     private String email;
     private String direccion;
     private String comuna;
     private String ciudad;
-    private int estado;
 
     public Institucion() {
     }
 
-    public Institucion(int id, String nombre, String telefono, String email, String direccion, String comuna, String ciudad, int estado) {
+    public Institucion(int id, String nombre, String telefono, String email, String direccion, String comuna, String ciudad, int estado, Date lastUpdate, int lastHour) {
         setId(id);
         setNombre(nombre);
         setTelefono(telefono);
@@ -32,10 +33,8 @@ public class Institucion {
         setComuna(comuna);
         setCiudad(ciudad);
         setEstado(estado);
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
     public void setNombre(String nombre) {
@@ -62,16 +61,6 @@ public class Institucion {
         this.ciudad = ciudad;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-    
-    
-
-    public int getId() {
-        return id;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -96,13 +85,9 @@ public class Institucion {
         return ciudad;
     }
 
-    public int getEstado() {
-        return estado;
-    }
-
     @Override
     public String toString() {
-        return "Institucion{" + "id=" + id + ", nombre=" + nombre + ", telefono=" + telefono + ", email=" + email + ", direccion=" + direccion + ", comuna=" + comuna + ", ciudad=" + ciudad + ", estado=" + estado + '}';
+        return "Institucion{" + "id=" + getId()+ ", nombre=" + nombre + ", telefono=" + telefono + ", email=" + email + ", direccion=" + direccion + ", comuna=" + comuna + ", ciudad=" + ciudad + ", estado=" + getEstado() + '}';
     }
     
     

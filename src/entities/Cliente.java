@@ -5,30 +5,32 @@
  */
 package entities;
 
+import entities.abstractclasses.SyncStringId;
+import java.util.Date;
+
 /**
  *
  * @author Lenovo G470
  */
-public class Cliente {
-    
-    private String rut;
+public class Cliente extends SyncStringId{
     private String nombre;
-    private String telefono;
+    private String telefono1;
+    private String telefono2;
     private String email;
     private String direccion;
     private String comuna;
     private String ciudad;
     private int sexo;
     private int edad;
-    private int estado;
 
     public Cliente() {
     }
 
-    public Cliente(String rut, String nombre, String telefono, String email, String direccion, String comuna, String ciudad, int sexo, int edad, int estado) {
-        setRut(rut);
+    public Cliente(String rut, String nombre, String telefono1, String telefono2, String email, String direccion, String comuna, String ciudad, int sexo, int edad, int estado, Date lastUpdate, int lastHour) {
+        setCod(rut);
         setNombre(nombre);
-        setTelefono(telefono);
+        setTelefono1(telefono1);
+        setTelefono2(telefono2);
         setEmail(email);
         setDireccion(direccion);
         setComuna(comuna);
@@ -36,26 +38,20 @@ public class Cliente {
         setSexo(sexo);
         setEdad(edad);
         setEstado(estado);
-    }
-
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    public int getEstado() {
-        return estado;
-    }
-
-    public void setRut(String rut) {
-        this.rut = rut;
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setTelefono1(String telefono1) {
+        this.telefono1 = telefono1;
+    }
+    
+    public void setTelefono2(String telefono2) {
+        this.telefono2 = telefono2;
     }
 
     public void setEmail(String email) {
@@ -82,16 +78,16 @@ public class Cliente {
         this.edad = edad;
     }
 
-    public String getRut() {
-        return rut;
-    }
-
     public String getNombre() {
         return nombre;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getTelefono1() {
+        return telefono1;
+    }
+    
+    public String getTelefono2() {
+        return telefono2;
     }
 
     public String getEmail() {
@@ -120,15 +116,17 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "Cliente{" + "rut=" + rut+"\n" 
+        return "Cliente{" + "rut=" + getCod()+"\n" 
                 + ", nombre=" + nombre+"\n"
-                + ", telefono=" + telefono+"\n" 
+                + ", telefonos=" + telefono1+" / "+telefono2+"\n" 
                 + ", email=" + email+"\n"
                 + ", direccion="+ direccion+"\n"
                 + ", comuna="+ comuna +"\n"
                 + ", ciudad=" + ciudad+"\n" 
                 + ", sexo=" + sexo+"\n" 
-                + ", edad=" + edad + '}';
+                + ", edad=" + edad+"\n" 
+                + ", estado=" + getEstado()+"\n" 
+                + ", lastUpdate=" + getLastUpdate() + '}';
     }
     
     

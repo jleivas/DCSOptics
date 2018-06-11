@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
+package entities.ficha;
+
+import entities.abstractclasses.SyncStringId;
+import java.util.Date;
 
 /**
  *
  * @author Lenovo G470
  */
-public class Armazon {
+public class Armazon extends SyncStringId{
     
-    private int id;
     private int tipo;
     private String marca;
     private String cristal;
@@ -26,13 +28,16 @@ public class Armazon {
     private int endurecido;
     private int capa;
     private int plusMax;
-    private int IdFicha;
+    private String IdFicha;
 
     public Armazon() {
     }
 
-    public Armazon(int id, int tipo, String marca, String cristal, String add, String odA, String odEsf, String odCil, String oiA, String oiEsf, String oiCil, int dp, int endurecido, int capa, int plusMax, int IdFicha) {
-        setId(id);
+    public Armazon(String cod, int tipo, String marca, String cristal, String add, 
+            String odA, String odEsf, String odCil, String oiA, String oiEsf, 
+            String oiCil, int dp, int endurecido, int capa, int plusMax, String IdFicha, 
+            int estado, Date lastUpdate, int lastHour) {
+        setCod(cod);
         setTipo(tipo);
         setCristal(cristal);
         setAdd(add);
@@ -48,18 +53,9 @@ public class Armazon {
         setPlusMax(plusMax);
         setIdFicha(IdFicha);
         setMarca(marca);
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
-    }
-
-    public String getMarca() {
-        return marca;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        setEstado(estado);
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
     public void setTipo(int tipo) {
@@ -114,12 +110,12 @@ public class Armazon {
         this.plusMax = plusMax;
     }
 
-    public void setIdFicha(int IdFicha) {
+    public void setIdFicha(String IdFicha) {
         this.IdFicha = IdFicha;
     }
-
-    public int getId() {
-        return id;
+    
+    public void setMarca(String marca) {
+        this.marca = marca;
     }
 
     public int getTipo() {
@@ -174,13 +170,17 @@ public class Armazon {
         return plusMax;
     }
 
-    public int getIdFicha() {
+    public String getMarca() {
+        return marca;
+    }
+     
+    public String getIdFicha() {
         return IdFicha;
     }
 
     @Override
     public String toString() {
-        return "Armazon{" + "id=" + id+"\n" 
+        return "Armazon{" + "cod=" + getCod()+"\n"
                 + ", tipo=" + tipo+"\n"  
                 + ", cristal=" + cristal+"\n"  
                 + ", add=" + add+"\n"  
@@ -193,13 +193,9 @@ public class Armazon {
                 + ", dp=" + dp+"\n"  
                 + ", endurecido=" + endurecido+"\n"  
                 + ", capa=" + capa+"\n"  
-                + ", plusMax=" + plusMax+"\n"  
-                + ", IdFicha=" + IdFicha + '}';
+                + ", plusMax=" + plusMax+"\n"
+                + ", IdFicha=" + IdFicha+"\n"
+                + ", estado=" + getEstado()+"\n"
+                + ", lastUpdate=" + getLastUpdate() + '}';
     }
-    
-    
-    
-    
-    
-    
 }

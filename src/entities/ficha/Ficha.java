@@ -3,17 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
+package entities.ficha;
 
+import entities.Cliente;
+import entities.Descuento;
+import entities.Doctor;
+import entities.Institucion;
+import entities.abstractclasses.SyncStringId;
+import entities.User;
 import java.util.Date;
 
 /**
  *
  * @author Lenovo G470
  */
-public class Ficha {
+public class Ficha extends SyncStringId{
     
-    private int id;
     private Date fecha;
     private Date fechaEntrega;
     private String lugarEntrega;
@@ -21,7 +26,6 @@ public class Ficha {
     private int valorTotal;
     private int saldo;
     private String observacion;
-    private int estado;
     // referencias
     private Cliente cliente;
     private Doctor doctor;
@@ -31,12 +35,17 @@ public class Ficha {
     private Armazon lejos;
     private Armazon cerca;
     private User user;
+    private int idConvenio;
 
     public Ficha() {
     }
 
-    public Ficha(int id, Date fecha, Date fechaEntrega, String lugarEntrega, String horaEntrega, int valorTotal, int saldo, String observacion, int estado, Cliente cliente, Doctor doctor, Descuento descuento, Institucion institucion, Despacho despacho , Armazon lejos, Armazon cerca, User user) {
-        setId(id);
+    public Ficha(String cod, Date fecha, Date fechaEntrega, String lugarEntrega, 
+            String horaEntrega, int valorTotal, int saldo, String observacion, 
+            Cliente cliente, Doctor doctor, Descuento descuento, 
+            Institucion institucion, Despacho despacho , Armazon lejos, 
+            Armazon cerca, User user, int idConvenio, int estado, Date lastUpdate, int lastHour) {
+        setCod(cod);
         setFecha(fecha);
         setFechaEntrega(fechaEntrega);
         setLugarEntrega(lugarEntrega);
@@ -44,7 +53,6 @@ public class Ficha {
         setValorTotal(valorTotal);
         setSaldo(saldo);
         setObservacion(observacion);
-        setEstado(estado);
         setCliente(cliente);
         setDoctor(doctor);
         setDescuento(descuento);
@@ -53,18 +61,18 @@ public class Ficha {
         setLejos(lejos);
         setCerca(cerca);
         setUser(user);
+        setIdConvenio(idConvenio);
+        setEstado(estado);
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setIdConvenio(int idConvenio) {
+        this.idConvenio = idConvenio;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public int getIdConvenio() {
+        return idConvenio;
     }
 
     public void setFecha(Date fecha) {
@@ -95,10 +103,6 @@ public class Ficha {
         this.observacion = observacion;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
@@ -127,10 +131,8 @@ public class Ficha {
         this.cerca = cerca;
     }
     
-    
-
-    public int getId() {
-        return id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Date getFecha() {
@@ -161,10 +163,6 @@ public class Ficha {
         return observacion;
     }
 
-    public int getEstado() {
-        return estado;
-    }
-
     public Cliente getCliente() {
         return cliente;
     }
@@ -192,12 +190,14 @@ public class Ficha {
     public Armazon getCerca() {
         return cerca;
     }
-    
-    
+
+    public User getUser() {
+        return user;
+    }
 
     @Override
     public String toString() {
-        return "Ficha{" + "id=" + id+"\n"
+        return "Ficha{" + "cod=" + getCod()+"\n"
                 + ", fecha=" + fecha+"\n" 
                 + ", fechaEntrega=" + fechaEntrega+"\n" 
                 + ", lugarEntrega=" + lugarEntrega +"\n"
@@ -205,7 +205,6 @@ public class Ficha {
                 + ", valorTotal=" + valorTotal +"\n"
                 + ", saldo=" + saldo+"\n" 
                 + ", observacion=" + observacion +"\n"
-                + ", estado=" + estado+"\n" 
                 + ", cliente=" + cliente.toString()+"\n" 
                 + ", doctor=" + doctor.toString()+"\n" 
                 + ", descuento=" + descuento.toString()+"%"+"\n" 
@@ -213,6 +212,8 @@ public class Ficha {
                 + ", despacho=" + despacho.toString()+"\n"
                 + ", armazon lejos=" + lejos.toString()+"\n"
                 + ", armazon cerca=" + cerca.toString()+"\n"
+                + ", estado=" + getEstado()+"\n" 
+                + ", lastUpdate=" + getLastUpdate()+"\n" 
                 +'}';
     }
     

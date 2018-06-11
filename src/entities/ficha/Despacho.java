@@ -3,35 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
+package entities.ficha;
 
+import entities.abstractclasses.SyncStringId;
 import java.util.Date;
 
 /**
  *
  * @author Lenovo G470
  */
-public class Despacho {
+public class Despacho extends SyncStringId{
     
-    private int id;
     private String rut;
     private String nombre;
     private Date fecha;
-    private int idFicha;
+    private String idFicha;
 
     public Despacho() {
     }
 
-    public Despacho(int id, String rut, String nombre, Date fecha, int idFicha) {
-        this.id = id;
+    public Despacho(String cod, String rut, String nombre, Date fecha, 
+            String idFicha, int estado, Date lastUpdate, int lastHour) {
+        setCod(cod);
         this.rut = rut;
         this.nombre = nombre;
         this.fecha = fecha;
         this.idFicha = idFicha;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        setEstado(estado);
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
     public void setRut(String rut) {
@@ -46,12 +46,8 @@ public class Despacho {
         this.fecha = fecha;
     }
 
-    public void setIdFicha(int idFicha) {
+    public void setIdFicha(String idFicha) {
         this.idFicha = idFicha;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getRut() {
@@ -66,19 +62,16 @@ public class Despacho {
         return fecha;
     }
 
-    public int getIdFicha() {
+    public String getIdFicha() {
         return idFicha;
     }
 
     @Override
     public String toString() {
-        return "Despacho{" + "id=" + id 
+        return "Despacho{" + "cod=" + getCod()
                 + ", rut=" + rut 
                 + ", nombre=" + nombre 
                 + ", fecha=" + fecha 
                 + ", idFicha=" + idFicha + '}';
     }
-    
-    
-    
 }

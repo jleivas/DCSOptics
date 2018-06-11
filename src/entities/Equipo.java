@@ -10,35 +10,36 @@ import java.util.Date;
 
 /**
  *
- * @author Lenovo G470
+ * @author sdx
  */
-public class TipoPago extends SyncIntId{
+public class Equipo extends SyncIntId{
     private String nombre;
+    private String licencia;
 
-    public TipoPago() {
-    }
-
-    public TipoPago(int id, String nombre, int estado, Date lastUpdate, int lastHour) {
+    public Equipo(int id,String nombre, String licencia, int estado, Date lastUpdate, int lastHour) {
         setId(id);
-        setNombre(nombre);
+        this.nombre = nombre;
+        this.licencia = licencia;
         setEstado(estado);
         setLastUpdate(lastUpdate);
         setLastHour(lastHour);
     }
-    
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public void setLicencia(String licencia) {
+        this.licencia = licencia;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    @Override
-    public String toString() {
-        return "tipoPago{" + "id=" + getId()+ ", nombre=" + nombre + '}';
+    public String getLicencia() {
+        return licencia;
     }
-    
     
     
 }

@@ -5,32 +5,39 @@
  */
 package entities;
 
+import entities.abstractclasses.SyncIntId;
+import java.util.Date;
+
 /**
  *
  * @author Lenovo G470
  */
-public class Descuento {
+public class Descuento extends SyncIntId{
     
-    private int id;
     private String nombre;
     private String descripcion;
     private int porcetange;
-    private int estado;
+    private int monto;
     
     public Descuento (){}
 
-    public Descuento(int id, String nombre, String descripcion, int porcetange, int estado) {
+    public Descuento(int id, String nombre, String descripcion, int porcetange, int monto, int estado, Date lastUpdate, int lastHour) {
         setId(id);
         setNombre(nombre);
         setDescripcion(descripcion);
         setPorcetange(porcetange);
+        setMonto(monto);
         setEstado(estado);
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
-    
-    
 
-    public void setId(int id) {
-        this.id = id;
+    public int getMonto() {
+        return monto;
+    }
+
+    public void setMonto(int monto) {
+        this.monto = monto;
     }
 
     public void setNombre(String nombre) {
@@ -47,14 +54,6 @@ public class Descuento {
         this.porcetange = porcetange;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -66,19 +65,23 @@ public class Descuento {
     public int getPorcetange() {
         return porcetange;
     }
-
-    public int getEstado() {
-        return estado;
+    
+    public boolean isNumeric(){
+        if(monto == 0)
+            return false;
+        else
+            return true;
     }
-
+    
     @Override
     public String toString() {
-        return "Descuento{" + "id=" + id 
+        return "Descuento{" + "id=" + getId()
                 + ", nombre=" + nombre+"\n"
-                + ", descripcion="+"\n" 
-                + descripcion + ", porcetange="+"\n" 
-                + porcetange + ", estado="+"\n" 
-                + estado + '}';
+                + ", descripcion="+ descripcion + "\n" 
+                +", porcetange="+ porcetange +"\n" 
+                + ", monto="+ monto +"\n"
+                + ", estado="+ getEstado() +"\n"
+                + ", lastUdate="+ getLastUpdate() + '}';
     }
     
     

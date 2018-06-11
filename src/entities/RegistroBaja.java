@@ -5,14 +5,14 @@
  */
 package entities;
 
+import entities.abstractclasses.SyncStringId;
 import java.util.Date;
 
 /**
  *
  * @author home
  */
-public class RegistroBaja {
-    private int id;
+public class RegistroBaja extends SyncStringId{
     private Date fecha;
     private String idLente;
     private int cantidad;
@@ -21,20 +21,16 @@ public class RegistroBaja {
     public RegistroBaja() {
     }
 
-    public RegistroBaja(int id, Date fecha, String idLente, int cantidad, String obs) {
-        this.id = id;
+    public RegistroBaja(String cod, Date fecha, String idLente, int cantidad,
+            String obs, int estado, Date lastUpdate, int lastHour) {
+        setCod(cod);
         this.fecha = fecha;
         this.idLente = idLente;
         this.cantidad = cantidad;
         this.obs = obs;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        setEstado(estado);
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
     public void setFecha(Date fecha) {

@@ -5,14 +5,16 @@
  */
 package entities;
 
+import entities.abstractclasses.SyncStringId;
+import fn.GlobalValues;
 import java.util.Date;
 
 /**
  *
  * @author home
  */
-public class Lente {
-    private String id;
+public class Lente extends SyncStringId{
+    //debe incluir el id del inventario en el idString solo por bd remota, no se debe mostrar despues de -
     private String color;
     private String tipo;
     private String marca;
@@ -24,16 +26,30 @@ public class Lente {
     private int precioAct;
     private int stock;
     private int stockMin;
-    private int estado;
-    private String codigo;
-    private int inventario;
-    private Date lastUpdate;
+    private String inventario;
 
     public Lente() {
     }
 
-    public Lente(String id, String color,String tipo, String marca, String material, int flex, int clasificacion, String descripcion, int precioRef, int precioAct, int stock, int stockMin, int estado, int inventario, Date lastUpdate) {
-        this.id = id;
+    /**
+     * 
+     * @param cod Debe incluir el id del inventario al cual está asignado, solo para bd
+     * @param color
+     * @param tipo
+     * @param marca
+     * @param material
+     * @param flex
+     * @param clasificacion
+     * @param descripcion
+     * @param precioRef
+     * @param precioAct
+     * @param stock
+     * @param stockMin
+     * @param inventario
+     * @param estado
+     * @param lastUpdate 
+     */
+    public Lente(String cod, String color,String tipo, String marca, String material, int flex, int clasificacion, String descripcion, int precioRef, int precioAct, int stock, int stockMin,String inventario, int estado, Date lastUpdate, int lastHour) {
         this.color = color;
         this.tipo = tipo;
         this.marca = marca;
@@ -45,27 +61,33 @@ public class Lente {
         this.precioAct = precioAct;
         this.stock = stock;
         this.stockMin = stockMin;
-        this.estado = estado;
-        setCodigo(id, marca, color);
         setInventario(inventario);
+        setCod(cod);
+        setEstado(estado);
         setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
-
-    public void setInventario(int inventario) {
+    @Override
+    public void setCod(String cod) {
+        if(GlobalValues.contChar('-', cod) == 2){
+            super.setCod(cod);
+        }else{
+            if(cod == null || cod.equals(""))
+                cod = "00";
+            if(marca == null || marca.equals(""))
+                marca = "00";
+            if(color == null || color.equals(""))
+                color = "00";
+            super.setCod(cod.trim().replaceAll("-", "") + "-" + marca.trim().replaceAll("-", "") + "-" + color.trim().replaceAll("-", ""));
+        }
+    }
+    public void setInventario(String inventario) {
         this.inventario = inventario;
     }
 
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    public int getInventario() {
+    public String getInventario() {
         return inventario;
-    }
-
-    public Date getLastUpdate() {
-        return lastUpdate;
     }
 
     public void setTipo(String tipo) {
@@ -74,10 +96,6 @@ public class Lente {
 
     public String getTipo() {
         return tipo;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void setColor(String color) {
@@ -120,24 +138,6 @@ public class Lente {
         this.stockMin = stockMin;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    public void setCodigo(String id, String marca, String color) {
-        if(id == null || id.equals(""))
-            id = "00";
-        if(marca == null || marca.equals(""))
-            marca = "00";
-        if(color == null || color.equals(""))
-            color = "00";
-        this.codigo = id.trim().replaceAll("-", "") + "-" + marca.trim().replaceAll("-", "") + "-" + color.trim().replaceAll("-", "");
-    }
-
-    public String getId() {
-        return id;
-    }
-
     public String getColor() {
         return color;
     }
@@ -178,21 +178,14 @@ public class Lente {
         return stockMin;
     }
 
-    public int getEstado() {
-        return estado;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
     @Override
     public String toString() {
-        return "\nID: "+this.id+
+        return "\n -cod: "+getCod()+
                 " - color: "+this.color+
                 " - tipo: "+this.tipo+
                 " - marca:"+this.marca+
-                " - Estado:"+this.estado;
+                " - lastUpdate:"+getLastUpdate()+
+                " - Estado:"+getEstado();
     }
     
     

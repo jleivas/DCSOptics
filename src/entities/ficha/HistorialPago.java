@@ -3,56 +3,46 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entities;
+package entities.ficha;
 
+import entities.abstractclasses.SyncStringId;
 import java.util.Date;
 
 /**
  *
  * @author Lenovo G470
  */
-public class HistorialPago {
+public class HistorialPago extends SyncStringId{
     
-    private int id;
     private Date fecha;
     private int abono;
-    private int estado;
     private int idTipoPago;
-    int idFicha;
+    private String idFicha;
     
 
     public HistorialPago() {
     }
 
-    public HistorialPago(int id, Date fecha, int abono, int estado, int tipoPago, int idFicha) {
-        setId(id);
+    public HistorialPago(String cod, Date fecha, int abono, int estado, 
+            int tipoPago, String idFicha, Date lastUpdate, int lastHour) {
+        setCod(cod);
         setFecha(fecha);
         setAbono(abono);
         setIdFicha(idFicha);
         setIdTipoPago(tipoPago);
         setEstado(estado);
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
-    public int getIdFicha() {
-        return idFicha;
-    }
-
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
+    
 
     public void setIdTipoPago(int idTipoPago) {
         this.idTipoPago = idTipoPago;
     }
 
-    public void setIdFicha(int idFicha) {
+    public void setIdFicha(String idFicha) {
         this.idFicha = idFicha;
-    }
-    
-    
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setFecha(Date fecha) {
@@ -63,11 +53,6 @@ public class HistorialPago {
         this.abono = abono;
     }
 
-
-    public int getId() {
-        return id;
-    }
-
     public Date getFecha() {
         return fecha;
     }
@@ -76,12 +61,22 @@ public class HistorialPago {
         return abono;
     }
 
-    public int getEstado() {
-        return estado;
-    }
-
     public int getIdTipoPago() {
         return idTipoPago;
     }  
     
+    public String getIdFicha() {
+        return idFicha;
+    }
+    
+    @Override
+    public String toString() {
+        return "Despacho{" + "cod=" + getCod()
+                + ", fecha=" + fecha 
+                + ", abono=" + abono 
+                + ", idTipoPago=" + idTipoPago 
+                + ", idFicha=" + idFicha 
+                + ", estado=" + getEstado() 
+                + ", lastUpdate=" + getLastUpdate() + '}';
+    }
 }

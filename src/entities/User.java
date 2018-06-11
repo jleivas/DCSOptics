@@ -5,30 +5,50 @@
  */
 package entities;
 
+import entities.abstractclasses.SyncIntId;
+import java.util.Date;
+
 /**
  *
  * @author home
  */
-public class User {
-    private int id;
+public class User extends SyncIntId{
     private String nombre;
+    private String username;
+    private String email;
     private String pass;
     private int tipo;
-    private int estado;
 
     public User() {
     }
 
-    public User(int id, String nombre, String pass, int tipo, int estado) {
-        this.id = id;
-        this.nombre = nombre;
-        this.pass = pass;
-        this.tipo = tipo;
-        this.estado = estado;
+    public User(int id, String nombre, String username,String email,
+            String pass, int tipo, int estado, Date lastUpdate, int lastHour) {
+        setId(id);
+        setNombre(nombre);
+        setUsername(username);
+        setEmail(email);
+        setPass(pass);
+        setTipo(tipo);
+        setEstado(estado);
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public void setNombre(String nombre) {
@@ -43,14 +63,6 @@ public class User {
         this.tipo = tipo;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -63,17 +75,16 @@ public class User {
         return tipo;
     }
 
-    public int getEstado() {
-        return estado;
-    }
-
     @Override
     public String toString() {
-        return "\nID: "+this.id+
+        return "\nID: "+getId()+
                 " - Nombre: "+this.nombre+
+                " - USERNAME: "+this.username+
+                " - EMAIL: "+this.email+
                 " - PASS: "+this.pass+
                 " - TIPO:"+this.tipo+
-                " - Estado:"+this.estado; //To change body of generated methods, choose Tools | Templates.
+                " - LAST_UPDATE:"+fn.date.Cmp.dateToString(getLastUpdate(), "dd-mm-yyyy")+
+                " - Estado:"+getEstado();
     }
     
     

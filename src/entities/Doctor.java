@@ -5,39 +5,30 @@
  */
 package entities;
 
+import entities.abstractclasses.SyncStringId;
+import java.util.Date;
+
 /**
  *
  * @author Lenovo G470
  */
-public class Doctor {
+public class Doctor extends SyncStringId{
     
-    private String rut;
     private String nombre;
     private String telefono;
     private String email;
-    private int estado;
 
     public Doctor() {
     }
 
-    public Doctor(String rut, String nombre, String telefono, String email,int estado) {
-        setRut(rut);
+    public Doctor(String rut, String nombre, String telefono, String email,int estado, Date lastUpdate, int lastHour) {
+        setCod(rut);
         setNombre(nombre);
         setTelefono(telefono);
         setEmail(email);
         setEstado(estado);
-    }
-
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    public int getEstado() {
-        return estado;
-    }
-
-    public void setRut(String rut) {
-        this.rut = rut;
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
     public void setNombre(String nombre) {
@@ -50,10 +41,6 @@ public class Doctor {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getRut() {
-        return rut;
     }
 
     public String getNombre() {
@@ -70,10 +57,12 @@ public class Doctor {
 
     @Override
     public String toString() {
-        return "Doctor{" + "rut=" + rut+"\n" 
+        return "Doctor{" + "rut=" + getCod()+"\n" 
                 + ", nombre=" + nombre+"\n" 
                 + ", telefono=" + telefono+"\n" 
-                + ", email=" + email + '}';
+                + ", email=" + email+"\n" 
+                + ", estado=" + getEstado()+"\n" 
+                + ", lastUpdate=" + getLastUpdate() + '}';
     }
     
     

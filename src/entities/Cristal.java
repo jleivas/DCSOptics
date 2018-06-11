@@ -5,28 +5,27 @@
  */
 package entities;
 
+import entities.abstractclasses.SyncIntId;
+import java.util.Date;
+
 /**
  *
  * @author home
  */
-public class Cristal {
-    private int id;
+public class Cristal extends SyncIntId{
     private String nombre;
     private int precio;
-    private int estado;
 
     public Cristal() {
     }
 
-    public Cristal(int id, String nombre, int precio, int estado) {
-        this.id = id;
-        this.nombre = nombre;
-        this.precio = precio;
-        this.estado = estado;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public Cristal(int id, String nombre, int precio, int estado, Date lastUpdate, int lastHour) {
+        setId(id);
+        setNombre(nombre);
+        setPrecio(precio);
+        setEstado(estado);
+        setLastUpdate(lastUpdate);
+        setLastHour(lastHour);
     }
 
     public void setNombre(String nombre) {
@@ -37,14 +36,6 @@ public class Cristal {
         this.precio = precio;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -52,10 +43,14 @@ public class Cristal {
     public int getPrecio() {
         return precio;
     }
-
-    public int getEstado() {
-        return estado;
-    }
     
+    @Override
+    public String toString() {
+        return "\nID: "+getId()+
+                " - Nombre: "+this.nombre+
+                " - Precio: "+this.precio+
+                " - LAST_UPDATE:"+fn.date.Cmp.dateToString(getLastUpdate(), "dd-mm-yyyy")+
+                " - Estado:"+getEstado();
+    }
     
 }
