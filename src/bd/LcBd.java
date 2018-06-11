@@ -6,31 +6,33 @@
 package bd;
 
 import fn.GlobalValues;
+import fn.Log;
+import fn.OptionPane;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author sdx
  */
-public class LcBd {
+public class LcBd{
     private static Connection conn = null;
-    
+    private static String className= "LcBd";
     public static Connection obtener() throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException
     {
+        Log.setLog(className,Log.getReg());
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
         conn = DriverManager.getConnection("jdbc:derby://"+GlobalValues.getLocalBdUrl()+"/"+GlobalValues.getLocalBdName(),GlobalValues.getLocalBdUser(),GlobalValues.getLocalBdPass());
         if(conn == null)
-            System.out.println("bd.LcBd::obtener(): ERROR BD."); 
-        else
-            System.out.println("bd.LcBd::obtener(): EXITO BD.");
+            OptionPane.showMsg("Error en Base de datos local", "No se pudo obtener la conexion:\nbd.RmBd::obtener(): ERROR BD.\n\nDatelle: "+Log.getLog(), JOptionPane.ERROR_MESSAGE);
         return conn;
     }
     
     public static void cerrar() throws SQLException
     {
-        System.out.println("bd.LcBd::cerrar()");
+        Log.setLog(className,Log.getReg());
         if(conn!=null)
             conn.close();
     }

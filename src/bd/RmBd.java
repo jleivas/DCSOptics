@@ -6,9 +6,12 @@
 package bd;
 
 import fn.GlobalValues;
+import fn.Log;
+import fn.OptionPane;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,21 +19,21 @@ import java.sql.SQLException;
  */
 public class RmBd {
     private static Connection conn = null;
+    private static String className = "RmBd";
     
     public static Connection obtener() throws ClassNotFoundException, SQLException
     {
+        Log.setLog(className,Log.getReg());
         Class.forName("com.mysql.jdbc.Driver");
         conn = DriverManager.getConnection("jdbc:mysql://"+GlobalValues.getRemoteBdUrl()+"/"+GlobalValues.getRemoteBdName(),GlobalValues.getRemoteBdUser(),GlobalValues.getRemoteBdPass());
         if(conn == null)
-            System.out.println("bd.RmBd::obtener(): ERROR BD.");
-        else
-            System.out.println("bd.RmBd::obtener(): ERROR BD.");
-       return conn;
+            OptionPane.showMsg("Error en Base de datos remota", "No se pudo obtener la conexion:\nbd.RmBd::obtener(): ERROR BD.\n\nDetalle: "+Log.getLog(), JOptionPane.ERROR_MESSAGE);
+        return conn;
     }
     
     public static void cerrar() throws SQLException
     {
-        System.out.println("bd.RmBd::cerrar()");
+        Log.setLog(className,Log.getReg());
         if(conn!=null)
             conn.close();
     }
