@@ -5,9 +5,8 @@
  */
 package sync;
 
-import entities.Lente;
 import fn.GlobalValues;
-import fn.OptionPane;
+import fn.Log;
 import java.sql.SQLException;
 
 /**
@@ -15,47 +14,26 @@ import java.sql.SQLException;
  * @author sdx
  */
 public class Sync {
-    public static boolean add(SyncBd localData, SyncBd remoteData, SyncBd globalData, Object object, String objectId) throws SQLException, ClassNotFoundException{        
-        System.out.println("Sync::add(SyncBd localData, SyncBd remoteData, SyncBd globalData, Object object)");    
-        if(sync.Cmp.isOnline()){
-            if(!remoteData.add(object))
-                OptionPane.showWarningMessage("No se pudo conectar a Base de datos remota", "Error de conexión remota");
-        }
-        if(!localData.add(object)){
-            OptionPane.showWarningMessage("No se pudo conectar a Base de datos local", "Error de conexión interna");
-            return false;
-        }
-        if(!addGlobal(globalData,localData.get(objectId),object)){
-            OptionPane.showErrorMessage("No se pudo agregar el nuevo elemento, porfavor reinicie el sistema.", "Error interno del sistema"); 
+    private static String className="Sync";
+    /**
+     * Add or update new objct in static variables, local data base and remote data base.
+     * @param localData
+     * @param remoteData
+     * @param globalData
+     * @param object
+     * @param objectId
+     * @return true if insert in static variables and local data base or remote data base, false if don't insert in static variables
+     * @throws SQLException
+     * @throws ClassNotFoundException 
+     */
+    public static boolean add(InterfaceSync localData, InterfaceSync remoteData, Object object) throws SQLException, ClassNotFoundException{        
+        Log.setLog(className,Log.getReg());
+        localData.add(object);
+        if(GlobalValues.isOnline()){
+            remoteData.add(object);
         }
         return true;
         }
 
-    
-    private static boolean addGlobal(SyncBd globalData,Object oldObject, Object newObject){
-        System.out.println("Sync::addGlobal(SyncBd globalData, Object object)");
-        int index = -1;
-        if(newObject == null)
-            return false;
-        try{
-            if(newObject instanceof Lente){
-                if(oldObject == null){
-                    GlobalValues.TMP_LIST_LENTES.add((Lente)newObject);
-                }else{
-                    index = GlobalValues.TMP_LIST_LENTES.indexOf(oldObject);
-                    if(index >= 0){
-                        GlobalValues.TMP_LIST_LENTES.add(index, (Lente)newObject);
-                        GlobalValues.TMP_LIST_LENTES.remove((Lente)oldObject);
-                    }else{
-                        GlobalValues.TMP_LIST_LENTES.add((Lente)newObject);
-                    }
-                }   
-            }
-            return true;
-        }catch(Exception e){
-            return false;
-        }
-            
-    }
     
 }

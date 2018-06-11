@@ -5,7 +5,6 @@
  */
 package fn.mail;
 
-import com.sun.mail.util.MailSSLSocketFactory;
 import fn.GlobalValues;
 import java.security.GeneralSecurityException;
 import java.util.Date;
@@ -157,7 +156,7 @@ public class Send {
     }
     
     public void sendReportMail(String title,String content){
-        if(Cmp.isOnline()){
+        if(GlobalValues.isOnline()){
             width = "50";
             sendMail("Reporte de error en equipo: "+GlobalValues.LOCAL_ID+", Optica: "+GlobalValues.COMPANY_NAME,
                     GlobalValues.MAIL_REPORT, title, content,
