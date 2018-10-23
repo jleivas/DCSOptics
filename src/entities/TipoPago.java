@@ -5,15 +5,14 @@
  */
 package entities;
 
-import entities.abstractclasses.SyncIntId;
+import entities.abstractclasses.SyncIntIdValidaName;
 import java.util.Date;
 
 /**
  *
  * @author Lenovo G470
  */
-public class TipoPago extends SyncIntId{
-    private String nombre;
+public class TipoPago extends SyncIntIdValidaName{
 
     public TipoPago() {
     }
@@ -27,18 +26,15 @@ public class TipoPago extends SyncIntId{
     }
     
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        super.setNombre(getToName(nombre));
     }
 
     public String getNombre() {
-        return nombre;
+        return getToName(super.getNombre());
     }
 
     @Override
     public String toString() {
-        return "tipoPago{" + "id=" + getId()+ ", nombre=" + nombre + '}';
+        return "tipoPago{" + "id=" + getId()+ ", nombre=" + getNombre() + '}';
     }
-    
-    
-    
 }

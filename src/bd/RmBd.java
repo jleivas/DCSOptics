@@ -5,13 +5,12 @@
  */
 package bd;
 
-import fn.GlobalValues;
+import fn.GV;
 import fn.Log;
 import fn.OptionPane;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,9 +24,21 @@ public class RmBd {
     {
         Log.setLog(className,Log.getReg());
         Class.forName("com.mysql.jdbc.Driver");
-        conn = DriverManager.getConnection("jdbc:mysql://"+GlobalValues.getRemoteBdUrl()+"/"+GlobalValues.getRemoteBdName(),GlobalValues.getRemoteBdUser(),GlobalValues.getRemoteBdPass());
-        if(conn == null)
-            OptionPane.showMsg("Error en Base de datos remota", "No se pudo obtener la conexion:\nbd.RmBd::obtener(): ERROR BD.\n\nDetalle: "+Log.getLog(), JOptionPane.ERROR_MESSAGE);
+        String detail ="Es probable que su conexión a internet sea intermitente\n"
+                + "por favor intente nuevamente, si el problema persiste\n"
+                + "póngase en contacto con su proveedor de software.";
+        try{
+        conn = DriverManager.getConnection("jdbc:mysql://"+GV.getRemoteBdUrl()+"/"+GV.getRemoteBdName(),GV.getRemoteBdUser(),GV.getRemoteBdPass());
+        }catch(Exception ex){
+            OptionPane.showMsg("Error en Base de datos remota", "No se pudo obtener la conexion:\n"+detail+"\nbd.RmBd::obtener(): ERROR BD.\n\nCatch: "+ex.getMessage(), 3);
+            cerrar();
+            GV.stopSincronizacion();
+        }
+        if(conn == null){
+            OptionPane.showMsg("Error en Base de datos remota", "No se pudo obtener la conexion:\n"+detail+"\nbd.RmBd::obtener(): ERROR BD.\n\nDetalle: "+Log.getLog(), 3);
+            cerrar();
+            GV.stopSincronizacion();
+        }
         return conn;
     }
     
@@ -36,5 +47,9 @@ public class RmBd {
         Log.setLog(className,Log.getReg());
         if(conn!=null)
             conn.close();
+    }
+    
+    public static boolean isOpen(){
+        return (conn!=null)?true:false;
     }
 }

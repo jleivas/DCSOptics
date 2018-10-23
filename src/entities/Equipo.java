@@ -15,18 +15,29 @@ import java.util.Date;
 public class Equipo extends SyncIntId{
     private String nombre;
     private String licencia;
+    private String bd;
+    private String bdUser;
+    private String bdPass;
+    private String bdUrl;
 
-    public Equipo(int id,String nombre, String licencia, int estado, Date lastUpdate, int lastHour) {
+    public Equipo(int id,String nombre, String licencia,String bd,String bdUser,String bdPass,String bdUrl, int estado, Date lastUpdate, int lastHour) {
         setId(id);
-        this.nombre = nombre;
-        this.licencia = licencia;
+        setNombre(nombre);
+        setLicencia(licencia);
+        setBd(bd);
+        setBdUser(bdUser);
+        setBdPass(bdPass);
+        setBdUrl(bdUrl);
         setEstado(estado);
         setLastUpdate(lastUpdate);
         setLastHour(lastHour);
     }
 
+    public Equipo(){
+        
+    }
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = getToName(nombre);
     }
 
     public void setLicencia(String licencia) {
@@ -34,12 +45,42 @@ public class Equipo extends SyncIntId{
     }
 
     public String getNombre() {
-        return nombre;
+        return getToName(nombre);
     }
 
     public String getLicencia() {
         return licencia;
     }
-    
-    
+
+    public void setBd(String bd) {
+        this.bd = bd;
+    }
+
+    public void setBdUser(String bdUser) {
+        this.bdUser = bdUser;
+    }
+
+    public void setBdPass(String bdPass) {
+        this.bdPass = bdPass;
+    }
+
+    public String getBd() {
+        return bd;
+    }
+
+    public String getBdUser() {
+        return bdUser;
+    }
+
+    public String getBdPass() {
+        return bdPass;
+    }
+
+    public String getBdUrl() {
+        return bdUrl;
+    }
+
+    public void setBdUrl(String bdUrl) {
+        this.bdUrl = bdUrl;
+    }
 }

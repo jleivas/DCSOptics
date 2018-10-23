@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view;
+package view.opanel;
 
 import fn.Boton;
-import fn.FnFicha;
-import fn.GlobalValues;
+import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
 import java.sql.SQLException;
@@ -20,13 +19,12 @@ import java.util.logging.Logger;
  * @author sdx
  */
 public class OpanelSelectDate extends javax.swing.JPanel {
-
+    Boton boton = new Boton();
     /**
      * Creates new form OpanelSelectDate
      */
     public OpanelSelectDate() {
         initComponents();
-        cargarCboEstado();
     }
 
     /**
@@ -46,8 +44,6 @@ public class OpanelSelectDate extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         btnCancel = new javax.swing.JLabel();
         btnLoad = new javax.swing.JLabel();
-        cboEstado = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -103,12 +99,6 @@ public class OpanelSelectDate extends javax.swing.JPanel {
             }
         });
 
-        cboEstado.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
-        cboEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
-        jLabel3.setText("Estado");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -121,35 +111,25 @@ public class OpanelSelectDate extends javax.swing.JPanel {
                 .addGap(87, 87, 87))
             .addGroup(layout.createSequentialGroup()
                 .addGap(69, 69, 69)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnSyncronize18)
+                        .addGap(5, 5, 5)
+                        .addComponent(txtFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
+                .addGap(74, 74, 74)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnSyncronize18)
-                                .addGap(5, 5, 5)
-                                .addComponent(txtFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel1))
-                        .addGap(74, 74, 74)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnSyncronize19)
-                                .addGap(5, 5, 5)
-                                .addComponent(txtFecha2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel2))))
+                        .addComponent(btnSyncronize19)
+                        .addGap(5, 5, 5)
+                        .addComponent(txtFecha2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2))
                 .addContainerGap(95, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(56, 56, 56)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
@@ -159,7 +139,7 @@ public class OpanelSelectDate extends javax.swing.JPanel {
                     .addComponent(txtFecha2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSyncronize18, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtFecha1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCancel)
                     .addComponent(btnLoad))
@@ -176,8 +156,8 @@ public class OpanelSelectDate extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSyncronize19MouseClicked
 
     private void btnCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseClicked
-        OptionPane op = new OptionPane();
-        op.closeOPanel();
+        
+        OptionPane.closeOptionPanel();
     }//GEN-LAST:event_btnCancelMouseClicked
 
     private void btnCancelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseEntered
@@ -193,31 +173,31 @@ public class OpanelSelectDate extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCancelMousePressed
 
     private void btnLoadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoadMouseClicked
-        FnFicha load = new FnFicha();
-        Boton boton = new Boton();
-        GlobalValues.INFOPANEL.setVisible(false);
-        if(txtFecha1.getDate() == null){
-            if(txtFecha2.getDate() == null){
-                GlobalValues.TMP_DATE_FROM = new Date();
-                GlobalValues.TMP_DATE_TO   = new Date();
-            }else{
-                GlobalValues.TMP_DATE_FROM = txtFecha2.getDate();
-                GlobalValues.TMP_DATE_TO   = txtFecha2.getDate();
-            }
-        }else{
-            if(txtFecha2.getDate() == null){
-                GlobalValues.TMP_DATE_FROM = txtFecha1.getDate();
-                GlobalValues.TMP_DATE_TO   = txtFecha1.getDate();
-            }else{
-                GlobalValues.TMP_DATE_FROM = txtFecha1.getDate();
-                GlobalValues.TMP_DATE_TO   = txtFecha2.getDate();
-            }
-        }
         try {
-            GlobalValues.TMP_LIST_FICHAS = load.listarPorFecha(GlobalValues.TMP_DATE_FROM,GlobalValues.TMP_DATE_TO);
-            boton.fichas();
+            GV.cursorWAIT(this);
+            if(txtFecha1.getDate() == null){
+                if(txtFecha2.getDate() == null){
+                    GV.setDateFrom(new Date());
+                    GV.setDateTo(new Date());
+                }else{
+                    GV.setDateFrom(txtFecha2.getDate());
+                    GV.setDateTo(txtFecha2.getDate());
+                }
+            }else{
+                if(txtFecha2.getDate() == null){
+                    GV.setDateFrom(txtFecha1.getDate());
+                    GV.setDateTo(txtFecha1.getDate());
+                }else{
+                    GV.setDateFrom(txtFecha1.getDate());
+                    GV.setDateTo(txtFecha2.getDate());
+                }
+            }
+            GV.listarFichasByDate(GV.dateFrom(),GV.dateTo());
+            GV.cursorDF(this);
+            OptionPane.closeOptionPanel();
+            boton.fichas(GV.cboFichasFilter());
         } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ContentAdmin.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OpanelSelectDate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnLoadMouseClicked
 
@@ -239,19 +219,10 @@ public class OpanelSelectDate extends javax.swing.JPanel {
     private javax.swing.JLabel btnLoad;
     private javax.swing.JLabel btnSyncronize18;
     private javax.swing.JLabel btnSyncronize19;
-    private javax.swing.JComboBox<String> cboEstado;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private com.toedter.calendar.JDateChooser txtFecha1;
     private com.toedter.calendar.JDateChooser txtFecha2;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarCboEstado() {
-        cboEstado.removeAllItems();
-        cboEstado.addItem("Activos");
-        cboEstado.addItem("Garantías");
-        cboEstado.addItem("Morosos");
-        cboEstado.addItem("Eliminados");
-    }
 }

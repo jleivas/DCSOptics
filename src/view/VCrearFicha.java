@@ -6,28 +6,35 @@
 package view;
 
 import com.mxrck.autocompleter.TextAutoCompleter;
-import entities.Armazon;
+import dao.Dao;
 import entities.Cliente;
+import entities.Convenio;
 import entities.Cristal;
 import entities.Descuento;
 import entities.Doctor;
-import entities.Ficha;
-import entities.HistorialPago;
 import entities.Institucion;
+import entities.Inventario;
 import entities.Lente;
 import entities.TipoPago;
+import entities.ficha.Armazon;
+import entities.ficha.Ficha;
+import entities.ficha.HistorialPago;
 import fn.Boton;
-import fn.FnNuevaFicha;
-import fn.FnValidaRut;
-import fn.GlobalValues;
+import fn.GV;
 import fn.Icons;
+import fn.Log;
+import fn.OptionPane;
+import fn.ValidaRut;
 import java.awt.Color;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import view.opanel.OpanelSelectConvenio;
 
 /**
  *
@@ -35,25 +42,59 @@ import javax.swing.JOptionPane;
  */
 public class VCrearFicha extends javax.swing.JPanel {
 
-    private FnNuevaFicha load = new FnNuevaFicha();
-    private static JLabel lblIdTipoPago = new JLabel();
+    private Dao load = new Dao();
+    private static String strCnvName;
+    private static Color rojo = Color.red;
+    private static Color negro = Color.black;
+    private static TipoPago stTipoPago = new TipoPago();
+    private static Cristal stCristalLejos = new Cristal();
+    private static Cristal stCristalCerca = new Cristal();
+    private static Lente stLenteLejos = new Lente();
+    private static Lente stLenteCerca = new Lente();
+    private static Armazon stArmazonLejos = new Armazon();
+    private static Armazon stArmazonCerca = new Armazon();
+    private static Doctor stDoctor = new Doctor();
+    private static Cliente stCliente = new Cliente();
+    private static Institucion stInstitucion = new Institucion();
+    private static Descuento stDescuento = null;
+    private static Inventario stInventario = new Inventario();
+    private static Convenio stConvenio = null;
+    
+    private static List<Object> listInstituciones = new ArrayList<>();
+    private static List<Object> listClientes = new ArrayList<>();
+    private static List<Object> listDoctores = new ArrayList<>();
+    private static List<Object> listCristales = new ArrayList<>();
+    private static List<Object> listLentes = new ArrayList<>();
+    private static List<Object> listTipoPagos = new ArrayList<>();
+    private static List<Object> listDescuentos = new ArrayList<>();
     Boton boton = new Boton();
     /**
      * Creates new form VNuevaFicha
      */
     public VCrearFicha() throws SQLException, ClassNotFoundException {
-        initComponents();
-        ContentAdmin.lblTitle.setText("Nueva Ficha");
-        txtTotal.setText("0");
-        cargarCbos();
-        autocompletar();
-        lblCristalCerca.setVisible(false);
-        lblCristalLejos.setVisible(false);
-        lblLenteCerca.setVisible(false);
-        lblLenteLejos.setVisible(false);
-        lblIdTipoPago.setText("0");
-        GlobalValues.TMP_ID_DESCUENTO = 0;
         
+        initComponents();
+        stInventario = new Inventario();
+        try {
+            stInventario = (Inventario)load.get(GV.inventarioName(), 0, new Inventario());
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(stInventario == null){
+            stInventario = new Inventario();
+            OptionPane.showMsg("Debe seleccionar un inventario local", "El inventario asignado a este equipo no existe\n"
+                    + "o fué modificado, asigne un inventario local a este equipo para\n"
+                    + "solucionar este problema", 2);
+        }
+        loadStaticObjectList();
+        convenioObtenerSeleccionado();
+        
+        validateDataTemp();
+        load();
+        
+        comprobarDatosFicha();
+        GV.cursorDF();
+        GV.cursorDF(this);
        // JFormattedTextField.COMMIT_OR_REVERT. Esta es la opción por defecto y la más útil. Si el texto introducido es incorrecto, se vuelve automáticamente al último valor bueno conocido. Si el texto no es válido, se muestra el último valor bueno conocido.<>
     }
     
@@ -69,23 +110,23 @@ public class VCrearFicha extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        txtFecha = new com.toedter.calendar.JDateChooser();
         txtEntrega = new javax.swing.JTextField();
-        btnSyncronize18 = new javax.swing.JLabel();
-        btnSyncronize20 = new javax.swing.JLabel();
+        iconCalendar = new javax.swing.JLabel();
+        iconPlace = new javax.swing.JLabel();
+        txtFecha = new com.toedter.calendar.JDateChooser();
         jPanel10 = new javax.swing.JPanel();
         txtHora1 = new javax.swing.JSpinner();
         jLabel4 = new javax.swing.JLabel();
         txtMinuto1 = new javax.swing.JSpinner();
-        btnSyncronize21 = new javax.swing.JLabel();
+        iconClock = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
         txtHora2 = new javax.swing.JSpinner();
         txtMinuto2 = new javax.swing.JSpinner();
         jLabel48 = new javax.swing.JLabel();
-        btnSyncronize17 = new javax.swing.JLabel();
+        iconClock2 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         txtDoctor = new javax.swing.JTextField();
-        btnSyncronize16 = new javax.swing.JLabel();
+        iconDoctor = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         txtInstitucion = new javax.swing.JTextField();
         txtRutCliente = new javax.swing.JTextField();
@@ -100,16 +141,16 @@ public class VCrearFicha extends javax.swing.JPanel {
         txtCiudad = new javax.swing.JTextField();
         cboSexo = new javax.swing.JComboBox<>();
         jLabel14 = new javax.swing.JLabel();
-        txtEdad = new javax.swing.JSpinner();
         chkExtranjero = new javax.swing.JCheckBox();
         txtTelefonoCliente1 = new javax.swing.JTextField();
-        btnSyncronize13 = new javax.swing.JLabel();
-        btnSyncronize19 = new javax.swing.JLabel();
-        btnSyncronize14 = new javax.swing.JLabel();
-        btnSyncronize15 = new javax.swing.JLabel();
-        btnSyncronize24 = new javax.swing.JLabel();
-        btnSyncronize25 = new javax.swing.JLabel();
-        btnSyncronize26 = new javax.swing.JLabel();
+        iconDni = new javax.swing.JLabel();
+        iconInstitucion = new javax.swing.JLabel();
+        iconGender = new javax.swing.JLabel();
+        iconMail = new javax.swing.JLabel();
+        iconAddress = new javax.swing.JLabel();
+        iconPhone2 = new javax.swing.JLabel();
+        iconPhone1 = new javax.swing.JLabel();
+        txtNacimiento = new com.toedter.calendar.JDateChooser();
         jPanel3 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         txtArmazonLejos = new javax.swing.JTextField();
@@ -174,21 +215,26 @@ public class VCrearFicha extends javax.swing.JPanel {
         lblDescuento = new javax.swing.JLabel();
         txtSaldo = new javax.swing.JTextField();
         txtDescuento = new javax.swing.JTextField();
-        lblCristalLejos = new javax.swing.JLabel();
-        lblCristalCerca = new javax.swing.JLabel();
-        lblLenteCerca = new javax.swing.JLabel();
-        lblLenteLejos = new javax.swing.JLabel();
         txtTotal = new javax.swing.JTextField();
+        txtCnvName = new javax.swing.JLabel();
         btnSave = new javax.swing.JLabel();
+        lblMessageStatus = new javax.swing.JLabel();
+        btnSelectConvenios = new javax.swing.JLabel();
+        btnClearConvenio = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Datos de entrega", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 1, 14))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Fecha de entrega y lugar", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 1, 14))); // NOI18N
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        jPanel1.add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 129, -1));
 
+        txtEntrega.setToolTipText("Lugar de entrega");
+        txtEntrega.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtEntregaFocusLost(evt);
+            }
+        });
         txtEntrega.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtEntregaActionPerformed(evt);
@@ -201,63 +247,112 @@ public class VCrearFicha extends javax.swing.JPanel {
         });
         jPanel1.add(txtEntrega, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 30, 311, -1));
 
-        btnSyncronize18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Calendar_25px.png"))); // NOI18N
-        btnSyncronize18.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconCalendar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Calendar_25px.png"))); // NOI18N
+        iconCalendar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize18MouseClicked(evt);
+                iconCalendarMouseClicked(evt);
             }
         });
-        jPanel1.add(btnSyncronize18, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, 20));
+        jPanel1.add(iconCalendar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, 20));
 
-        btnSyncronize20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Geo-fence_25px.png"))); // NOI18N
-        btnSyncronize20.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconPlace.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Geo-fence_25px.png"))); // NOI18N
+        iconPlace.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize20MouseClicked(evt);
+                iconPlaceMouseClicked(evt);
             }
         });
-        jPanel1.add(btnSyncronize20, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 25, -1, 30));
+        jPanel1.add(iconPlace, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 25, -1, 30));
+
+        txtFecha.setMaxSelectableDate(new java.util.Date(32503694492000L));
+        txtFecha.setMinSelectableDate(new java.util.Date(1514779292000L));
+        txtFecha.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtFechaFocusLost(evt);
+            }
+        });
+        txtFecha.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                txtFechaInputMethodTextChanged(evt);
+            }
+        });
+        txtFecha.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtFechaPropertyChange(evt);
+            }
+        });
+        txtFecha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtFechaKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFechaKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 129, -1));
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Desde", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 1, 14))); // NOI18N
         jPanel10.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         txtHora1.setModel(new javax.swing.SpinnerNumberModel(0, 0, 23, 1));
+        txtHora1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtHora1FocusLost(evt);
+            }
+        });
         jPanel10.add(txtHora1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 49, -1));
 
         jLabel4.setText(":");
         jPanel10.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, -1, -1));
 
         txtMinuto1.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
-        jPanel10.add(txtMinuto1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, 49, -1));
-
-        btnSyncronize21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Clock_25px.png"))); // NOI18N
-        btnSyncronize21.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize21MouseClicked(evt);
+        txtMinuto1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtMinuto1FocusLost(evt);
             }
         });
-        jPanel10.add(btnSyncronize21, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 25, -1, 30));
+        jPanel10.add(txtMinuto1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, 49, -1));
+
+        iconClock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Clock_25px.png"))); // NOI18N
+        iconClock.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                iconClockMouseClicked(evt);
+            }
+        });
+        jPanel10.add(iconClock, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 25, -1, 30));
 
         jPanel11.setBackground(new java.awt.Color(255, 255, 255));
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Hasta", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 1, 14))); // NOI18N
         jPanel11.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         txtHora2.setModel(new javax.swing.SpinnerNumberModel(0, 0, 23, 1));
+        txtHora2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtHora2FocusLost(evt);
+            }
+        });
         jPanel11.add(txtHora2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 49, -1));
 
         txtMinuto2.setModel(new javax.swing.SpinnerNumberModel(0, 0, 59, 1));
+        txtMinuto2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtMinuto2FocusLost(evt);
+            }
+        });
         jPanel11.add(txtMinuto2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, 49, -1));
 
         jLabel48.setText(":");
         jPanel11.add(jLabel48, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, -1, 20));
 
-        btnSyncronize17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Clock_25px.png"))); // NOI18N
-        btnSyncronize17.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconClock2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Clock_25px.png"))); // NOI18N
+        iconClock2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize17MouseClicked(evt);
+                iconClock2MouseClicked(evt);
             }
         });
-        jPanel11.add(btnSyncronize17, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, 40));
+        jPanel11.add(iconClock2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, 40));
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Especialista", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 1, 14))); // NOI18N
@@ -267,11 +362,16 @@ public class VCrearFicha extends javax.swing.JPanel {
                 txtDoctorFocusLost(evt);
             }
         });
+        txtDoctor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDoctorKeyTyped(evt);
+            }
+        });
 
-        btnSyncronize16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Account_25px.png"))); // NOI18N
-        btnSyncronize16.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconDoctor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Account_25px.png"))); // NOI18N
+        iconDoctor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize16MouseClicked(evt);
+                iconDoctorMouseClicked(evt);
             }
         });
 
@@ -281,9 +381,9 @@ public class VCrearFicha extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnSyncronize16)
+                .addComponent(iconDoctor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtDoctor, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtDoctor, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -294,13 +394,14 @@ public class VCrearFicha extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnSyncronize16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(iconDoctor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Datos de Cliente", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 1, 14))); // NOI18N
 
+        txtInstitucion.setToolTipText("Institución del cliente");
         txtInstitucion.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtInstitucionFocusLost(evt);
@@ -317,6 +418,7 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
 
+        txtRutCliente.setToolTipText("Rut o Identificador Personal");
         txtRutCliente.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtRutClienteFocusLost(evt);
@@ -336,18 +438,34 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel7.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel7.setText("Nombre");
 
+        txtNombreCliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtNombreClienteFocusLost(evt);
+            }
+        });
         txtNombreCliente.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtNombreClienteKeyTyped(evt);
             }
         });
 
+        txtTelefonoCliente2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtTelefonoCliente2FocusLost(evt);
+            }
+        });
         txtTelefonoCliente2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtTelefonoCliente2KeyTyped(evt);
             }
         });
 
+        txtMailCliente.setToolTipText("Email del cliente");
+        txtMailCliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtMailClienteFocusLost(evt);
+            }
+        });
         txtMailCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtMailClienteActionPerformed(evt);
@@ -359,6 +477,12 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
 
+        txtDireccionCliente.setToolTipText("Dirección del cliente");
+        txtDireccionCliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtDireccionClienteFocusLost(evt);
+            }
+        });
         txtDireccionCliente.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtDireccionClienteKeyTyped(evt);
@@ -368,6 +492,12 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel11.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel11.setText("Comuna");
 
+        txtComuna.setToolTipText("Comuna del cliente");
+        txtComuna.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtComunaFocusLost(evt);
+            }
+        });
         txtComuna.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtComunaKeyTyped(evt);
@@ -377,6 +507,12 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel12.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel12.setText("Ciudad");
 
+        txtCiudad.setToolTipText("Ciudad del cliente");
+        txtCiudad.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtCiudadFocusLost(evt);
+            }
+        });
         txtCiudad.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtCiudadKeyTyped(evt);
@@ -385,72 +521,91 @@ public class VCrearFicha extends javax.swing.JPanel {
 
         cboSexo.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         cboSexo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboSexo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboSexoItemStateChanged(evt);
+            }
+        });
 
         jLabel14.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
-        jLabel14.setText("Edad");
-
-        txtEdad.setModel(new javax.swing.SpinnerNumberModel(0, 0, 99, 1));
+        jLabel14.setText("Nac.");
 
         chkExtranjero.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
-        chkExtranjero.setText("Extrangero");
+        chkExtranjero.setText("Extranjero");
+        chkExtranjero.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkExtranjeroItemStateChanged(evt);
+            }
+        });
         chkExtranjero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkExtranjeroActionPerformed(evt);
             }
         });
 
+        txtTelefonoCliente1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtTelefonoCliente1FocusLost(evt);
+            }
+        });
         txtTelefonoCliente1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtTelefonoCliente1KeyTyped(evt);
             }
         });
 
-        btnSyncronize13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Contact_Details_25px.png"))); // NOI18N
-        btnSyncronize13.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconDni.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Contact_Details_25px.png"))); // NOI18N
+        iconDni.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize13MouseClicked(evt);
+                iconDniMouseClicked(evt);
             }
         });
 
-        btnSyncronize19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Business_Building_25px_1.png"))); // NOI18N
-        btnSyncronize19.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconInstitucion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Business_Building_25px_1.png"))); // NOI18N
+        iconInstitucion.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize19MouseClicked(evt);
+                iconInstitucionMouseClicked(evt);
             }
         });
 
-        btnSyncronize14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Gender_25px.png"))); // NOI18N
-        btnSyncronize14.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconGender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Gender_25px.png"))); // NOI18N
+        iconGender.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize14MouseClicked(evt);
+                iconGenderMouseClicked(evt);
             }
         });
 
-        btnSyncronize15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_New_Post_25px.png"))); // NOI18N
-        btnSyncronize15.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconMail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_New_Post_25px.png"))); // NOI18N
+        iconMail.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize15MouseClicked(evt);
+                iconMailMouseClicked(evt);
             }
         });
 
-        btnSyncronize24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Geo-fence_25px.png"))); // NOI18N
-        btnSyncronize24.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconAddress.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Geo-fence_25px.png"))); // NOI18N
+        iconAddress.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize24MouseClicked(evt);
+                iconAddressMouseClicked(evt);
             }
         });
 
-        btnSyncronize25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cell_Phone_25px.png"))); // NOI18N
-        btnSyncronize25.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconPhone2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cell_Phone_25px.png"))); // NOI18N
+        iconPhone2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize25MouseClicked(evt);
+                iconPhone2MouseClicked(evt);
             }
         });
 
-        btnSyncronize26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cell_Phone_25px.png"))); // NOI18N
-        btnSyncronize26.addMouseListener(new java.awt.event.MouseAdapter() {
+        iconPhone1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cell_Phone_25px.png"))); // NOI18N
+        iconPhone1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize26MouseClicked(evt);
+                iconPhone1MouseClicked(evt);
+            }
+        });
+
+        txtNacimiento.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtNacimientoFocusLost(evt);
             }
         });
 
@@ -460,14 +615,14 @@ public class VCrearFicha extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSyncronize19)
-                    .addComponent(btnSyncronize24))
+                    .addComponent(iconInstitucion)
+                    .addComponent(iconAddress))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(txtInstitucion, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSyncronize13))
+                        .addComponent(iconDni))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(txtDireccionCliente)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -487,28 +642,29 @@ public class VCrearFicha extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(chkExtranjero, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
-                        .addComponent(btnSyncronize26)
+                        .addComponent(iconPhone1)
                         .addGap(1, 1, 1)
                         .addComponent(txtTelefonoCliente1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(txtCiudad, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSyncronize15)
+                        .addComponent(iconMail)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtMailCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSyncronize14)
+                        .addComponent(iconGender)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cboSexo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
-                .addComponent(btnSyncronize25)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtTelefonoCliente2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(iconPhone2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTelefonoCliente2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -524,8 +680,8 @@ public class VCrearFicha extends javax.swing.JPanel {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(5, 5, 5)
-                                .addComponent(btnSyncronize19, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnSyncronize13, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(iconInstitucion, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(iconDni, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtInstitucion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -533,32 +689,32 @@ public class VCrearFicha extends javax.swing.JPanel {
                         .addComponent(txtTelefonoCliente2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel14)
-                        .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnSyncronize15)
+                    .addComponent(iconMail)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel12)
                         .addComponent(txtComuna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel11)
                         .addComponent(txtCiudad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtDireccionCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtMailCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cboSexo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(txtNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtMailCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cboSexo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14))))
+                .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSyncronize26, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(iconPhone1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtTelefonoCliente1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSyncronize25, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(iconPhone2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(2, 2, 2)
-                        .addComponent(btnSyncronize24))
+                        .addComponent(iconAddress))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(9, 9, 9)
-                        .addComponent(btnSyncronize14)))
+                        .addComponent(iconGender)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -569,6 +725,9 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel10.setText("Armazon");
 
         txtArmazonLejos.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtArmazonLejosFocusGained(evt);
+            }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtArmazonLejosFocusLost(evt);
             }
@@ -587,6 +746,11 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel16.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel16.setText("O.D.   ");
 
+        txtODLejosESF.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtODLejosESFFocusLost(evt);
+            }
+        });
         txtODLejosESF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtODLejosESFKeyTyped(evt);
@@ -596,6 +760,11 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel17.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel17.setText("ESF");
 
+        txtODLejosCIL.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtODLejosCILFocusLost(evt);
+            }
+        });
         txtODLejosCIL.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtODLejosCILKeyTyped(evt);
@@ -605,6 +774,11 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel18.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel18.setText("CIL");
 
+        txtODLejosA.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtODLejosAFocusLost(evt);
+            }
+        });
         txtODLejosA.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtODLejosAKeyTyped(evt);
@@ -614,18 +788,33 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel19.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel19.setText("O.I.   ");
 
+        txtOILejosESF.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtOILejosESFFocusLost(evt);
+            }
+        });
         txtOILejosESF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtOILejosESFKeyTyped(evt);
             }
         });
 
+        txtOILejosCIL.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtOILejosCILFocusLost(evt);
+            }
+        });
         txtOILejosCIL.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtOILejosCILKeyTyped(evt);
             }
         });
 
+        txtOILejosA.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtOILejosAFocusLost(evt);
+            }
+        });
         txtOILejosA.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtOILejosAKeyTyped(evt);
@@ -645,12 +834,27 @@ public class VCrearFicha extends javax.swing.JPanel {
 
         chkEndurecidoLejos.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         chkEndurecidoLejos.setText("ENDURECIDO");
+        chkEndurecidoLejos.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkEndurecidoLejosItemStateChanged(evt);
+            }
+        });
 
         chkCapaLejos.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         chkCapaLejos.setText("CAPA");
+        chkCapaLejos.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkCapaLejosItemStateChanged(evt);
+            }
+        });
 
         chkPlusMaxLejos.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         chkPlusMaxLejos.setText("PLUS MAX");
+        chkPlusMaxLejos.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkPlusMaxLejosItemStateChanged(evt);
+            }
+        });
 
         jLabel26.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel26.setText("Cristal");
@@ -809,6 +1013,11 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel33.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel33.setText("O.D.   ");
 
+        txtODCercaESF.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtODCercaESFFocusLost(evt);
+            }
+        });
         txtODCercaESF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtODCercaESFActionPerformed(evt);
@@ -823,6 +1032,11 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel34.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel34.setText("ESF");
 
+        txtODCercaCIL.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtODCercaCILFocusLost(evt);
+            }
+        });
         txtODCercaCIL.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtODCercaCILKeyTyped(evt);
@@ -832,6 +1046,11 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel35.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel35.setText("A");
 
+        txtODCercaA.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtODCercaAFocusLost(evt);
+            }
+        });
         txtODCercaA.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtODCercaAKeyTyped(evt);
@@ -841,18 +1060,33 @@ public class VCrearFicha extends javax.swing.JPanel {
         jLabel36.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel36.setText("O.I.   ");
 
+        txtOICercaESF.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtOICercaESFFocusLost(evt);
+            }
+        });
         txtOICercaESF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtOICercaESFKeyTyped(evt);
             }
         });
 
+        txtOICercaCIL.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtOICercaCILFocusLost(evt);
+            }
+        });
         txtOICercaCIL.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtOICercaCILKeyTyped(evt);
             }
         });
 
+        txtOICercaA.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtOICercaAFocusLost(evt);
+            }
+        });
         txtOICercaA.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtOICercaAKeyTyped(evt);
@@ -872,16 +1106,36 @@ public class VCrearFicha extends javax.swing.JPanel {
 
         chkEndurecidoCerca.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         chkEndurecidoCerca.setText("ENDURECIDO");
+        chkEndurecidoCerca.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkEndurecidoCercaItemStateChanged(evt);
+            }
+        });
 
         chkCapaCerca.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         chkCapaCerca.setText("CAPA");
+        chkCapaCerca.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkCapaCercaItemStateChanged(evt);
+            }
+        });
 
         chkPlusMaxCerca.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         chkPlusMaxCerca.setText("PLUS MAX");
+        chkPlusMaxCerca.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkPlusMaxCercaItemStateChanged(evt);
+            }
+        });
 
         jLabel40.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel40.setText("ADD  ");
 
+        txtAddCerca.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtAddCercaFocusLost(evt);
+            }
+        });
         txtAddCerca.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtAddCercaKeyTyped(evt);
@@ -1050,11 +1304,11 @@ public class VCrearFicha extends javax.swing.JPanel {
 
         jLabel24.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         jLabel24.setText("Valor total");
-        jPanel7.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 40, -1, -1));
+        jPanel7.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, -1, -1));
 
         jLabel25.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         jLabel25.setText("Abono");
-        jPanel7.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, -1, -1));
+        jPanel7.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 100, -1, -1));
 
         txtAbono.setModel(new javax.swing.SpinnerNumberModel(0, 0, 9999999, 1));
         txtAbono.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -1062,7 +1316,7 @@ public class VCrearFicha extends javax.swing.JPanel {
                 txtAbonoStateChanged(evt);
             }
         });
-        jPanel7.add(txtAbono, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 70, 134, -1));
+        jPanel7.add(txtAbono, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, 134, -1));
 
         cboTipoPago.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         cboTipoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -1071,11 +1325,11 @@ public class VCrearFicha extends javax.swing.JPanel {
                 cboTipoPagoItemStateChanged(evt);
             }
         });
-        jPanel7.add(cboTipoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 70, 110, -1));
+        jPanel7.add(cboTipoPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 100, 110, -1));
 
         jLabel27.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         jLabel27.setText("Saldo");
-        jPanel7.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 100, -1, -1));
+        jPanel7.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 130, -1, -1));
 
         chkDescuento.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         chkDescuento.setText("Aplicar descuento");
@@ -1105,7 +1359,7 @@ public class VCrearFicha extends javax.swing.JPanel {
                 chkDescuentoKeyTyped(evt);
             }
         });
-        jPanel7.add(chkDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(8, 13, -1, -1));
+        jPanel7.add(chkDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 130, -1));
 
         cboDescuento.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         cboDescuento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -1114,11 +1368,11 @@ public class VCrearFicha extends javax.swing.JPanel {
                 cboDescuentoItemStateChanged(evt);
             }
         });
-        jPanel7.add(cboDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(139, 14, 330, -1));
+        jPanel7.add(cboDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, 330, -1));
 
         lblDescuento.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
         lblDescuento.setText("Dscto");
-        jPanel7.add(lblDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 40, -1, -1));
+        jPanel7.add(lblDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 70, -1, -1));
 
         txtSaldo.setEditable(false);
         txtSaldo.addActionListener(new java.awt.event.ActionListener() {
@@ -1131,7 +1385,7 @@ public class VCrearFicha extends javax.swing.JPanel {
                 txtSaldoPropertyChange(evt);
             }
         });
-        jPanel7.add(txtSaldo, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, 118, -1));
+        jPanel7.add(txtSaldo, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 118, -1));
 
         txtDescuento.setEditable(false);
         txtDescuento.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -1139,19 +1393,7 @@ public class VCrearFicha extends javax.swing.JPanel {
                 txtDescuentoPropertyChange(evt);
             }
         });
-        jPanel7.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 40, 80, -1));
-
-        lblCristalLejos.setText("0");
-        jPanel7.add(lblCristalLejos, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 100, -1, -1));
-
-        lblCristalCerca.setText("0");
-        jPanel7.add(lblCristalCerca, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 100, -1, -1));
-
-        lblLenteCerca.setText("0");
-        jPanel7.add(lblLenteCerca, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 100, -1, -1));
-
-        lblLenteLejos.setText("0");
-        jPanel7.add(lblLenteLejos, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 100, -1, -1));
+        jPanel7.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 80, -1));
 
         txtTotal.setEditable(false);
         txtTotal.addActionListener(new java.awt.event.ActionListener() {
@@ -1164,9 +1406,14 @@ public class VCrearFicha extends javax.swing.JPanel {
                 txtTotalPropertyChange(evt);
             }
         });
-        jPanel7.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 40, 117, -1));
+        jPanel7.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 70, 117, -1));
+
+        txtCnvName.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        txtCnvName.setText("jLabel1");
+        jPanel7.add(txtCnvName, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 460, -1));
 
         btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Save_50px.png"))); // NOI18N
+        btnSave.setToolTipText("Enviar datos");
         btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnSaveMouseClicked(evt);
@@ -1176,6 +1423,37 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnSaveMouseExited(evt);
+            }
+        });
+
+        lblMessageStatus.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
+        lblMessageStatus.setText("jLabel1");
+
+        btnSelectConvenios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Handshake_50px.png"))); // NOI18N
+        btnSelectConvenios.setToolTipText("Generar recetas con convenios");
+        btnSelectConvenios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSelectConveniosMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnSelectConveniosMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnSelectConveniosMouseExited(evt);
+            }
+        });
+
+        btnClearConvenio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cancel_50px.png"))); // NOI18N
+        btnClearConvenio.setToolTipText("Quitar convenio seleccionado");
+        btnClearConvenio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnClearConvenioMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnClearConvenioMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnClearConvenioMouseExited(evt);
             }
         });
 
@@ -1201,18 +1479,26 @@ public class VCrearFicha extends javax.swing.JPanel {
                             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 540, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(1, 1, 1)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, 0)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblMessageStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSave)))
-                .addContainerGap(68, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnClearConvenio)
+                        .addGap(31, 31, 31)
+                        .addComponent(btnSelectConvenios)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSave)
+                        .addGap(51, 51, 51)))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1232,15 +1518,20 @@ public class VCrearFicha extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(27, 27, 27)
-                .addComponent(btnSave)
-                .addContainerGap(32, Short.MAX_VALUE))
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSave)
+                    .addComponent(btnSelectConvenios)
+                    .addComponent(btnClearConvenio)
+                    .addComponent(lblMessageStatus))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtTotalPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtTotalPropertyChange
         txtTotal.setHorizontalAlignment(4);
+        calcularSaldo();
     }//GEN-LAST:event_txtTotalPropertyChange
 
     private void txtTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalActionPerformed
@@ -1269,9 +1560,9 @@ public class VCrearFicha extends javax.swing.JPanel {
 
     private void chkDescuentoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_chkDescuentoKeyPressed
         if(chkDescuento.isSelected())
-        cboDescuento.setVisible(true);
+            cboDescuento.setVisible(true);
         else
-        cboDescuento.setVisible(false);
+            cboDescuento.setVisible(false);
     }//GEN-LAST:event_chkDescuentoKeyPressed
 
     private void chkDescuentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDescuentoActionPerformed
@@ -1306,18 +1597,16 @@ public class VCrearFicha extends javax.swing.JPanel {
     private void cboTipoPagoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboTipoPagoItemStateChanged
 
         String nombre = (String) cboTipoPago.getSelectedItem();
-        TipoPago tp = null;
+        if(nombre == null || nombre.isEmpty())
+            return;
         try {
-            tp = load.buscarTipoPago(nombre);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesparado: "+ex);
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesparado: "+ex);
-        }
-        if(tp != null){
-            this.lblIdTipoPago.setText(""+tp.getId());
-        }else{
-            this.lblIdTipoPago.setText("0");
+            if(!nombre.trim().toLowerCase().equals("seleccione")){
+                stTipoPago = (TipoPago)load.get(nombre,0,new TipoPago());
+            }else{
+                stTipoPago = null;
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            OptionPane.showMsg("Error inesperado", "Error en ItemStateChanged: "+ex,JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_cboTipoPagoItemStateChanged
 
@@ -1329,32 +1618,30 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtCristalCerca.getText().length() >= largo){
             evt.consume();
-
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtCristalCercaKeyTyped
 
     private void txtCristalCercaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCristalCercaFocusLost
 
         try {
-            Cristal cristal = load.cargarCristal(txtCristalCerca.getText());
-            if(cristal != null){
-                lblCristalCerca.setText(""+cristal.getPrecio());
-                txtCristalCerca.setForeground(Color.black);
+            stCristalCerca = (Cristal)load.get(txtCristalCerca.getText(),0,new Cristal());
+            if(stCristalCerca != null){
+                txtCristalCerca.setForeground(negro);
             }else{
-                lblCristalCerca.setText("0");
-                txtCristalCerca.setForeground(Color.red);
+                txtCristalCerca.setForeground(rojo);
             }
-            calcularTotal();
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
         }
+        comprobarDatosFicha();
     }//GEN-LAST:event_txtCristalCercaFocusLost
 
     private void txtAddCercaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAddCercaKeyTyped
         int largo = 45;
         if(txtAddCerca.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtAddCercaKeyTyped
 
@@ -1362,7 +1649,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtOICercaA.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtOICercaAKeyTyped
 
@@ -1370,7 +1657,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtOICercaCIL.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtOICercaCILKeyTyped
 
@@ -1378,7 +1665,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtOICercaESF.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtOICercaESFKeyTyped
 
@@ -1386,7 +1673,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtODCercaA.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtODCercaAKeyTyped
 
@@ -1394,7 +1681,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtODCercaCIL.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtODCercaCILKeyTyped
 
@@ -1402,7 +1689,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtODCercaESF.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtODCercaESFKeyTyped
 
@@ -1414,58 +1701,49 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtArmazonCerca.getText().length() >= largo){
             evt.consume();
-
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtArmazonCercaKeyTyped
 
     private void txtArmazonCercaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArmazonCercaFocusLost
-        try {
-            Lente lente = load.cargarLente(txtArmazonCerca.getText());
-            if(lente != null){
-
-                lblLenteCerca.setText(""+lente.getPrecioAct());
-                txtArmazonCerca.setForeground(Color.black);
-
-            }else{
-                lblLenteCerca.setText("0");
-                txtArmazonCerca.setForeground(Color.red);
-            }
-            calcularTotal();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+   
+        stLenteCerca = (Lente)GV.buscarPorIdEnLista(txtArmazonCerca.getText(),listLentes,new Lente());
+        if(stLenteCerca != null){
+            txtArmazonCerca.setForeground(negro);
+        }else{
+            txtArmazonCerca.setForeground(rojo);
         }
+        comprobarDatosFicha();
     }//GEN-LAST:event_txtArmazonCercaFocusLost
 
     private void txtCristalLejosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCristalLejosKeyTyped
         int largo = 45;
         if(txtCristalLejos.getText().length() >= largo){
             evt.consume();
-
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtCristalLejosKeyTyped
 
     private void txtCristalLejosFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCristalLejosFocusLost
 
         try {
-            Cristal cristal = load.cargarCristal(txtCristalLejos.getText());
-            if(cristal != null){
-                lblCristalLejos.setText(""+cristal.getPrecio());
-                txtCristalLejos.setForeground(Color.black);
+            stCristalLejos = (Cristal)load.get(txtCristalLejos.getText(),0,new Cristal());
+            if(stCristalLejos != null){
+                txtCristalLejos.setForeground(negro);
             }else{
-                lblCristalLejos.setText("0");
-                txtCristalLejos.setForeground(Color.red);
+                txtCristalLejos.setForeground(rojo);
             }
-            calcularTotal();
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
         }
+        comprobarDatosFicha();
     }//GEN-LAST:event_txtCristalLejosFocusLost
 
     private void txtOILejosAKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtOILejosAKeyTyped
         int largo = 45;
         if(txtOILejosA.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtOILejosAKeyTyped
 
@@ -1473,7 +1751,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtOILejosESF.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtOILejosCILKeyTyped
 
@@ -1481,7 +1759,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtOILejosESF.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtOILejosESFKeyTyped
 
@@ -1489,7 +1767,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtODLejosA.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtODLejosAKeyTyped
 
@@ -1497,7 +1775,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtODLejosCIL.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtODLejosCILKeyTyped
 
@@ -1505,7 +1783,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtODLejosESF.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtODLejosESFKeyTyped
 
@@ -1513,6 +1791,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtArmazonLejos.getText().length() >= largo){
             evt.consume();
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtArmazonLejosKeyTyped
 
@@ -1521,94 +1800,84 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtArmazonLejosActionPerformed
 
     private void txtArmazonLejosFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArmazonLejosFocusLost
-        try {
-            Lente lente = load.cargarLente(txtArmazonLejos.getText());
-            if(lente != null){
+      
+        stLenteLejos = (Lente)GV.buscarPorIdEnLista(txtArmazonLejos.getText(),listLentes,new Lente());
+        if(stLenteLejos != null){
+            txtArmazonLejos.setForeground(negro);
 
-                lblLenteLejos.setText(""+lente.getPrecioAct());
-                txtArmazonLejos.setForeground(Color.black);
-
-            }else{
-                lblLenteLejos.setText("0");
-                txtArmazonLejos.setForeground(Color.red);
-            }
-            calcularTotal();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+        }else{
+            txtArmazonLejos.setForeground(rojo);
         }
+        comprobarDatosFicha();
     }//GEN-LAST:event_txtArmazonLejosFocusLost
 
     private void txtDoctorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDoctorFocusLost
-        String nombre = txtDoctor.getText();
-        String rutDoctor = "";
-        try {
-            if(load.cargarDoctor(nombre) != null){
-                rutDoctor = load.cargarDoctor(nombre).getRut();
-                txtDoctor.setForeground(Color.black);
-            }else{
-                txtDoctor.setForeground(Color.red);
-            }
-            GlobalValues.TMP_RUT_DOCTOR=rutDoctor;
-        } catch (SQLException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        validaEspecialista();
+        comprobarDatosFicha();
     }//GEN-LAST:event_txtDoctorFocusLost
 
+    private String getIdFromString(String arg){
+        arg = GV.getStr(arg);
+        if(arg.contains("<") && !arg.endsWith("<")){
+            arg=arg.substring(arg.indexOf("<")+1).replaceAll(">", "");
+            return arg;
+        }
+        return "0";
+    }
+     
     private void txtEntregaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEntregaKeyTyped
         int largo = 45;
         if(txtEntrega.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "Datos mal ingresados", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtEntregaKeyTyped
 
-    private void btnSyncronize16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize16MouseClicked
+    private void iconDoctorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconDoctorMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize16MouseClicked
+    }//GEN-LAST:event_iconDoctorMouseClicked
 
     private void txtEntregaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEntregaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtEntregaActionPerformed
 
-    private void btnSyncronize17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize17MouseClicked
+    private void iconClock2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconClock2MouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize17MouseClicked
+    }//GEN-LAST:event_iconClock2MouseClicked
 
-    private void btnSyncronize18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize18MouseClicked
+    private void iconCalendarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconCalendarMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize18MouseClicked
+    }//GEN-LAST:event_iconCalendarMouseClicked
 
-    private void btnSyncronize20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize20MouseClicked
+    private void iconPlaceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconPlaceMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize20MouseClicked
+    }//GEN-LAST:event_iconPlaceMouseClicked
 
-    private void btnSyncronize21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize21MouseClicked
+    private void iconClockMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconClockMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize21MouseClicked
+    }//GEN-LAST:event_iconClockMouseClicked
 
-    private void btnSyncronize15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize15MouseClicked
+    private void iconMailMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconMailMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize15MouseClicked
+    }//GEN-LAST:event_iconMailMouseClicked
 
-    private void btnSyncronize14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize14MouseClicked
+    private void iconGenderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconGenderMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize14MouseClicked
+    }//GEN-LAST:event_iconGenderMouseClicked
 
-    private void btnSyncronize19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize19MouseClicked
+    private void iconInstitucionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconInstitucionMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize19MouseClicked
+    }//GEN-LAST:event_iconInstitucionMouseClicked
 
-    private void btnSyncronize13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize13MouseClicked
+    private void iconDniMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconDniMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize13MouseClicked
+    }//GEN-LAST:event_iconDniMouseClicked
 
     private void txtTelefonoCliente1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoCliente1KeyTyped
         int largo = 12;
         if(txtTelefonoCliente1.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "El teléfono debe contener hasta 12 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtTelefonoCliente1KeyTyped
 
@@ -1620,7 +1889,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtCiudad.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "La ciudad debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtCiudadKeyTyped
 
@@ -1628,7 +1897,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtComuna.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "La comuna debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtComunaKeyTyped
 
@@ -1636,7 +1905,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtDireccionCliente.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "La dirección debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtDireccionClienteKeyTyped
 
@@ -1644,7 +1913,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtMailCliente.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "El email debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtMailClienteKeyTyped
 
@@ -1656,7 +1925,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 12;
         if(txtTelefonoCliente2.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "El teléfono debe contener hasta 12 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtTelefonoCliente2KeyTyped
 
@@ -1664,47 +1933,12 @@ public class VCrearFicha extends javax.swing.JPanel {
         int largo = 45;
         if(txtNombreCliente.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "El nombre debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtNombreClienteKeyTyped
 
     private void txtRutClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRutClienteKeyTyped
-        int largo = 10;
-
-        String rutCliente = txtRutCliente.getText();
-        Cliente temp = new Cliente();
-        FnValidaRut vr = new FnValidaRut();
-        if(vr.validarRut(rutCliente)){
-            txtRutCliente.setForeground(Color.black);
-        }else{
-            txtRutCliente.setForeground(Color.red);
-        }
-        try {
-            temp = load.cargarCliente(rutCliente);
-            if(temp != null){
-                txtNombreCliente.setText(temp.getNombre());
-                if(temp.getTelefono() != null){
-                    if(temp.getTelefono().contains("/")){
-                        int ind = temp.getTelefono().indexOf("/");
-                        txtTelefonoCliente1.setText(temp.getTelefono().substring(0, ind).replace("/", "").trim());
-                        txtTelefonoCliente2.setText(temp.getTelefono().substring(ind, temp.getTelefono().length()).replace("/", "").trim());
-                    }else{
-                        txtTelefonoCliente1.setText(temp.getTelefono().replace("/", "").trim());
-                        txtTelefonoCliente2.setText("");
-                    }
-                }
-                txtMailCliente.setText(temp.getEmail());
-                txtDireccionCliente.setText(temp.getDireccion());
-                txtComuna.setText(temp.getComuna());
-                txtCiudad.setText(temp.getCiudad());
-                cboSexo.setSelectedIndex(temp.getSexo());
-                txtEdad.setValue((int) temp.getEdad());
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        txtRutClienteValidator();
     }//GEN-LAST:event_txtRutClienteKeyTyped
 
     private void txtRutClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRutClienteActionPerformed
@@ -1712,56 +1946,15 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtRutClienteActionPerformed
 
     private void txtRutClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtRutClienteFocusLost
-        String rutCliente = txtRutCliente.getText();
-        FnValidaRut vr = new FnValidaRut();
-        if(vr.validarRut(rutCliente)){
-            txtRutCliente.setForeground(Color.green);
-        }else{
-            txtRutCliente.setForeground(Color.red);
-        }
-        Cliente temp = new Cliente();
-        try {
-            temp = load.cargarCliente(rutCliente);
-            if(temp != null){
-                txtNombreCliente.setText(temp.getNombre());
-                if(temp.getTelefono() != null){
-                    if(temp.getTelefono().contains("/")){
-                        int ind = temp.getTelefono().indexOf("/");
-                        txtTelefonoCliente1.setText(temp.getTelefono().substring(0, ind).replace("/", "").trim());
-                        txtTelefonoCliente2.setText(temp.getTelefono().substring(ind, temp.getTelefono().length()).replace("/", "").trim());
-                    }else{
-                        txtTelefonoCliente1.setText(temp.getTelefono().replace("/", "").trim());
-                        txtTelefonoCliente2.setText("");
-                    }
-                }
-                txtMailCliente.setText(temp.getEmail());
-                txtDireccionCliente.setText(temp.getDireccion());
-                txtComuna.setText(temp.getComuna());
-                txtCiudad.setText(temp.getCiudad());
-                cboSexo.setSelectedIndex(temp.getSexo());
-                txtEdad.setValue((int) temp.getEdad());
-            }else{
-                txtNombreCliente.setText("");
-                txtTelefonoCliente2.setText("");
-                txtMailCliente.setText("");
-                txtDireccionCliente.setText("");
-                txtComuna.setText("");
-                txtCiudad.setText("");
-                cboSexo.setSelectedIndex(0);
-                txtEdad.setValue(0);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        txtRutClienteValidator();
+        comprobarDatosFicha();
     }//GEN-LAST:event_txtRutClienteFocusLost
 
     private void txtInstitucionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInstitucionKeyTyped
         int largo = 45;
         if(txtInstitucion.getText().length() >= largo){
             evt.consume();
-            JOptionPane.showMessageDialog(null, "La institucion solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+            errorLargo(largo);
         }
     }//GEN-LAST:event_txtInstitucionKeyTyped
 
@@ -1770,37 +1963,35 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtInstitucionActionPerformed
 
     private void txtInstitucionFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtInstitucionFocusLost
-        String nombre = txtInstitucion.getText();
-        int idInstitucion = 0;
-        try {
-            if(load.cargarInstitucion(nombre) != null){
-                idInstitucion = load.cargarInstitucion(nombre).getId();
-                txtInstitucion.setForeground(Color.black);
-            }else{
-                txtInstitucion.setForeground(Color.red);
-            }
-            GlobalValues.TMP_ID_INSTITUCION=idInstitucion;
-        } catch (SQLException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        validaInstitucion();
+        comprobarDatosFicha();
     }//GEN-LAST:event_txtInstitucionFocusLost
 
-    private void btnSyncronize24MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize24MouseClicked
+    private void iconAddressMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconAddressMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize24MouseClicked
+    }//GEN-LAST:event_iconAddressMouseClicked
 
-    private void btnSyncronize25MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize25MouseClicked
+    private void iconPhone2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconPhone2MouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize25MouseClicked
+    }//GEN-LAST:event_iconPhone2MouseClicked
 
-    private void btnSyncronize26MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize26MouseClicked
+    private void iconPhone1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconPhone1MouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronize26MouseClicked
+    }//GEN-LAST:event_iconPhone1MouseClicked
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
+        GV.cursorWAIT(this);
+        comprobarDatosFicha();
+        if(lblMessageStatus.isVisible() && lblMessageStatus.getForeground() == rojo){
+            OptionPane.showMsg("Faltan datos", lblMessageStatus.getText(), 2);
+            GV.cursorDF(this);
+            return;
+        }
         save();
+        GV.printFicha();
+        clearData();
+        reloadPage();
+        GV.cursorDF(this);
     }//GEN-LAST:event_btnSaveMouseClicked
 
     private void btnSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseEntered
@@ -1811,21 +2002,211 @@ public class VCrearFicha extends javax.swing.JPanel {
         btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnSave.getIcon().toString()))));
     }//GEN-LAST:event_btnSaveMouseExited
 
+    private void txtDoctorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDoctorKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDoctorKeyTyped
+
+    private void txtFechaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaFocusLost
+        txtFechaCheck();
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtFechaFocusLost
+
+    private void txtFechaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFechaKeyTyped
+       
+    }//GEN-LAST:event_txtFechaKeyTyped
+
+    private void chkExtranjeroItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkExtranjeroItemStateChanged
+        if(chkExtranjero.isSelected()){
+            txtRutCliente.setForeground(negro);
+        }else{
+            txtRutClienteValidator();
+        }
+        comprobarDatosFicha();
+    }//GEN-LAST:event_chkExtranjeroItemStateChanged
+
+    private void txtFechaInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtFechaInputMethodTextChanged
+        
+    }//GEN-LAST:event_txtFechaInputMethodTextChanged
+
+    private void txtFechaPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtFechaPropertyChange
+        
+    }//GEN-LAST:event_txtFechaPropertyChange
+
+    private void txtFechaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFechaKeyPressed
+        txtFechaCheck();
+    }//GEN-LAST:event_txtFechaKeyPressed
+
+    private void txtEntregaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEntregaFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtEntregaFocusLost
+
+    private void txtHora1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHora1FocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtHora1FocusLost
+
+    private void txtMinuto1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMinuto1FocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtMinuto1FocusLost
+
+    private void txtHora2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHora2FocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtHora2FocusLost
+
+    private void txtMinuto2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMinuto2FocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtMinuto2FocusLost
+
+    private void txtNombreClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNombreClienteFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtNombreClienteFocusLost
+
+    private void txtTelefonoCliente1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTelefonoCliente1FocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtTelefonoCliente1FocusLost
+
+    private void txtTelefonoCliente2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTelefonoCliente2FocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtTelefonoCliente2FocusLost
+
+    private void txtDireccionClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDireccionClienteFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtDireccionClienteFocusLost
+
+    private void txtComunaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtComunaFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtComunaFocusLost
+
+    private void txtCiudadFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCiudadFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtCiudadFocusLost
+
+    private void txtMailClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMailClienteFocusLost
+        String mail = txtMailCliente.getText();
+        if(!mail.isEmpty() && GV.mailValidate(mail).isEmpty()){
+            txtMailCliente.setForeground(rojo);
+        }else{
+            txtMailCliente.setForeground(negro);
+        }
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtMailClienteFocusLost
+
+    private void cboSexoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboSexoItemStateChanged
+//        comprobarDatosFicha();
+    }//GEN-LAST:event_cboSexoItemStateChanged
+
+    private void txtNacimientoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNacimientoFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtNacimientoFocusLost
+
+    private void txtArmazonLejosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArmazonLejosFocusGained
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtArmazonLejosFocusGained
+
+    private void txtODLejosESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODLejosESFFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtODLejosESFFocusLost
+
+    private void txtODLejosCILFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODLejosCILFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtODLejosCILFocusLost
+
+    private void txtODLejosAFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODLejosAFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtODLejosAFocusLost
+
+    private void txtOILejosESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOILejosESFFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtOILejosESFFocusLost
+
+    private void txtOILejosCILFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOILejosCILFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtOILejosCILFocusLost
+
+    private void txtOILejosAFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOILejosAFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtOILejosAFocusLost
+
+    private void chkEndurecidoLejosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkEndurecidoLejosItemStateChanged
+        comprobarDatosFicha();
+    }//GEN-LAST:event_chkEndurecidoLejosItemStateChanged
+
+    private void chkCapaLejosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkCapaLejosItemStateChanged
+        comprobarDatosFicha();
+    }//GEN-LAST:event_chkCapaLejosItemStateChanged
+
+    private void chkPlusMaxLejosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkPlusMaxLejosItemStateChanged
+        comprobarDatosFicha();
+    }//GEN-LAST:event_chkPlusMaxLejosItemStateChanged
+
+    private void txtAddCercaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtAddCercaFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtAddCercaFocusLost
+
+    private void txtODCercaESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODCercaESFFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtODCercaESFFocusLost
+
+    private void txtODCercaCILFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODCercaCILFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtODCercaCILFocusLost
+
+    private void txtODCercaAFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODCercaAFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtODCercaAFocusLost
+
+    private void txtOICercaESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOICercaESFFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtOICercaESFFocusLost
+
+    private void txtOICercaCILFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOICercaCILFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtOICercaCILFocusLost
+
+    private void txtOICercaAFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOICercaAFocusLost
+        comprobarDatosFicha();
+    }//GEN-LAST:event_txtOICercaAFocusLost
+
+    private void chkEndurecidoCercaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkEndurecidoCercaItemStateChanged
+        comprobarDatosFicha();
+    }//GEN-LAST:event_chkEndurecidoCercaItemStateChanged
+
+    private void chkCapaCercaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkCapaCercaItemStateChanged
+        comprobarDatosFicha();
+    }//GEN-LAST:event_chkCapaCercaItemStateChanged
+
+    private void chkPlusMaxCercaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkPlusMaxCercaItemStateChanged
+        comprobarDatosFicha();
+    }//GEN-LAST:event_chkPlusMaxCercaItemStateChanged
+
+    private void btnSelectConveniosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSelectConveniosMouseClicked
+        OptionPane.showOptionPanel(new OpanelSelectConvenio(), OptionPane.titleConvenyChooser());
+    }//GEN-LAST:event_btnSelectConveniosMouseClicked
+
+    private void btnSelectConveniosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSelectConveniosMouseEntered
+        btnSelectConvenios.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnSelectConvenios.getIcon().toString()))));
+    }//GEN-LAST:event_btnSelectConveniosMouseEntered
+
+    private void btnSelectConveniosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSelectConveniosMouseExited
+        btnSelectConvenios.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnSelectConvenios.getIcon().toString()))));
+    }//GEN-LAST:event_btnSelectConveniosMouseExited
+
+    private void btnClearConvenioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClearConvenioMouseClicked
+        convenioLimpiarSeleccionado();
+    }//GEN-LAST:event_btnClearConvenioMouseClicked
+
+    private void btnClearConvenioMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClearConvenioMouseEntered
+        btnClearConvenio.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnClearConvenio.getIcon().toString()))));
+    }//GEN-LAST:event_btnClearConvenioMouseEntered
+
+    private void btnClearConvenioMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClearConvenioMouseExited
+        btnClearConvenio.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnClearConvenio.getIcon().toString()))));
+    }//GEN-LAST:event_btnClearConvenioMouseExited
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel btnClearConvenio;
     private javax.swing.JLabel btnSave;
-    private javax.swing.JLabel btnSyncronize13;
-    private javax.swing.JLabel btnSyncronize14;
-    private javax.swing.JLabel btnSyncronize15;
-    private javax.swing.JLabel btnSyncronize16;
-    private javax.swing.JLabel btnSyncronize17;
-    private javax.swing.JLabel btnSyncronize18;
-    private javax.swing.JLabel btnSyncronize19;
-    private javax.swing.JLabel btnSyncronize20;
-    private javax.swing.JLabel btnSyncronize21;
-    private javax.swing.JLabel btnSyncronize24;
-    private javax.swing.JLabel btnSyncronize25;
-    private javax.swing.JLabel btnSyncronize26;
+    private javax.swing.JLabel btnSelectConvenios;
     private javax.swing.JComboBox<String> cboDescuento;
     private javax.swing.JComboBox<String> cboSexo;
     private javax.swing.JComboBox<String> cboTipoPago;
@@ -1837,6 +2218,18 @@ public class VCrearFicha extends javax.swing.JPanel {
     private javax.swing.JCheckBox chkExtranjero;
     private javax.swing.JCheckBox chkPlusMaxCerca;
     private javax.swing.JCheckBox chkPlusMaxLejos;
+    private javax.swing.JLabel iconAddress;
+    private javax.swing.JLabel iconCalendar;
+    private javax.swing.JLabel iconClock;
+    private javax.swing.JLabel iconClock2;
+    private javax.swing.JLabel iconDni;
+    private javax.swing.JLabel iconDoctor;
+    private javax.swing.JLabel iconGender;
+    private javax.swing.JLabel iconInstitucion;
+    private javax.swing.JLabel iconMail;
+    private javax.swing.JLabel iconPhone1;
+    private javax.swing.JLabel iconPhone2;
+    private javax.swing.JLabel iconPlace;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -1879,16 +2272,14 @@ public class VCrearFicha extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblCristalCerca;
-    private javax.swing.JLabel lblCristalLejos;
     private javax.swing.JLabel lblDescuento;
-    private javax.swing.JLabel lblLenteCerca;
-    private javax.swing.JLabel lblLenteLejos;
+    private javax.swing.JLabel lblMessageStatus;
     private javax.swing.JSpinner txtAbono;
     private javax.swing.JTextField txtAddCerca;
     private javax.swing.JTextField txtArmazonCerca;
     private javax.swing.JTextField txtArmazonLejos;
     private javax.swing.JTextField txtCiudad;
+    private javax.swing.JLabel txtCnvName;
     private javax.swing.JTextField txtComuna;
     private javax.swing.JTextField txtCristalCerca;
     private javax.swing.JTextField txtCristalLejos;
@@ -1897,7 +2288,6 @@ public class VCrearFicha extends javax.swing.JPanel {
     private javax.swing.JTextField txtDescuento;
     private javax.swing.JTextField txtDireccionCliente;
     private javax.swing.JTextField txtDoctor;
-    private javax.swing.JSpinner txtEdad;
     private javax.swing.JTextField txtEntrega;
     private com.toedter.calendar.JDateChooser txtFecha;
     private javax.swing.JSpinner txtHora1;
@@ -1906,6 +2296,7 @@ public class VCrearFicha extends javax.swing.JPanel {
     private javax.swing.JTextField txtMailCliente;
     private javax.swing.JSpinner txtMinuto1;
     private javax.swing.JSpinner txtMinuto2;
+    private com.toedter.calendar.JDateChooser txtNacimiento;
     private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtODCercaA;
     private javax.swing.JTextField txtODCercaCIL;
@@ -1927,208 +2318,221 @@ public class VCrearFicha extends javax.swing.JPanel {
     private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarCbos() throws SQLException, ClassNotFoundException {
+    
+    private void cargarCbos() {
         cboSexo.removeAllItems();
         cboSexo.addItem("Sin Seleccionar");
         cboSexo.addItem("Femenino");
         cboSexo.addItem("Masculino");
         
-        txtSaldo.setEditable(false);
-        txtDescuento.setEditable(false);
-        lblDescuento.setVisible(false);
-        txtDescuento.setVisible(false);
-        lblIdTipoPago.setVisible(false);
         
-        
-        cboDescuento.setVisible(false);
         cboDescuento.removeAllItems();
-        cboDescuento.addItem("Sin descuento");
         int contDscto = 0;
-        for (Descuento temp : load.listaDescuento()) {
-            cboDescuento.addItem(temp.getNombre()+" ("+temp.getPorcetange()+"%)");
+        for (Object object : listDescuentos) {
+            Descuento temp = (Descuento)object;
+            if(temp.getPorcetange() == 0){
+                cboDescuento.addItem(temp.getNombre()+" ("+GV.strToPrice(temp.getMonto())+")");
+            }else{
+                cboDescuento.addItem(temp.getNombre()+" ("+temp.getPorcetange()+"%)");
+            }
             contDscto++;
         }
-        if(contDscto > 0)
-            cboDescuento.setSelectedIndex(1);
+        if(contDscto > 0){
+            cboDescuento.setSelectedIndex(0);
+        }
         
         cboTipoPago.removeAllItems();
         cboTipoPago.addItem("Seleccione");
-        for (TipoPago temp : load.listaTipoPago()) {
-            cboTipoPago.addItem(temp.getNombre());
+        for (Object temp : listTipoPagos) {
+            cboTipoPago.addItem(((TipoPago)temp).getNombre());
         }
-        GlobalValues.TMP_ID_INSTITUCION=0;
-        GlobalValues.TMP_RUT_DOCTOR="0";
-        
-        chkCapaCerca.setSelected(false);
-        chkCapaLejos.setSelected(false);
-        chkDescuento.setSelected(false);
-        chkEndurecidoCerca.setSelected(false);
-        chkEndurecidoLejos.setSelected(false);
-        chkPlusMaxCerca.setSelected(false);
-        chkPlusMaxLejos.setSelected(false);
-        cboDescuento.setVisible(false);
     }
 
     private void autocompletar() throws SQLException, ClassNotFoundException {
         TextAutoCompleter textAutoCompleter = new TextAutoCompleter(txtInstitucion);
         textAutoCompleter.setMode(0);
-        for (Institucion temp : load.listarInstituciones()) {
-            textAutoCompleter.addItem(temp.getNombre());
+        TextAutoCompleter textAutoCompleter8 = new TextAutoCompleter(txtEntrega);
+        textAutoCompleter8.setMode(0);
+        for (Object temp : listInstituciones) {
+            textAutoCompleter.addItem(((Institucion)temp).getNombre()+" <"+((Institucion)temp).getCod()+">");
             textAutoCompleter.setMode(0);
+            textAutoCompleter8.addItem(((Institucion)temp).getNombre());
+            textAutoCompleter8.setMode(0);
         }
         
-      
-        
-        
         TextAutoCompleter textAutoCompleter2 = new TextAutoCompleter(txtRutCliente);
-        for (Cliente temp : load.listarClientes()) {
-            textAutoCompleter2.addItem(temp.getRut());
+        for (Object temp : listClientes) {
+            textAutoCompleter2.addItem(((Cliente)temp).getCod());
             textAutoCompleter2.setMode(0);
         }
         
         TextAutoCompleter textAutoCompleter3 = new TextAutoCompleter(txtDoctor);
-        for (Doctor temp : load.listarDoctores()) {
-            textAutoCompleter3.addItem(temp.getNombre());
+        for (Object temp : listDoctores) {
+            textAutoCompleter3.addItem(((Doctor)temp).getNombre()+" <"+(((Doctor)temp).getCod())+">");
             textAutoCompleter3.setMode(0);
         }
         
         TextAutoCompleter textAutoCompleter4 = new TextAutoCompleter(txtCristalCerca);
-        for (Cristal temp : load.listarCristales()) {
-            textAutoCompleter4.addItem(temp.getNombre());
-            textAutoCompleter4.setMode(0);
-        }
-        
         TextAutoCompleter textAutoCompleter5 = new TextAutoCompleter(txtCristalLejos);
-        for (Cristal temp : load.listarCristales()) {
-            textAutoCompleter5.addItem(temp.getNombre());
+        for (Object temp : listCristales) {
+            textAutoCompleter4.addItem(((Cristal)temp).getNombre());
+            textAutoCompleter4.setMode(0);
+            textAutoCompleter5.addItem(((Cristal)temp).getNombre());
             textAutoCompleter5.setMode(0);
         }
         
+        
         TextAutoCompleter textAutoCompleter6 = new TextAutoCompleter(txtArmazonCerca);
-        for (Lente temp : load.listarLentesConStock()) {
-            textAutoCompleter6.addItem(temp.getCodigo());
-            textAutoCompleter6.setMode(0);
+        TextAutoCompleter textAutoCompleter7 = new TextAutoCompleter(txtArmazonLejos);
+        
+        for (Object temp : listLentes) {
+                textAutoCompleter6.addItem(((Lente)temp).getCod());
+                textAutoCompleter6.setMode(0);
+                textAutoCompleter7.addItem(((Lente)temp).getCod());
+                textAutoCompleter7.setMode(0);
         }
         
-        TextAutoCompleter textAutoCompleter7 = new TextAutoCompleter(txtArmazonLejos);
-        for (Lente temp : load.listarLentesConStock()) {
-            textAutoCompleter7.addItem(temp.getCodigo());
-            textAutoCompleter7.setMode(0);
-        }
-        TextAutoCompleter textAutoCompleter8 = new TextAutoCompleter(txtEntrega);
-        textAutoCompleter8.setMode(0);
-        for (Institucion temp : load.listarInstituciones()) {
-            textAutoCompleter8.addItem(temp.getNombre());
-            textAutoCompleter8.setMode(0);
-        }
     }
 
     private void calcularSaldo() {
-        int total =  Integer.parseInt(txtTotal.getText());
+        int total =  GV.roundPrice(GV.strToNumber(txtTotal.getText()));
         int abono = (int)txtAbono.getValue();
-        int descuento = 0;
-        int porcentaje = 0;
-        if(!chkDescuento.isSelected() || cboDescuento.getSelectedIndex()==0){
-            GlobalValues.TMP_ID_DESCUENTO=0;
-            txtDescuento.setText("0");
-//            lblIdTipoPago.setText("0");
-            
-            total = total-descuento-abono;
-            txtSaldo.setText("$ "+total);
-            if(total < 0){
-                txtSaldo.setForeground(Color.red);
-            }else{
-                txtSaldo.setForeground(Color.black);
-            }
-        }else{
-            GlobalValues.TMP_ID_DESCUENTO = 0;
-//            lblIdTipoPago.setText("0");
-            cboDescuento.setVisible(true);
-            lblDescuento.setVisible(true);
-            txtDescuento.setVisible(true);
-            String seleccionado = (String) cboDescuento.getSelectedItem();
-            
-            if(seleccionado != null){
-                int ultimoEspacio = 0;
-                for (int i=0; i < seleccionado.length()-1; i++) {
-                    if (i>0 && seleccionado.substring(i, i+1).equals(" ")) {
-                        ultimoEspacio = i;
-
-                    }
-                }
-                seleccionado = seleccionado.substring(0, ultimoEspacio);
-                }
-                try {
-                    Descuento des = load.buscarDescuento(seleccionado);
-                    if(des != null){
-                        GlobalValues.TMP_ID_DESCUENTO = des.getId();
-                        porcentaje = des.getPorcetange();
-                        descuento = (total*porcentaje)/100;
-                        txtDescuento.setText("$ "+descuento);
-                        total = total-descuento-abono;
-                        txtSaldo.setText("$ "+total);
-                        if(total < 0){
-                            txtSaldo.setForeground(Color.red);
-                        }else{
-                            txtSaldo.setForeground(Color.black);
-                        }
-                    }
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error inesperado: "+ex);
-                } catch (ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(null, "Error inesperado: "+ex);
-                }
-        }
-        
-            
+        int descuento = obtenerDescuento();
+        GV.getFicha().setDescuento(descuento);
+        int saldo = (total-descuento-abono);
+        txtSaldo.setText(GV.strToPrice(saldo));
     }
 
-    private void limpiarDatos() throws SQLException, ClassNotFoundException {
+    private void cargarDatos() {
         //Limpiar todo menos doctor y datos de entrega
+        resetTxtCliente();
+        txtCnvName.setText(strCnvName);
+        Ficha ficha = GV.getFicha();
+        stArmazonCerca = GV.getFicha().getCerca();
+        stArmazonLejos = GV.getFicha().getLejos();
+        Armazon cerca = stArmazonCerca;
+        Armazon lejos = stArmazonLejos;
+        Cliente cliente = stCliente;
         txtAbono.setValue(0);
-        txtAddCerca.setText("");
-        txtCiudad.setText("");
-        txtComuna.setText("");
-        txtArmazonCerca.setText("");
-        txtArmazonLejos.setText("");
-        txtCristalCerca.setText("");
-        txtCristalLejos.setText("");
-        txtDPCerca.setValue(0);
-        txtDPLejos.setValue(0);
-        txtDescuento.setText("0");
-        txtDireccionCliente.setText("");
-        txtEdad.setValue(0);
-        txtInstitucion.setText("");
-        txtMailCliente.setText("");
-        txtNombreCliente.setText("");
-        txtODCercaESF.setText("");
-        txtODCercaA.setText("");
-        txtODCercaCIL.setText("");
-        txtODLejosESF.setText("");
-        txtODLejosA.setText("");
-        txtODLejosCIL.setText("");
-        txtODLejosCIL.setText("");
-        txtOICercaESF.setText("");
-        txtOICercaA.setText("");
-        txtOICercaCIL.setText("");
-        txtOILejosESF.setText("");
-        txtOILejosA.setText("");
-        txtOILejosCIL.setText("");
-        txtObs.setText("");
-        txtRutCliente.setText("");
-        txtSaldo.setText("$ 0");
-        txtTelefonoCliente2.setText("");
-        txtArmazonCerca.setText("");
-        txtArmazonLejos.setText("");
-        txtTotal.setText("0");
-        cargarCbos();
+        String addCerca = (cerca != null)? cerca.getAdd():"";
+        txtAddCerca.setText(addCerca);
         
+        String marcaCerca = (cerca!= null)? cerca.getMarca():"";
+        txtArmazonCerca.setText(marcaCerca);
+        String marcaLejos = (lejos!= null)? lejos.getMarca():"";
+        txtArmazonLejos.setText(marcaLejos);
+        String cristalCerca = (cerca!=null)? cerca.getCristal():"";
+        txtCristalCerca.setText(cristalCerca);
+        String cristalLejos = (lejos!=null)? lejos.getCristal():"";
+        txtCristalLejos.setText(cristalLejos);
+        int dpCerca = (cerca!=null)? cerca.getDp():0;
+        txtDPCerca.setValue(dpCerca);
+        int dpLejos = (lejos!=null)? lejos.getDp():0;
+        txtDPLejos.setValue(dpLejos);
+        GV.getFicha().setDescuento(0);
+        txtDescuento.setText("0");
+        txtFecha.setDate(ficha.getFechaEntrega());
+        txtEntrega.setText(ficha.getLugarEntrega());
+        String hora = ((!ficha.getHoraEntrega().isEmpty())&&((""+GV.strToNumber(ficha.getHoraEntrega())).length() == 8)) ? ficha.getHoraEntrega().replaceAll(" ", "").trim():"";
+        String number = ""+GV.strToNumber(hora);
+        int h1 = (number.length() == 8) ? GV.strToNumber(number.substring(0,2)):0;
+        int m1 = (number.length() == 8) ? GV.strToNumber(number.substring(2,4)):0;
+        int h2 = (number.length() == 8) ? GV.strToNumber(number.substring(4,6)):0;
+        int m2 = (number.length() == 8) ? GV.strToNumber(number.substring(6,8)):0;
+        txtHora1.setValue(h1);
+        txtMinuto1.setValue(m1);
+        txtHora2.setValue(h2);
+        txtMinuto2.setValue(m2);
+        String docName = (stDoctor!=null)?stDoctor.getNombre()+" <"+stDoctor.getCod()+">":"";
+        docName = (docName.equals(" <null>")) ? "":docName;
+        txtDoctor.setText(docName);
+        stInstitucion = ficha.getInstitucion();
+        String inst =  (stInstitucion!=null && !stInstitucion.getCod().isEmpty())? stInstitucion.getNombre()+"<"+stInstitucion.getCod()+">":"";
+        txtInstitucion.setText(inst);
+        
+        
+        String odCEsf = (cerca!=null)? cerca.getOdEsf():"";
+        txtODCercaESF.setText(odCEsf);
+        String odCA = (cerca!=null)?cerca.getOdA():"";
+        txtODCercaA.setText(odCA);
+        String odCCil = (cerca!=null)?cerca.getOdCil():"";
+        txtODCercaCIL.setText(odCCil);
+        String odLEsf = (lejos!=null)? lejos.getOdEsf():""; 
+        txtODLejosESF.setText(odLEsf);
+        String odLA = (lejos!=null)?lejos.getOdA():"";
+        txtODLejosA.setText(odLA);
+        String odLCil = (lejos!=null)?lejos.getOdCil():"";
+        txtODLejosCIL.setText(odLCil);
+        String oiCEsf = (cerca!=null)? cerca.getOiEsf():"";
+        String oiCA = (cerca!=null)? cerca.getOiA():"";
+        String oiCCil = (cerca!=null)? cerca.getOiCil():"";
+        txtOICercaESF.setText(oiCEsf);
+        txtOICercaA.setText(oiCA);
+        txtOICercaCIL.setText(oiCCil);
+        String oiLEsf = (lejos!=null)? lejos.getOiEsf():"";
+        String oiLA = (lejos!=null)? lejos.getOiA():"";
+        String oiLCil = (lejos!=null)? lejos.getOiCil():"";
+        txtOILejosESF.setText(oiLEsf);
+        txtOILejosA.setText(oiLA);
+        txtOILejosCIL.setText(oiLCil);
+        String obs = (ficha!=null)?ficha.getObservacion():"";
+        boolean capCerca = (ficha.getCerca() != null && ficha.getCerca().getCapa()==1)? true:false;
+        chkCapaCerca.setSelected(capCerca);
+        boolean capLejos = (ficha.getLejos() != null && ficha.getLejos().getCapa()==1)? true:false;
+        chkCapaLejos.setSelected(capLejos);
+        boolean endCerca = (ficha.getCerca() != null && ficha.getCerca().getEndurecido()==1)? true:false;
+        chkEndurecidoCerca.setSelected(endCerca);
+        boolean endLejos = (ficha.getLejos() != null && ficha.getLejos().getEndurecido()==1)? true:false;
+        chkEndurecidoLejos.setSelected(endLejos);
+        boolean pmCerca = (ficha.getCerca() != null && ficha.getCerca().getPlusMax()==1)? true:false;
+        chkPlusMaxCerca.setSelected(pmCerca);
+        boolean pmLejos = (ficha.getLejos() != null && ficha.getLejos().getPlusMax()==1)? true:false;
+        chkPlusMaxLejos.setSelected(pmLejos);
+        
+        txtObs.setText(obs);
+        
+        
+        String rut = (cliente!=null)?cliente.getCod():"";
+        String nombre = (cliente != null)? cliente.getNombre():"";
+        txtNombreCliente.setText(nombre);
+        String t1 = (cliente!=null)?cliente.getTelefono1():"";
+        txtTelefonoCliente1.setText(t1);
+        String t2 = (cliente!=null)?cliente.getTelefono2():"";
+        txtTelefonoCliente2.setText(t2);
+        String mail = (cliente!=null)? cliente.getEmail():"";
+        txtMailCliente.setText(mail);
+        String ciudad = (cliente!= null)? cliente.getCiudad():"";
+        txtCiudad.setText(ciudad);
+        String comuna = (cliente!= null)? cliente.getComuna():"";
+        txtComuna.setText(comuna);
+        int sexo = (cliente != null)? cliente.getSexo():0;
+        cboSexo.setSelectedIndex(sexo);
+        String direccion = (cliente != null)? cliente.getDireccion():"";
+        txtDireccionCliente.setText(direccion);
+        Date nac = (cliente!=null)? cliente.getNacimiento():null;
+        txtNacimiento.setDate(nac);
+        txtRutCliente.setText(rut);
+        cargarCbos();
     }
 
     private void calcularTotal() {
-        int total = Integer.parseInt(lblCristalLejos.getText()) + Integer.parseInt(lblCristalCerca.getText());
-        total = total + Integer.parseInt(lblLenteCerca.getText()) + Integer.parseInt(lblLenteLejos.getText());
-        txtTotal.setText(""+total);
+        int cristales = 0;
+        if(stCristalLejos != null){
+            cristales = cristales+stCristalLejos.getPrecio();
+        }
+        if(stCristalCerca != null){
+            cristales = cristales+stCristalCerca.getPrecio();
+        }
+        int lentes = 0;
+        if(stLenteCerca != null){
+            lentes = lentes + stLenteCerca.getPrecioAct();
+        }
+        if(stLenteLejos != null){
+            lentes = lentes + stLenteLejos.getPrecioAct();
+        }
+        int total = GV.roundPrice((cristales+lentes));
+        int precio = (stConvenio==null)?total:total + ((total * stConvenio.getPorcentajeAdicion())/100);
+        txtTotal.setText(GV.strToPrice(GV.roundPrice(precio)));
         calcularSaldo();
     }
 
@@ -2164,311 +2568,657 @@ public class VCrearFicha extends javax.swing.JPanel {
         return false;
     }
 
-    private String formatoHora(int hora, int min) {
-        String h = "";
-        String m = "";
-        if(hora < 10)
-        h = "0";
-        if(min < 10)
-        m = "0";
-            
-        return h+hora+":"+m+min;
-    }
-
     private void save() {
-        //validado: validar si esta seleccionado el checbox descuento y ssi estan seleccionados los combobox descuento
-        //valilado: validar si esta seleccionado el combobox tipo pago
-        //validado: que el saldo sea mayor que cero
-        //validado: validar que los JTextField necesarios tengan datos.
-        FnValidaRut vr = new FnValidaRut();
-        calcularSaldo();
+        prepareFicha();
+        
+    }
+    
 
-        //VARIABLES PARA LA FICHA
-        int idDescuento = 0;
-        Descuento dscto = null;
-        int idTipoPago = Integer.parseInt(this.lblIdTipoPago.getText());
+    private void errorLargo(int largo) {
+        OptionPane.showMsg( "Datos mal ingresados", "Error de ingreso de datos, \n"
+                    + "los datos ingresados deben tener un maximo de "+largo+" caracteres.", JOptionPane.WARNING_MESSAGE);
+    }
 
-        int idInstitucion = GlobalValues.TMP_ID_INSTITUCION;
-        int idFicha = 0;
+    private void load() {
+        txtSaldo.setText("$ 0");
+        txtSaldo.setEditable(false);
+        txtDescuento.setEditable(false);
+        lblDescuento.setVisible(false);
+        txtDescuento.setVisible(false);
+        lblMessageStatus.setVisible(false);
+        
+        cboDescuento.setVisible(false);
+        chkCapaCerca.setSelected(false);
+        chkCapaLejos.setSelected(false);
+        chkDescuento.setSelected(false);
+        chkEndurecidoCerca.setSelected(false);
+        chkEndurecidoLejos.setSelected(false);
+        chkPlusMaxCerca.setSelected(false);
+        chkPlusMaxLejos.setSelected(false);
+        cboDescuento.setVisible(false);
+        cargarDatos();
+        cargarCbos();
         try {
-            idFicha = load.obtenerFolio();
-            if(!load.actualizarFolio(idFicha)){
-                JOptionPane.showMessageDialog(null, "Ocurrió un error al comunicarse con la base de datos,/nNo se pudo actualizar el Id del folio","Error al actualizar numero de folio",JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error desconocido, Detalles: "+ex.getMessage(),"Error al cargar numero de folio",JOptionPane.WARNING_MESSAGE);
-            return;
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error desconocido, Detalles: "+ex.getMessage(),"Error al cargar numero de folio",JOptionPane.WARNING_MESSAGE);
-            return;
+            autocompletar();
+            calcularSaldo();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String rutCliente = txtRutCliente.getText();
-        if(!chkExtranjero.isSelected()){
-            if(!vr.validarRut(rutCliente)){
-                JOptionPane.showMessageDialog(null, "El rut ingresado del cliente no existe", "Error de Rut",JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
+        
+    }
 
-        String rutDoctor = GlobalValues.TMP_RUT_DOCTOR;
-        Date fecha = new Date();
-        Date fechaEntrega = txtFecha.getDate();
-        String lugarEntrega = txtEntrega.getText().toUpperCase();
-        int hora1 = (int) txtHora1.getValue();
-        int min1 = (int) txtMinuto1.getValue();
-        int hora2 = (int) txtHora2.getValue();
-        int min2 = (int) txtMinuto2.getValue();
+    private void resetTxtCliente() {
+        txtNombreCliente.setText("");
+        txtTelefonoCliente1.setText("");
+        txtTelefonoCliente2.setText("");
+        txtMailCliente.setText("");
+        txtDireccionCliente.setText("");
+        txtComuna.setText("");
+        txtCiudad.setText("");
+        cboSexo.setSelectedIndex(0);
+        txtNacimiento.setDate(null);
+    }
 
-        if(fechaEntrega == null || lugarEntrega.length() < 3 || hora1 == 0 || hora2 == 0){
-            JOptionPane.showMessageDialog(null, "Debe ingresar datos de entrega.","Faltan datos",JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        if(!compararHoras(hora1,min1,hora2,min2)){
-            JOptionPane.showMessageDialog(null, "Las horas están mal ingresadas,\nLa segunda hora debe ser mayor que la primera.","Faltan datos",JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        String horaEntrega1 = formatoHora(hora1,min1);
-        String horaEntrega2 = formatoHora(hora2,min2);
-
-        int total = Integer.parseInt(txtTotal.getText());
-        int saldo = Integer.parseInt(txtSaldo.getText().replace("$ ",""));
-        String obs = txtObs.getText();
-        int estado = 1;//pendiente
-        if(saldo == 0)
-        estado = 2;//pagado
-        if(saldo < 0){
-            JOptionPane.showMessageDialog(null, "El abono ingresado no es correcto", "Corrija los datos", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if(chkDescuento.isSelected()){
-            if(GlobalValues.TMP_ID_DESCUENTO == 0){
-                JOptionPane.showMessageDialog(null, "Debe seleccionar un descuento", "Seleccione un descuento", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
-            try {
-                dscto = load.cargarDescuento(GlobalValues.TMP_ID_DESCUENTO);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, "No se pudo cargar descuento, Detalles: "+ex.getMessage(),"Error al cargar descuento",JOptionPane.WARNING_MESSAGE);
-                return;
-            } catch (ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, "No se pudo cargar descuento, Detalles: "+ex.getMessage(),"Error al cargar descuento",JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-        int despacho = 0;//no se encuentra despachado
-        Cliente cliente = null;
-        try {
-            //validar si cliente existe, si no existe guardar, si existe modificar
-            cliente = load.cargarCliente(rutCliente);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: "+ex.getMessage(),"Error al obtener cliente", JOptionPane.WARNING_MESSAGE);
-            return;
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: "+ex.getMessage(),"Error al obtener cliente", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        //crear armazon lejos
-        Armazon lejos = new Armazon();
-        if(chkCapaLejos.isSelected())
-        lejos.setCapa(1);
-        else
-        lejos.setCapa(0);
-        lejos.setCristal(txtCristalLejos.getText());
-
-        lejos.setDp((int) txtDPLejos.getValue());
-        if(chkEndurecidoLejos.isSelected())
-        lejos.setEndurecido(1);
-        else
-        lejos.setEndurecido(0);
-        lejos.setMarca(txtArmazonLejos.getText());
-        lejos.setIdFicha(idFicha);
-        lejos.setOdA(txtODLejosA.getText());
-        lejos.setOdCil(txtODLejosCIL.getText());
-        lejos.setOdEsf(txtODLejosESF.getText());
-        lejos.setOiA(txtOILejosA.getText());
-        lejos.setOiCil(txtOILejosCIL.getText());
-        lejos.setOiEsf(txtOILejosESF.getText());
-        if(chkPlusMaxLejos.isSelected())
-        lejos.setPlusMax(1);
-        else
-        lejos.setPlusMax(0);
-        lejos.setTipo(1);
-
-        //crear armazon cerca
-        Armazon cerca = new Armazon();
-        cerca.setAdd(txtAddCerca.getText());
-        if(chkCapaCerca.isSelected())
-        cerca.setCapa(1);
-        else
-        cerca.setCapa(0);
-        cerca.setCristal(txtCristalCerca.getText());
-        cerca.setDp((int) txtDPCerca.getValue());
-        if(chkEndurecidoCerca.isSelected())
-        cerca.setEndurecido(1);
-        else
-        cerca.setEndurecido(0);
-        cerca.setMarca(txtArmazonCerca.getText());
-        cerca.setIdFicha(idFicha);
-        cerca.setOdA(txtODCercaA.getText());
-        cerca.setOdCil(txtODCercaCIL.getText());
-        cerca.setOdEsf(txtODCercaESF.getText());
-        cerca.setOiA(txtOICercaA.getText());
-        cerca.setOiCil(txtOICercaCIL.getText());
-        cerca.setOiEsf(txtOICercaESF.getText());
-        if(chkPlusMaxCerca.isSelected())
-        cerca.setPlusMax(1);
-        else
-        cerca.setPlusMax(0);
-        cerca.setTipo(0);
-
-        if((cerca.getCristal().length()<1 && lejos.getCristal().length() < 1) || (cerca.getMarca().length() < 1 && lejos.getMarca().length() < 1)){
-            JOptionPane.showMessageDialog(null, "Debe agregar al menos un armazón a la ficha", "Faltan valores", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        //crear historial de pago
-        int abono = (int) txtAbono.getValue();
-        if(abono > 0 && cboTipoPago.getSelectedIndex() == 0 && idTipoPago==0){
-            JOptionPane.showMessageDialog(null, "Error, Debe seleccionsr un tipo de pago","Selecciona tipo de pago",JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        HistorialPago hp = null;
-        if(abono < 1){
-            int respAbono2 = JOptionPane.showConfirmDialog(null, "¿Desea registrar un abono?", "Abono no ingresado", JOptionPane.YES_NO_OPTION);
-            if(respAbono2 == JOptionPane.YES_OPTION){
-                return;
-            }
+    /**
+     * muestra un mensaje en el panel, si el mensaje es vacío o nulo no aparece
+     * @param message 
+     */
+    private void msgRejected(String message) {
+        message = GV.getStr(message);
+        if(message.isEmpty()){
+            lblMessageStatus.setText("");
+            lblMessageStatus.setVisible(false);
         }else{
-            hp = new HistorialPago(0, fecha,abono, 1, idTipoPago, idFicha);
+            lblMessageStatus.setText(message);
+            lblMessageStatus.setForeground(rojo);
+            lblMessageStatus.setVisible(true);
         }
-
+    }
+    
+    private void msgWarning(String message){
+        message = GV.getStr(message);
+        if(message.isEmpty()){
+            lblMessageStatus.setText("");
+            lblMessageStatus.setVisible(false);
+        }else{
+            lblMessageStatus.setText(message);
+            lblMessageStatus.setForeground(negro);
+            lblMessageStatus.setVisible(true);
+        }
+    }
+    
+    private void msgRejectedClear(){
+        msgRejected(null);
+    }
+    
+    private boolean validaFicha(){
+        return !lblMessageStatus.isVisible();
+    }
+    
+    private void comprobarDatosFicha(){
+        calcularTotal();
+        msgRejectedClear();
+        validaTipoPago();
+        validaSaldo();
+        validaCristales();
+        validaStockDeLentesIguales();
+        validaTotalMayorACero();
+        validaFechaNacimiento();
+        validaMail();
+        validaCliente();
+        validaInstitucion();
+        validaRut();
+        validaEspecialista();
+        validaHora();
+        validaLugarEntrega();
+        validaFechaEntrega();
+        asigAllDatas();
+    }
+    
+    private void commitSpinner() {
         try {
-            //actualizar ficha_actual en info
-            Doctor dr = load.cargarDoctorRut(rutDoctor);
-            Institucion ins = load.cargarInstitucionId(idInstitucion);
-
-            Ficha ficha = new Ficha();
-            ficha.setCerca(cerca);
-            ficha.setCliente(cliente);
-            ficha.setDescuento(dscto);
-            ficha.setDespacho(null);
-            ficha.setDoctor(dr);
-            ficha.setEstado(estado);
-            ficha.setFecha(fecha);
-            ficha.setFechaEntrega(fechaEntrega);
-            ficha.setHoraEntrega(horaEntrega1+" a "+horaEntrega2);
-            ficha.setId(idFicha);
-            ficha.setInstitucion(ins);
-            ficha.setLejos(lejos);
-            ficha.setLugarEntrega(lugarEntrega);
-            ficha.setObservacion(obs);
-            ficha.setSaldo(saldo);
-            ficha.setValorTotal(total);
-
-            if(cliente != null){
-                cliente.setCiudad(txtCiudad.getText().toUpperCase());
-                cliente.setComuna(txtComuna.getText().toUpperCase());
-                cliente.setDireccion(txtDireccionCliente.getText().toUpperCase());
-                cliente.setEdad((int)txtEdad.getValue());
-                cliente.setEmail(txtMailCliente.getText());
-                cliente.setNombre(txtNombreCliente.getText().toUpperCase());
-                cliente.setSexo(cboSexo.getSelectedIndex());
-                if(txtTelefonoCliente2.getText().length() > 0){
-                    cliente.setTelefono(txtTelefonoCliente1.getText() + " / " +txtTelefonoCliente2.getText());
-                }else{
-                    cliente.setTelefono(txtTelefonoCliente1.getText());
-                }
-                //actualizar
-                if(!load.actualizarCliente(cliente)){
-                    JOptionPane.showMessageDialog(null, "No se pudo completar la operación [1100]", "Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            }else{
-                cliente = new Cliente();
-                cliente.setRut(txtRutCliente.getText());
-                cliente.setCiudad(txtCiudad.getText().toUpperCase());
-                cliente.setComuna(txtComuna.getText().toUpperCase());
-                cliente.setDireccion(txtDireccionCliente.getText().toUpperCase());
-                cliente.setEdad((int)txtEdad.getValue());
-                cliente.setEmail(txtMailCliente.getText());
-                cliente.setNombre(txtNombreCliente.getText().toUpperCase());
-                cliente.setSexo(cboSexo.getSelectedIndex());
-                if(txtTelefonoCliente2.getText().length() > 0){
-                    cliente.setTelefono(txtTelefonoCliente1.getText() + " / " +txtTelefonoCliente2.getText());
-                }else{
-                    cliente.setTelefono(txtTelefonoCliente1.getText());
-                }
-                cliente.setEstado(1);
-                ficha.setCliente(cliente);
-                //guardar
-                if(!load.guardarCliente(cliente)){
-                    JOptionPane.showMessageDialog(null, "No se pudo completar la operación [1102]", "Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            }
-
-            int resp = JOptionPane.showConfirmDialog(null, "¿Esta seguro que los datos ingresados están correctos?", "Guardar Ficha", JOptionPane.YES_NO_OPTION);
-            if(resp == JOptionPane.YES_OPTION){
-
-                //Guardar valores en BD
-                //guardar armazones
-                if(!load.guardarArmazon(ficha.getCerca())){
-                    JOptionPane.showMessageDialog(null, "No se pudo completar la operación [1104]", "Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                if(!load.guardarArmazon(ficha.getLejos())){
-                    JOptionPane.showMessageDialog(null, "No se pudo completar la operación [1106]", "Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                //guardar historial de pago
-                if(!load.guardarHitorialPago(hp) && abono > 0){
-                    JOptionPane.showMessageDialog(null, "No se pudo completar la operación [1108]", "Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                //descontar de inventario
-                if(load.cargarLente(ficha.getCerca().getMarca()) != null){//prgunta si existe un lente con los datos ingresados para poder descontar stock
-                    if(!load.descontarStock(ficha.getCerca().getMarca())){
-                        JOptionPane.showMessageDialog(null, "No se pudo completar la operación [1110]", "Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                }
-                if(load.cargarLente(ficha.getLejos().getMarca()) != null){//prgunta si existe un lente con los datos ingresados para poder descontar stock
-                    if(!load.descontarStock(ficha.getLejos().getMarca())){
-                        JOptionPane.showMessageDialog(null, "No se pudo completar la operación [1112]", "Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                }
-
-                
-                if(load.guardarFicha(ficha,GlobalValues.ID_USER)){
-                    load.imprimir(ficha);
-                    limpiarDatos();
-
-                    try {
-                        boton.crearFicha();
-                    } catch (SQLException | ClassNotFoundException ex) {
-                        JOptionPane.showMessageDialog(null, "Error inesperado "+ex.getMessage(), "Abrir ventana Nueva Ficha", JOptionPane.WARNING_MESSAGE);
-                    }
-                    return;
-                }
-                JOptionPane.showMessageDialog(null, "No se pudo completar la operación [1114]", "Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-                return;
-
-            }else{
-                return;
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error de comunicación con la base de datos, Detalle: "+ex.getMessage(),"Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-            return;
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error de comunicación con la base de datos, Detalle: "+ex.getMessage(),"Error al guardar Ficha",JOptionPane.WARNING_MESSAGE);
-            return;
+            txtHora1.commitEdit();
+            txtHora2.commitEdit();
+            txtMinuto1.commitEdit();
+            txtMinuto2.commitEdit();
+            txtAbono.commitEdit();
+        } catch (ParseException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    private boolean validaStockDeLentesIguales(){
+        String lenName1 = txtArmazonLejos.getText();
+        String lenName2 = txtArmazonCerca.getText();
+        if(lenName1.length() > 2 && lenName1.toLowerCase().equals(lenName2.toLowerCase())){
+            Lente temp;
+            try {
+                temp = ((Lente)load.get(lenName2, 0, new Lente())!=null)? (Lente)load.get(lenName2, 0, new Lente()):new Lente();
+                if(temp.getStock()==0){
+                    msgRejected("Debe seleccionar un lente diferente, no hay stock disponible.");
+                    return false;
+                }
+            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return true;
+    }
     
+    private boolean validaHora() {
+        commitSpinner();
+        int hora1 = GV.strToNumber(txtHora1.getValue().toString());
+        int hora2 = GV.strToNumber(txtHora2.getValue().toString());
+        String hora = "";
+        if(hora1 > 7 && hora1 < 23){
+            if(hora2 >= hora1 && hora2 < 23){
+                GV.setHourToFicha(txtHora1,txtMinuto1,txtHora2,txtMinuto2);
+                return true;
+            }
+        }
+        msgRejected("Debe ingresar una hora de entrega válida");
+        return false;
+    }
+
+    private boolean validaCliente() {
+        String nombre  = GV.getStr(txtNombreCliente.getText());
+        String tel1 = GV.getStr(txtTelefonoCliente1.getText());
+        String tel2 = GV.getStr(txtTelefonoCliente2.getText());
+        String mail = GV.mailValidate(txtMailCliente.getText());
+        if(!GV.getStr(txtRutCliente.getText()).isEmpty() || 
+                txtRutCliente.getForeground() == negro){
+            if(!nombre.isEmpty() && nombre.length() > 3){
+                if((!tel1.isEmpty() && tel1.length() >=  8) ||
+                        (!tel2.isEmpty() && tel2.length() >= 8) ||
+                        !mail.isEmpty()){
+                    String institucionNombre = GV.getStr(txtInstitucion.getText());
+                    if(!GV.getStr(institucionNombre).isEmpty()){
+                        try {
+                            stInstitucion = (Institucion)load.get(institucionNombre, 0, new Institucion());
+                        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    if(stCliente == null){
+                        stCliente = new Cliente();
+                    }
+                    stCliente.setCod(txtRutCliente.getText());
+                    stCliente.setCiudad(txtCiudad.getText());
+                    stCliente.setComuna(txtComuna.getText());
+                    stCliente.setDireccion(txtDireccionCliente.getText());
+                    stCliente.setEstado(1);
+                    stCliente.setNombre(nombre);
+                    stCliente.setSexo(cboSexo.getSelectedIndex());
+                    stCliente.setTelefono1(tel1);
+                    stCliente.setTelefono2(tel2);
+                    GV.getFicha().setCliente(stCliente);
+                    return true;
+                }
+            }
+        }
+        msgRejected("Faltan datos obligatorios del cliente (Rut o Dni, nombre, teléfonos o email válidos y fecha de nacimiento).");
+        return false;
+    }
+
+    private void txtRutClienteValidator() {
+        String rutCliente = txtRutCliente.getText();
+        if(ValidaRut.validarRut(rutCliente)){
+            txtRutCliente.setForeground(negro);
+        }else{
+            if(!chkExtranjero.isSelected()){
+                txtRutCliente.setForeground(rojo);
+            }
+        }
+        try {
+            stCliente = (Cliente)load.get(rutCliente,0,new Cliente());
+            if(stCliente != null){
+                txtNombreCliente.setText(stCliente.getNombre());
+                txtTelefonoCliente1.setText(stCliente.getTelefono1());
+                txtTelefonoCliente2.setText(stCliente.getTelefono2());
+                txtMailCliente.setText(stCliente.getEmail());
+                txtDireccionCliente.setText(stCliente.getDireccion());
+                txtComuna.setText(stCliente.getComuna());
+                txtCiudad.setText(stCliente.getCiudad());
+                cboSexo.setSelectedIndex(stCliente.getSexo());
+                txtNacimiento.setDate(stCliente.getNacimiento());
+            }else{
+//                resetTxtCliente();
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private boolean validaFechaNacimiento() {
+        int year = GV.strToNumber(GV.dateToString(txtNacimiento.getDate(), "yyyy"));
+        int currentYear = GV.strToNumber(GV.dateToString(new Date(), "yyyy"));
+        int dif = currentYear - year;
+        if(dif >= 4 && dif < 100){
+            if(stCliente != null){
+                stCliente.setNacimiento(txtNacimiento.getDate());
+            }
+            return true;
+        }
+        msgRejected("Debe ingresar una fecha de nacimiento válida.");
+        return false;
+    }
+
+    private boolean validaTotalMayorACero() {
+        int total = GV.strToNumber(txtTotal.getText());
+        if(total > 0){
+            setArmazones();
+            return true;
+        }
+        msgRejected("Debe ingresar receta de lente.");
+        return false;
+    }
+ 
+    private boolean validaTipoPago() {
+        commitSpinner();
+        stTipoPago = null;
+        int abono = (int)txtAbono.getValue();
+        if(abono > 0){
+            if(cboTipoPago.getSelectedIndex() == 0){
+                msgRejected("Debe ingresar un tipo de pago válido.");
+                return false;
+            }else{
+                try {
+                    stTipoPago = (TipoPago)load.get(cboTipoPago.getSelectedItem().toString(), 0, new TipoPago());
+                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                    Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if(stTipoPago == null){
+                    msgRejected("Debe ingresar un tipo de pago válido.");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean validaRut() {
+        if(GV.getStr(txtRutCliente.getText()).isEmpty()){
+            msgRejected("Debe ingresar un rut válido o marcar como registro extrangero");
+            return false;
+        }else{
+            if(txtRutCliente.getForeground() == rojo && !chkExtranjero.isSelected()){
+                msgRejected("Debe ingresar un rut válido o marcar como registro extrangero");
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private int obtenerDescuento(){
+        String nombre = "";
+        stDescuento = null;
+        int dscto = 0;
+        int total = GV.strToNumber(txtTotal.getText());
+        if(chkDescuento.isSelected() && total > 0){
+            nombre = getDescuentoName(cboDescuento.getSelectedItem().toString());
+            try {
+                stDescuento = (Descuento)load.get(nombre,0, new Descuento());
+            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                Log.setLog("Error:", ex.getMessage());
+            }
+            if(stDescuento != null){
+                dscto = GV.obtenerDescuentoFicha(stDescuento,total);
+                txtDescuento.setText(GV.strToPrice(dscto));
+                return dscto;
+            }
+        }
+        return dscto;
+    }
+    
+    private String getDescuentoName(String arg){
+        arg = GV.getStr(arg);
+        if(arg.contains("(") && !arg.startsWith("(")){
+            arg=arg.substring(0,arg.indexOf("(")-1);
+        }
+        return arg.trim();
+    }
+    
+    private boolean validaFechaEntrega(){
+        if(txtFecha.getDate() == null){
+            msgRejected("Debe ingresar datos de entrega");
+            return false;
+        }else{
+            GV.getFicha().setFecha(new Date());
+            GV.getFicha().setUser(GV.user());
+            GV.getFicha().setObservacion(GV.getStr(txtObs.getText()));
+            GV.getFicha().setFechaEntrega(txtFecha.getDate());
+            return true;
+        }
+    }
+
+    private boolean validaLugarEntrega() {
+        int largo = txtEntrega.getText().length();
+        if(largo > 4 && largo < 45){
+            GV.getFicha().setLugarEntrega(GV.getStr(txtEntrega.getText()));
+            return true;
+        }
+        msgRejected("Debe ingresar datos de entrega");
+        return false;
+    }
+
+    private boolean validaEspecialista() {
+        stDoctor = null;
+        GV.getFicha().setDoctor(null);
+        String rut = GV.getStr(txtDoctor.getText());
+        if(rut.isEmpty()){
+            txtDoctor.setForeground(negro);
+            return true;
+        }else{
+            try {
+                stDoctor = (Doctor)load.get(getIdFromString(rut), 0, new Doctor());
+                if(stDoctor == null){
+                    txtDoctor.setForeground(rojo);
+                    msgRejected("El especialista no se encuentra registrado en el sistema.");
+                    return false;
+                }
+            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        txtDoctor.setForeground(negro);
+        GV.getFicha().setDoctor(stDoctor);
+        return true;
+    }
+
+    private void txtFechaCheck() {
+        if(!GV.getStr(txtFecha.getDateFormatString().replaceAll("[0-9-]", "")).isEmpty()){
+            txtFecha.setDate(null);
+        }
+    }
+
+    private boolean validaMail() {
+        String mail = GV.mailValidate(txtMailCliente.getText());
+        if(!GV.getStr(txtMailCliente.getText()).isEmpty() && 
+                mail.isEmpty()){
+            msgRejected("Debe ingresar un email válido");
+            return false;
+        }
+        if(stCliente != null){
+            stCliente.setEmail(mail);
+        }
+        return true;
+    }
+
+    private void setArmazones() {
+        stArmazonLejos = new Armazon();
+        int capa = (chkCapaLejos.isSelected()) ? 1 : 0;
+        stArmazonLejos.setCapa(capa);
+        stArmazonLejos.setCristal(txtCristalLejos.getText());
+        
+    }
+
+    private boolean validaCristales() {
+        Color c1 = txtCristalCerca.getForeground();
+        Color c2 = txtCristalLejos.getForeground();
+        if(!GV.getStr(txtArmazonCerca.getText()).isEmpty()){
+            if(GV.getStr(txtCristalCerca.getText()).isEmpty() || c1 == rojo){
+                msgWarning("Falta ingresar un cristal...");
+                return false;
+            }else{
+                stArmazonCerca.setCristal(stCristalCerca.getNombre());
+                GV.getFicha().setCerca(stArmazonCerca);
+            }
+        }
+        if(!GV.getStr(txtArmazonLejos.getText()).isEmpty()){
+            if(GV.getStr(txtCristalLejos.getText()).isEmpty() || c2 == rojo){
+                msgWarning("Falta ingresar un cristal...");
+                return false;
+            }else{
+                stArmazonLejos.setCristal(stCristalLejos.getNombre());
+                GV.getFicha().setLejos(stArmazonLejos);
+            }
+        }
+        return true;
+    }
+
+    private void asigAllDatas() {
+//        try {
+            int tpCerca = 0;
+            int tpLejos = 1;
+            int capa1 = (chkCapaCerca.isSelected())? 1:0;
+            int capa2 = (chkCapaLejos.isSelected())? 1:0;
+            int en1 = (chkEndurecidoCerca.isSelected())? 1:0;
+            int en2 = (chkEndurecidoLejos.isSelected())? 1:0;
+            int pm1 = (chkPlusMaxCerca.isSelected())? 1:0;
+            int pm2 = (chkPlusMaxLejos.isSelected())? 1:0;
+            
+//            stCristalCerca = (Cristal)load.get(txtCristalCerca.getText(), 0, new Cristal());
+//            stCristalLejos = (Cristal)load.get(txtCristalLejos.getText(), 0, new Cristal());
+//            stLenteCerca = (Lente)GV.buscarPorIdEnLista(txtArmazonCerca.getText(), listLentes, new Lente());
+//            stLenteLejos = (Lente)GV.buscarPorIdEnLista(txtArmazonLejos.getText(), listLentes, new Lente());
+            
+            stArmazonCerca = (stArmazonCerca==null)?new Armazon():stArmazonCerca;
+            stArmazonCerca.setAdd(txtAddCerca.getText());
+            stArmazonCerca.setCapa(capa1);
+            stArmazonCerca.setCristal(txtCristalCerca.getText());
+            int precioCristalCerca=0;
+            if(stCristalCerca != null){
+            precioCristalCerca = (stConvenio==null)?stCristalCerca.getPrecio():stCristalCerca.getPrecio() + ((stCristalCerca.getPrecio() * stConvenio.getPorcentajeAdicion())/100);
+            }
+            stArmazonCerca.setPrecioCristal(precioCristalCerca);
+            stArmazonCerca.setDp((int)txtDPCerca.getValue());
+            stArmazonCerca.setEndurecido(en1);
+            stArmazonCerca.setEstado(1);
+            stArmazonCerca.setMarca(txtArmazonCerca.getText());
+            int precioMarcaCerca=0;
+            if(stLenteCerca != null){
+                precioMarcaCerca = (stConvenio==null)?stLenteCerca.getPrecioAct():stLenteCerca.getPrecioAct() + ((stLenteCerca.getPrecioAct() * stConvenio.getPorcentajeAdicion())/100);
+            }
+            stArmazonCerca.setPrecioMarca(precioMarcaCerca);
+            stArmazonCerca.setOdA(txtODCercaA.getText());
+            stArmazonCerca.setOdCil(txtODCercaCIL.getText());
+            stArmazonCerca.setOdEsf(txtODCercaESF.getText());
+            stArmazonCerca.setOiA(txtOICercaA.getText());
+            stArmazonCerca.setOiCil(txtOICercaCIL.getText());
+            stArmazonCerca.setOiEsf(txtOICercaESF.getText());
+            stArmazonCerca.setPlusMax(pm1);
+            stArmazonCerca.setTipo(tpCerca);
+            
+            
+            stArmazonLejos = (stArmazonLejos == null)?new Armazon():stArmazonLejos;
+            stArmazonLejos.setCapa(capa2);
+            stArmazonLejos.setCristal(txtCristalLejos.getText());
+            int precioCristalLejos =0;
+            if(stCristalLejos != null){
+                precioCristalLejos = (stConvenio==null)?stCristalLejos.getPrecio():stCristalLejos.getPrecio() + ((stCristalLejos.getPrecio() * stConvenio.getPorcentajeAdicion())/100);
+            }
+            stArmazonLejos.setPrecioCristal(precioCristalLejos);
+            stArmazonLejos.setDp((int)txtDPLejos.getValue());
+            stArmazonLejos.setEndurecido(en2);
+            stArmazonLejos.setEstado(1);
+            stArmazonLejos.setMarca(txtArmazonLejos.getText());
+            int precioMarcaLejos = 0;
+            if(stLenteLejos != null){
+                precioMarcaLejos = (stConvenio==null)?stLenteLejos.getPrecioAct():stLenteLejos.getPrecioAct() + ((stLenteLejos.getPrecioAct() * stConvenio.getPorcentajeAdicion())/100);
+            }
+            stArmazonLejos.setPrecioMarca(precioMarcaLejos);
+            stArmazonLejos.setOdA(txtODLejosA.getText());
+            stArmazonLejos.setOdCil(txtODLejosCIL.getText());
+            stArmazonLejos.setOdEsf(txtODLejosESF.getText());
+            stArmazonLejos.setOiA(txtOILejosA.getText());
+            stArmazonLejos.setOiCil(txtOILejosCIL.getText());
+            stArmazonLejos.setOiEsf(txtOILejosESF.getText());
+            stArmazonLejos.setPlusMax(pm2);
+            stArmazonLejos.setTipo(tpLejos);
+            
+            GV.getFicha().setLejos(stArmazonLejos);
+            GV.getFicha().setCerca(stArmazonCerca);
+            
+            GV.getFicha().setObservacion(txtObs.getText());
+            GV.getFicha().setDescuento(GV.strToNumber(txtDescuento.getText()));
+            GV.getFicha().setValorTotal(GV.strToNumber(txtTotal.getText()));
+            GV.getFicha().setSaldo(GV.strToNumber(txtSaldo.getText()));
+//        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+//            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    }
+
+    private boolean validaInstitucion() {
+        String ins = GV.getStr(txtInstitucion.getText());
+        stInstitucion = null;
+        GV.getFicha().setInstitucion(null);
+        if(ins.isEmpty()){
+            txtInstitucion.setForeground(negro);
+            return true;
+        }else{
+            try {
+                stInstitucion = (Institucion)load.get((getIdFromString(ins)), 0, new Institucion());
+                if(stInstitucion == null){
+                    txtInstitucion.setForeground(rojo);
+                    msgRejected("Debe ingresar una institución registrada en el sistema.");
+                    return false;
+                }
+            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        GV.getFicha().setInstitucion(stInstitucion);
+        txtInstitucion.setForeground(negro);
+        return true;
+    }
+
+    private void prepareFicha() {
+        calcularSaldo();
+        
+//         validacion de estados de ficha
+        int estado = (GV.getFicha().getSaldo() == 0)? 2:1;//2=pagado,1=pendiente
+        commitSpinner();
+        int abono = (int) txtAbono.getValue();
+        
+        int saldo = GV.strToNumber(txtSaldo.getText());
+        
+        HistorialPago hp = null;
+        try {
+            if(load.get(load.getCurrentCod(GV.getFicha()), 0, GV.getFicha()) != null){
+                OptionPane.showMsg("No se puede crear registro", "Existe un conflicto con el identificador generado\n"
+                        + "Debe ponerse en contacto con su proveedor.\n\n"
+                        + "Identificador defectuoso:"+load.getCurrentCod(GV.getFicha()), 3);
+                return;
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            OptionPane.showMsg("No se puede crear registro", "No se pudo validar el identificador generado\n"
+                        + "Debe ponerse en contacto con su proveedor.\n\n"
+                        + "Identificador defectuoso:"+load.getCurrentCod(GV.getFicha())+"\n"
+                        + "Error: "+ex.getMessage(), 3);
+            return;
+        }
+        GV.getFicha().setCod(load.getCurrentCod(GV.getFicha()));
+        /*
+            No se aplica valor total desde el txtTotal porque debe rescatarse el total
+            sin el descuento incluido
+        */
+        //int valorTotal = GV.strToNumber(txtTotal.getText());
+        //GV.getFicha().setValorTotal(valorTotal);
+        GV.getFicha().setSaldo(saldo);
+        GV.getFicha().setEstado(estado);
+        
+        if(GV.getFicha().getCerca() != null || !GV.getFicha().getCerca().getMarca().isEmpty()){
+            GV.getFicha().getCerca().setIdFicha(GV.getFicha().getCod());
+        }
+        if(GV.getFicha().getLejos() != null || !GV.getFicha().getLejos().getMarca().isEmpty()){
+            GV.getFicha().getLejos().setIdFicha(GV.getFicha().getCod());
+        }
+        if(abono > 0){
+            hp = new HistorialPago(null, new Date(), abono, stTipoPago.getId(), GV.getFicha().getCod(),1, null, 0);
+        }
+        if(stConvenio != null){
+            GV.getFicha().setConvenio(stConvenio);
+        }
+        load.createFicha(GV.getFicha(),hp);
+    }
+
+    private void reloadPage() {
+        try {
+            boton.crearFicha();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            OptionPane.showMsg("Error al recargar ventana", ex+"\n\n"+ex.getMessage()+"\n\n"+ex.getLocalizedMessage(), 3);
+        }
+    }
+
+    /**
+     * reinicia todas las clases estaticas previemente cargadas
+     */
+    private void clearData() {
+        stArmazonCerca=new Armazon();
+        stArmazonLejos=new Armazon();
+        stCliente=new Cliente();
+        stCristalCerca= new Cristal();
+        stCristalLejos=new Cristal();
+        stDescuento=new Descuento();
+        stDoctor= new Doctor();
+        stInstitucion= new Institucion();
+        stLenteCerca= new Lente();
+        stLenteLejos= new Lente();
+        stTipoPago = new TipoPago();
+        GV.clearFicha();
+    }
+
+    private void validateDataTemp() {
+        if(GV.getFicha().getFecha() != null){
+            if(!OptionPane.getConfirmation("Restaurar archivos temporales", "Existen datos temporales, ¿Desea recuperarlos?", 2)){
+                clearData();
+            }
+        }
+    }
+
+    private void convenioLimpiarSeleccionado(){
+        convenioAssign(null);
+    }
+    
+    private void convenioAssign(Convenio selected){
+        GV.setConvenio(selected);
+        convenioObtenerSeleccionado();
+    }
+    
+    private void convenioObtenerSeleccionado() {
+        try {
+            stConvenio = (Convenio)load.get(null, (GV.getConvenio() != null)?GV.getConvenio().getId():0, new Convenio());
+            GV.setConvenio(stConvenio);
+            if(stConvenio == null){
+                btnClearConvenio.setVisible(false);
+                ContentAdmin.lblTitle.setText("Nueva receta oftalmológica");
+                strCnvName = "";
+            }else{
+                btnClearConvenio.setVisible(true);
+                ContentAdmin.lblTitle.setText("Nueva receta oftalmológica con convenio: "+stConvenio.getNombre());
+                strCnvName = "Convenio: "+stConvenio.getNombre();
+            }
+            cargarDatos();
+            comprobarDatosFicha();
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            stConvenio = null;
+            GV.setConvenio(null);
+            OptionPane.showMsg("Error inesperado", "Ocurrió un problema al cargar el convenio seleccionado", 3);
+        }
+    }
+
+    private void validaSaldo() {
+        if(GV.getFicha().getSaldo()<0){
+            if(GV.strToNumber(txtDescuento.getText())>GV.strToNumber(txtTotal.getText())){
+                msgRejected("El descuento seleccionado no es válido, su monto es mayor al valor total.");
+            }else{
+                txtAbono.setValue(0);
+                msgRejected("Debe ingresar un abono válido (menor o igual al saldo).");
+            }
+        }
+    }
+
+    private void loadStaticObjectList() {
+        listTipoPagos = load.listar("0", new TipoPago());
+        listInstituciones = load.listar("0", new Institucion());
+        listClientes = load.listar("0", new Cliente());
+        listDoctores = load.listar("0", new Doctor());
+        listCristales = load.listar("0", new Cristal());
+        listDescuentos = load.listar("0", new Descuento());
+        GV.setInventarioSeleccionado(stInventario.getId());
+        listLentes = load.listar("st", new Lente());
+        GV.setInventarioSeleccionado(0);
+    }
 }

@@ -6,7 +6,7 @@
 package entities;
 
 import entities.abstractclasses.SyncStringId;
-import fn.GlobalValues;
+import fn.GV;
 import java.util.Date;
 
 /**
@@ -26,14 +26,14 @@ public class Lente extends SyncStringId{
     private int precioAct;
     private int stock;
     private int stockMin;
-    private String inventario;
+    private int inventario;
 
     public Lente() {
     }
 
     /**
      * 
-     * @param cod Debe incluir el id del inventario al cual está asignado, solo para bd
+     * @param cod 
      * @param color
      * @param tipo
      * @param marca
@@ -49,18 +49,18 @@ public class Lente extends SyncStringId{
      * @param estado
      * @param lastUpdate 
      */
-    public Lente(String cod, String color,String tipo, String marca, String material, int flex, int clasificacion, String descripcion, int precioRef, int precioAct, int stock, int stockMin,String inventario, int estado, Date lastUpdate, int lastHour) {
-        this.color = color;
-        this.tipo = tipo;
-        this.marca = marca;
-        this.material = material;
-        this.flex = flex;
-        this.clasificacion = clasificacion;
-        this.descripcion = descripcion;
-        this.precioRef = precioRef;
-        this.precioAct = precioAct;
-        this.stock = stock;
-        this.stockMin = stockMin;
+    public Lente(String cod, String color,String tipo, String marca, String material, int flex, int clasificacion, String descripcion, int precioRef, int precioAct, int stock, int stockMin,int inventario, int estado, Date lastUpdate, int lastHour) {
+        setColor(color);
+        setTipo(tipo);
+        setMarca(marca);
+        setMaterial(material);
+        setFlex(flex);
+        setClasificacion(clasificacion);
+        setDescripcion(descripcion);
+        setPrecioRef(precioRef);
+        setPrecioAct(precioAct);
+        setStock(stock);
+        setStockMin(stockMin);
         setInventario(inventario);
         setCod(cod);
         setEstado(estado);
@@ -70,7 +70,7 @@ public class Lente extends SyncStringId{
 
     @Override
     public void setCod(String cod) {
-        if(GlobalValues.contChar('-', cod) == 2){
+        if(GV.contChar('-', cod) == 2){
             super.setCod(cod);
         }else{
             if(cod == null || cod.equals(""))
@@ -79,35 +79,35 @@ public class Lente extends SyncStringId{
                 marca = "00";
             if(color == null || color.equals(""))
                 color = "00";
-            super.setCod(cod.trim().replaceAll("-", "") + "-" + marca.trim().replaceAll("-", "") + "-" + color.trim().replaceAll("-", ""));
+            super.setCod(cod.trim().replaceAll("-", "") + "-" + marca.trim().replaceAll("-", "") + "-" + color.trim().replaceAll("-", "") + "[" + inventario + "]");
         }
     }
-    public void setInventario(String inventario) {
+    public void setInventario(int inventario) {
         this.inventario = inventario;
     }
 
-    public String getInventario() {
+    public int getInventario() {
         return inventario;
     }
 
     public void setTipo(String tipo) {
-        this.tipo = tipo;
+        this.tipo = getStr(tipo);
     }
 
     public String getTipo() {
-        return tipo;
+        return getStr(tipo);
     }
 
     public void setColor(String color) {
-        this.color = color;
+        this.color = getStr(color);
     }
 
     public void setMarca(String marca) {
-        this.marca = marca;
+        this.marca = getStr(marca);
     }
 
     public void setMaterial(String material) {
-        this.material = material;
+        this.material = getStr(material);
     }
 
     public void setFlex(int flex) {
@@ -119,7 +119,7 @@ public class Lente extends SyncStringId{
     }
 
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+        this.descripcion = getStr(descripcion);
     }
 
     public void setPrecioRef(int precioRef) {
@@ -139,15 +139,15 @@ public class Lente extends SyncStringId{
     }
 
     public String getColor() {
-        return color;
+        return getStr(color);
     }
 
     public String getMarca() {
-        return marca;
+        return getStr(marca);
     }
 
     public String getMaterial() {
-        return material;
+        return getStr(material);
     }
 
     public int getFlex() {
@@ -159,7 +159,7 @@ public class Lente extends SyncStringId{
     }
 
     public String getDescripcion() {
-        return descripcion;
+        return getStr(descripcion);
     }
 
     public int getPrecioRef() {
@@ -184,9 +184,10 @@ public class Lente extends SyncStringId{
                 " - color: "+this.color+
                 " - tipo: "+this.tipo+
                 " - marca:"+this.marca+
+                " - Stock:"+getStock()+
+                " - Stock minimo:"+getStockMin()+
+                " - Estado:"+getEstado()+
                 " - lastUpdate:"+getLastUpdate()+
-                " - Estado:"+getEstado();
+                " - LastHour:"+getLastHour();
     }
-    
-    
 }

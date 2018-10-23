@@ -5,15 +5,14 @@
  */
 package entities;
 
-import entities.abstractclasses.SyncIntId;
+import entities.abstractclasses.SyncIntIdValidaName;
 import java.util.Date;
 
 /**
  *
  * @author sdx
  */
-public class Oficina extends SyncIntId{
-    private String nombre;
+public class Oficina extends SyncIntIdValidaName{
     private String direccion;
     private String ciudad;
     private String telefono1;
@@ -27,72 +26,72 @@ public class Oficina extends SyncIntId{
     public Oficina(int id, String nombre, String direccion, String ciudad, String telefono1,
             String telefono2, String email, String web, int estado, Date lastUpdate, int lastHour) {
         setId(id);
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.ciudad = ciudad;
-        this.telefono1 = telefono1;
-        this.telefono2 = telefono2;
-        this.email = email;
-        this.web = web;
+        setNombre(nombre);
+        setDireccion(direccion);
+        setCiudad(ciudad);
+        setTelefono1(telefono1);
+        setTelefono2(telefono2);
+        setEmail(email);
+        setWeb(web);
         setEstado(estado);
         setLastUpdate(lastUpdate);
         setLastHour(lastHour);
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        super.setNombre(getToName(nombre));
     }
 
     public void setDireccion(String direccion) {
-        this.direccion = direccion;
+        this.direccion = getToName(direccion);
     }
 
     public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
+        this.ciudad = getToName(ciudad);
     }
 
     public void setTelefono1(String telefono1) {
-        this.telefono1 = telefono1;
+        this.telefono1 = getStr(telefono1);
     }
 
     public void setTelefono2(String telefono2) {
-        this.telefono2 = telefono2;
+        this.telefono2 = getStr(telefono2);
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = mailValidate(email);
     }
 
     public void setWeb(String web) {
-        this.web = web;
+        this.web = getStr(web).toLowerCase();
     }
 
     public String getNombre() {
-        return nombre;
+        return getToName(super.getNombre());
     }
 
     public String getDireccion() {
-        return direccion;
+        return getToName(direccion);
     }
 
     public String getCiudad() {
-        return ciudad;
+        return getToName(ciudad);
     }
 
     public String getTelefono1() {
-        return telefono1;
+        return getStr(telefono1);
     }
 
     public String getTelefono2() {
-        return telefono2;
+        return getStr(telefono2);
     }
 
     public String getEmail() {
-        return email;
+        return getStr(email);
     }
 
     public String getWeb() {
-        return web;
+        return getStr(web);
     }
 
     @Override
@@ -101,6 +100,4 @@ public class Oficina extends SyncIntId{
                 + " CIUDAD: "+getCiudad()+",\n TELEFONO 1: "+getTelefono1()+",\n TELEFONO 2: "+getTelefono2()+",\n"
                 + " EMAIL: "+getEmail()+",\n WEB: "+getWeb()+",\n ESTADO: "+getEstado()+",\n LAST UPDATE: "+getLastUpdate()+"}";
     }
-    
-    
 }

@@ -5,40 +5,42 @@
  */
 package entities;
 
-import entities.abstractclasses.SyncIntId;
+import entities.abstractclasses.SyncIntIdValidaName;
 import java.util.Date;
 
 /**
  *
  * @author sdx
  */
-public class Inventario extends SyncIntId{
-    private String nombre;
+public class Inventario extends SyncIntIdValidaName{
     private String descripcion;
 
+    public Inventario() {
+    }
+    
     public Inventario(int id,String nombre, String descripcion,int estado,Date lastUpdate, int lastHour) {
         setId(id);
-        this.nombre = nombre;
-        this.descripcion = descripcion;
+        setNombre(nombre);
+        setDescripcion(descripcion);
         setEstado(estado);
         setLastUpdate(lastUpdate);
         setLastHour(lastHour);
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        super.setNombre(getToName(nombre));
     }
 
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+        this.descripcion = getStr(descripcion);
     }
 
     public String getNombre() {
-        return nombre;
+        return getToName(super.getNombre());
     }
 
     public String getDescripcion() {
-        return descripcion;
+        return getStr(descripcion);
     }
     
 }

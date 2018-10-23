@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view;
+package view.opanel;
 
-import fn.GlobalValues;
 import java.awt.Image;
 import java.awt.Toolkit;
 
@@ -23,6 +22,7 @@ public class OPanel extends javax.swing.JFrame {
         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/icon.png"));
         setIconImage(icon);
         this.setLocationRelativeTo(null);
+//        this.setAlwaysOnTop(true);
     }
 
     /**

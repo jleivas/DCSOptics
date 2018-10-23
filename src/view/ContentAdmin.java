@@ -6,19 +6,28 @@
 package view;
 
 import fn.Boton;
-import fn.FnInfo;
-import fn.GlobalValues;
+import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
-import java.awt.Color;
+import fn.SubProcess;
+import fn.globalValues.GlobalValuesBD;
+import fn.globalValues.GlobalValuesFunctions;
+import fn.globalValues.GlobalValuesVariables;
+import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.RootPaneContainer;
+import view.opanel.OpanelConfig;
+import view.opanel.OpanelInventario;
+import view.opanel.OpanelTools;
+import view.opanel.OpanelUserData;
 
 /**
  *
@@ -27,7 +36,6 @@ import javax.swing.JTextField;
 public class ContentAdmin extends javax.swing.JFrame {
 
     Boton boton = new Boton();
-    FnInfo load = new FnInfo();
 //    public static String TITLE = "";
     
     
@@ -40,32 +48,48 @@ public class ContentAdmin extends javax.swing.JFrame {
     public ContentAdmin() throws SQLException, ClassNotFoundException{
         initComponents();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        this.lblUserName.setText(GlobalValues.USERNAME);
-        this.lblName.setText("OptiData v"+GlobalValues.VERSION);
-        this.lblTitle.setText(GlobalValues.PROJECTNAME);
-        load.probarConexion();
+//        this.lblUserName.setText(GV.USER.getNombre());
+        this.lblName.setText(GV.projectName()+" "+GV.version());
+        this.lblTitle.setText(GV.projectName());
+        
         centrarPantalla();
         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/img/icon.png"));
         setIconImage(icon);
-        String licencia = "";
-        if(load.isActive()){
-            licencia = "Producto bajo licencia hasta el "+load.cargarFechaLicencia();
-        }
-        else{
-            licencia = "La licencia de este producto ha caducado";
-            lblLicence.setForeground(Color.RED);
-        }
-        lblLicence.setText(licencia);
         
-        this.setTitle("Optidata "+GlobalValues.VERSION+"     "+licencia);
+        setLblLicencia();
+        lblSync();
+        String userName = (GV.user()!=null) ? GV.user().getNombre():"";
+        lblUserName.setText(userName);
+        if(GV.licenciaTipoPlan()==GlobalValuesVariables.licenciaTipoFree()){
+            btnSyncronize.setVisible(false);
+        }
+        setLblLicencia();
+        
         try {
-            boton.nuevaFicha();
+            boton.crearFicha();
         } catch (SQLException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Es probable que el servidor no se haya iniciado, Inicie el servicio y vuelva a abrir el programa.","Error de conexion",JOptionPane.INFORMATION_MESSAGE);
             System.exit(0);//opcion cerrar
         }
-        
     }
+    
+    public void setWaitCursor() {
+        JFrame frame = ContentAdmin.this;
+        if (frame != null) {
+            RootPaneContainer root = (RootPaneContainer) frame.getRootPane().getTopLevelAncestor();
+            root.getGlassPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            root.getGlassPane().setVisible(true);
+        }
+    }
+
+    public void setDefaultCursor() {
+        JFrame frame = ContentAdmin.this;
+        if (frame != null) {
+            RootPaneContainer root = (RootPaneContainer) frame.getRootPane().getTopLevelAncestor();
+            root.getGlassPane().setCursor(Cursor.getDefaultCursor());
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -80,15 +104,12 @@ public class ContentAdmin extends javax.swing.JFrame {
         principalAdmin = new javax.swing.JPanel();
         jpUpBar = new javax.swing.JPanel();
         btnSizeWindow = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
         lblUserName = new javax.swing.JLabel();
         btnUser = new javax.swing.JLabel();
-        btnSyncronize = new javax.swing.JLabel();
+        btnMessage = new javax.swing.JLabel();
         btnConfig = new javax.swing.JLabel();
         btnInvent = new javax.swing.JLabel();
-        btnSyncronize4 = new javax.swing.JLabel();
+        btnSyncronize = new javax.swing.JLabel();
         btnTools = new javax.swing.JLabel();
         btnClose = new javax.swing.JLabel();
         btnMinimizeWindow = new javax.swing.JLabel();
@@ -100,11 +121,12 @@ public class ContentAdmin extends javax.swing.JFrame {
         btnCrearFicha = new javax.swing.JLabel();
         btnDoctores = new javax.swing.JLabel();
         btnListarFichas = new javax.swing.JLabel();
-        btnVentas = new javax.swing.JLabel();
         btnClientes = new javax.swing.JLabel();
         btnInstituciones = new javax.swing.JLabel();
+        btnConvenios = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setUndecorated(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -143,20 +165,17 @@ public class ContentAdmin extends javax.swing.JFrame {
             }
         });
         jpUpBar.add(btnSizeWindow, new org.netbeans.lib.awtextra.AbsoluteConstraints(1230, 10, -1, -1));
-        jpUpBar.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 242, 13));
-
-        jTextField1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jpUpBar.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, 240, 20));
-
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Search_Property_25px_1.png"))); // NOI18N
-        jpUpBar.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, -1, -1));
 
         lblUserName.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         lblUserName.setText("Username");
         jpUpBar.add(lblUserName, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 10, 240, 20));
 
         btnUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Account_25px.png"))); // NOI18N
+        btnUser.setToolTipText("Mis datos");
         btnUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnUserMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnUserMouseEntered(evt);
             }
@@ -166,21 +185,23 @@ public class ContentAdmin extends javax.swing.JFrame {
         });
         jpUpBar.add(btnUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 10, -1, -1));
 
-        btnSyncronize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Uninstalling_Updates_25px.png"))); // NOI18N
-        btnSyncronize.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnMessage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Msg_1_25px.png"))); // NOI18N
+        btnMessage.setToolTipText("Mensajes");
+        btnMessage.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronizeMouseClicked(evt);
+                btnMessageMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnSyncronizeMouseEntered(evt);
+                btnMessageMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnSyncronizeMouseExited(evt);
+                btnMessageMouseExited(evt);
             }
         });
-        jpUpBar.add(btnSyncronize, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 10, -1, -1));
+        jpUpBar.add(btnMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 10, -1, -1));
 
         btnConfig.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Settings_25px.png"))); // NOI18N
+        btnConfig.setToolTipText("Configuracion");
         btnConfig.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnConfigMouseClicked(evt);
@@ -195,6 +216,7 @@ public class ContentAdmin extends javax.swing.JFrame {
         jpUpBar.add(btnConfig, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 10, -1, -1));
 
         btnInvent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Choice_25px.png"))); // NOI18N
+        btnInvent.setToolTipText("Inventario");
         btnInvent.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnInventMouseClicked(evt);
@@ -208,21 +230,23 @@ public class ContentAdmin extends javax.swing.JFrame {
         });
         jpUpBar.add(btnInvent, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 10, -1, -1));
 
-        btnSyncronize4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Next_25px.png"))); // NOI18N
-        btnSyncronize4.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnSyncronize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Uninstalling_Updates_25px.png"))); // NOI18N
+        btnSyncronize.setToolTipText("Sincronizar datos");
+        btnSyncronize.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSyncronize4MouseClicked(evt);
+                btnSyncronizeMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnSyncronize4MouseEntered(evt);
+                btnSyncronizeMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnSyncronize4MouseExited(evt);
+                btnSyncronizeMouseExited(evt);
             }
         });
-        jpUpBar.add(btnSyncronize4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, -1, -1));
+        jpUpBar.add(btnSyncronize, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
         btnTools.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Maintenance_25px.png"))); // NOI18N
+        btnTools.setToolTipText("Herramientas");
         btnTools.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnToolsMouseClicked(evt);
@@ -266,14 +290,14 @@ public class ContentAdmin extends javax.swing.JFrame {
 
         lblLicence.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         lblLicence.setText("Estado de licencia");
-        jpUpBar.add(lblLicence, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 10, -1, 20));
+        jpUpBar.add(lblLicence, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 10, 340, 20));
 
         jpSuperior.setBackground(new java.awt.Color(242, 240, 237));
         jpSuperior.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblName.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
         lblName.setText("OptiData vX.X.X");
-        jpSuperior.add(lblName, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 0, -1, -1));
+        jpSuperior.add(lblName, new org.netbeans.lib.awtextra.AbsoluteConstraints(1090, 0, -1, -1));
 
         lblTitle.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
         lblTitle.setText("Nueva Ficha");
@@ -282,6 +306,7 @@ public class ContentAdmin extends javax.swing.JFrame {
         jpLeftBar.setBackground(new java.awt.Color(108, 217, 186));
 
         btnCrearFicha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_New_Resume_Template_50px.png"))); // NOI18N
+        btnCrearFicha.setToolTipText("Nueva Ficha");
         btnCrearFicha.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnCrearFichaMouseClicked(evt);
@@ -298,6 +323,7 @@ public class ContentAdmin extends javax.swing.JFrame {
         });
 
         btnDoctores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Lab_Coat_50px.png"))); // NOI18N
+        btnDoctores.setToolTipText("Profesionales");
         btnDoctores.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnDoctoresMouseClicked(evt);
@@ -311,6 +337,7 @@ public class ContentAdmin extends javax.swing.JFrame {
         });
 
         btnListarFichas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_List_50px.png"))); // NOI18N
+        btnListarFichas.setToolTipText("Fichas");
         btnListarFichas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnListarFichasMouseClicked(evt);
@@ -323,20 +350,8 @@ public class ContentAdmin extends javax.swing.JFrame {
             }
         });
 
-        btnVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cash_Counter_50px.png"))); // NOI18N
-        btnVentas.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnVentasMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnVentasMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnVentasMouseExited(evt);
-            }
-        });
-
         btnClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Reception_50px.png"))); // NOI18N
+        btnClientes.setToolTipText("Clientes");
         btnClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnClientesMouseClicked(evt);
@@ -350,6 +365,7 @@ public class ContentAdmin extends javax.swing.JFrame {
         });
 
         btnInstituciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Organization_50px.png"))); // NOI18N
+        btnInstituciones.setToolTipText("Instituciones");
         btnInstituciones.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnInstitucionesMouseClicked(evt);
@@ -362,6 +378,20 @@ public class ContentAdmin extends javax.swing.JFrame {
             }
         });
 
+        btnConvenios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Handshake_50px.png"))); // NOI18N
+        btnConvenios.setToolTipText("Convenios");
+        btnConvenios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnConveniosMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnConveniosMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnConveniosMouseExited(evt);
+            }
+        });
+
         javax.swing.GroupLayout jpLeftBarLayout = new javax.swing.GroupLayout(jpLeftBar);
         jpLeftBar.setLayout(jpLeftBarLayout);
         jpLeftBarLayout.setHorizontalGroup(
@@ -370,11 +400,11 @@ public class ContentAdmin extends javax.swing.JFrame {
                 .addGroup(jpLeftBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCrearFicha)
                     .addComponent(btnListarFichas)
-                    .addComponent(btnVentas)
                     .addComponent(btnClientes)
                     .addComponent(btnDoctores)
-                    .addComponent(btnInstituciones))
-                .addGap(0, 10, Short.MAX_VALUE))
+                    .addComponent(btnInstituciones)
+                    .addComponent(btnConvenios))
+                .addGap(0, 16, Short.MAX_VALUE))
         );
         jpLeftBarLayout.setVerticalGroup(
             jpLeftBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -384,14 +414,14 @@ public class ContentAdmin extends javax.swing.JFrame {
                 .addGap(5, 5, 5)
                 .addComponent(btnListarFichas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnVentas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnClientes)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDoctores)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnInstituciones)
-                .addContainerGap(293, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnConvenios)
+                .addContainerGap(287, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -399,11 +429,10 @@ public class ContentAdmin extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(2, 2, 2)
                 .addComponent(jpLeftBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jpUpBar, javax.swing.GroupLayout.DEFAULT_SIZE, 1305, Short.MAX_VALUE)
+                    .addComponent(jpUpBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jpSuperior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(principalAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
@@ -429,9 +458,7 @@ public class ContentAdmin extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
             cerrar();
-        } catch (SQLException ex) {
-            Logger.getLogger(ContentAdmin.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (SQLException | ClassNotFoundException | InterruptedException ex) {
             Logger.getLogger(ContentAdmin.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowClosing
@@ -444,50 +471,37 @@ public class ContentAdmin extends javax.swing.JFrame {
 //            this.setState(JFrame.MAXIMIZED_BOTH);
     }//GEN-LAST:event_btnSizeWindowMouseClicked
 
-    private void btnSyncronizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronizeMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSyncronizeMouseClicked
+    private void btnMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMessageMouseClicked
+        if(GV.licenciaExpirada()){
+            GV.mensajeLicenceExpired();
+        }else{
+            if(GlobalValuesFunctions.licenciaIsEnableToSendInternMessages()){
+               boton.mensajes(); 
+            }else{
+                GV.mensajeLicenceAccessDenied();
+            }
+        }
+    }//GEN-LAST:event_btnMessageMouseClicked
 
     private void btnConfigMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfigMouseClicked
-        // TODO add your handling code here:
+        if(GV.tipoUserAdmin()){
+            OptionPane.showOptionPanel(new OpanelConfig(), "Configuración");
+        }else{
+            GV.mensajeAccessDenied();
+        }
     }//GEN-LAST:event_btnConfigMouseClicked
 
     private void btnInventMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInventMouseClicked
-        // TODO add your handling code here:
+        OptionPane.showOptionPanel(new OpanelInventario(), "Inventario");
     }//GEN-LAST:event_btnInventMouseClicked
 
-    private void btnSyncronize4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize4MouseClicked
-        JTextField idFicha = new JTextField();
-        int res = JOptionPane.showConfirmDialog(null,idFicha, "Ingrese numero de folio",JOptionPane.OK_CANCEL_OPTION);
-        if(res < 0){
-            return;
-        }else{
-            if(res == 2)
-                return;
-            String respuesta = idFicha.getText();
-            FnInfo load = new FnInfo();
-            try {
-                Boton btn = new Boton();
-                btn.abrirFicha(respuesta);
-        }catch (SQLException | ClassNotFoundException | NullPointerException ex) {
-                JOptionPane.showMessageDialog(null, "Error: El folio ingresado no existe.","Error",JOptionPane.WARNING_MESSAGE);
-            }
-        }
-        return;
-    }//GEN-LAST:event_btnSyncronize4MouseClicked
-
     private void btnToolsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnToolsMouseClicked
-        // TODO add your handling code here:
+        if(GV.tipoUserAdmin()){
+            OptionPane.showOptionPanel(new OpanelTools(), OptionPane.titleTool());
+        }else{
+            GV.mensajeAccessDenied();
+        }
     }//GEN-LAST:event_btnToolsMouseClicked
-
-    private void btnSyncronize4MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize4MouseEntered
-        btnSyncronize4.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnSyncronize4.getIcon().toString()))));
-    }//GEN-LAST:event_btnSyncronize4MouseEntered
-
-    private void btnSyncronize4MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronize4MouseExited
-        
-        btnSyncronize4.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnSyncronize4.getIcon().toString()))));
-    }//GEN-LAST:event_btnSyncronize4MouseExited
 
     private void btnToolsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnToolsMouseEntered
         
@@ -522,14 +536,13 @@ public class ContentAdmin extends javax.swing.JFrame {
         btnUser.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnUser.getIcon().toString()))));
     }//GEN-LAST:event_btnUserMouseExited
 
-    private void btnSyncronizeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronizeMouseEntered
-        
-        btnSyncronize.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIconIfConnected(btnSyncronize.getIcon().toString()))));
-    }//GEN-LAST:event_btnSyncronizeMouseEntered
+    private void btnMessageMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMessageMouseEntered
+        btnMessage.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnMessage.getIcon().toString()))));
+    }//GEN-LAST:event_btnMessageMouseEntered
 
-    private void btnSyncronizeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronizeMouseExited
-        btnSyncronize.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnSyncronize.getIcon().toString()))));
-    }//GEN-LAST:event_btnSyncronizeMouseExited
+    private void btnMessageMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMessageMouseExited
+        btnMessage.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnMessage.getIcon().toString()))));
+    }//GEN-LAST:event_btnMessageMouseExited
 
     private void btnSizeWindowMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSizeWindowMouseEntered
         String img = btnSizeWindow.getIcon().toString();
@@ -549,7 +562,7 @@ public class ContentAdmin extends javax.swing.JFrame {
 
     private void btnCrearFichaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCrearFichaMouseClicked
         try {
-            boton.nuevaFicha();
+            boton.crearFicha();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(ContentAdmin.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -568,16 +581,12 @@ public class ContentAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDoctoresMouseClicked
 
     private void btnListarFichasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnListarFichasMouseClicked
-        OptionPane.showPanel(new OpanelSelectDate(), "Seleccione un estado y un rango de fechas");
-    }//GEN-LAST:event_btnListarFichasMouseClicked
-
-    private void btnVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVentasMouseClicked
         try {
-            boton.misFichas();
+            boton.fichas(GV.cboFichasFilter());
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(ContentAdmin.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnVentasMouseClicked
+    }//GEN-LAST:event_btnListarFichasMouseClicked
 
     private void btnClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseClicked
         try {
@@ -613,14 +622,6 @@ public class ContentAdmin extends javax.swing.JFrame {
         btnListarFichas.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnListarFichas.getIcon().toString()))));
     }//GEN-LAST:event_btnListarFichasMouseExited
 
-    private void btnVentasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVentasMouseEntered
-        btnVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnVentas.getIcon().toString()))));
-    }//GEN-LAST:event_btnVentasMouseEntered
-
-    private void btnVentasMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnVentasMouseExited
-        btnVentas.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnVentas.getIcon().toString()))));
-    }//GEN-LAST:event_btnVentasMouseExited
-
     private void btnClientesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseEntered
         
         btnClientes.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnClientes.getIcon().toString()))));
@@ -648,6 +649,8 @@ public class ContentAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInstitucionesMouseExited
 
     private void btnCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMouseClicked
+        SubProcess.stopAll();
+        
         try {
             cerrar();
         } catch (Exception ex) {
@@ -676,6 +679,53 @@ public class ContentAdmin extends javax.swing.JFrame {
         btnMinimizeWindow.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnMinimizeWindow.getIcon().toString()))));
     }//GEN-LAST:event_btnMinimizeWindowMouseExited
 
+    private void btnUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUserMouseClicked
+        OptionPane.showOptionPanel(new OpanelUserData(), "Mis Datos");
+    }//GEN-LAST:event_btnUserMouseClicked
+
+    private void btnConveniosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConveniosMouseClicked
+        try {
+            boton.convenios();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(ContentAdmin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnConveniosMouseClicked
+
+    private void btnConveniosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConveniosMouseEntered
+        btnConvenios.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnConvenios.getIcon().toString()))));
+    }//GEN-LAST:event_btnConveniosMouseEntered
+
+    private void btnConveniosMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConveniosMouseExited
+        btnConvenios.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnConvenios.getIcon().toString()))));
+    }//GEN-LAST:event_btnConveniosMouseExited
+
+    private void btnSyncronizeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronizeMouseExited
+       btnSyncronize.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnSyncronize.getIcon().toString()))));
+    }//GEN-LAST:event_btnSyncronizeMouseExited
+
+    private void btnSyncronizeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronizeMouseEntered
+        if(GV.isOnline()){
+            btnSyncronize.setToolTipText("Sincronizar datos");
+        }else{
+            btnSyncronize.setToolTipText("Red no disponible");
+        }
+        btnSyncronize.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIconIfConnected(btnSyncronize.getIcon().toString()))));
+    }//GEN-LAST:event_btnSyncronizeMouseEntered
+
+    private void btnSyncronizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronizeMouseClicked
+        if(GV.licenciaExpirada()){
+            GV.mensajeLicenceExpired();
+        }else{
+            if(GV.sincronizacionIsStopped()){
+                GV.cursorWAIT();
+                SubProcess.SyncAll();
+                GV.cursorDF();
+            }else{
+                OptionPane.showMsg("Imposible efectuar operación", "Ya se encuentra una sincronización en curso", 2);
+            }
+        }  
+    }//GEN-LAST:event_btnSyncronizeMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -703,6 +753,8 @@ public class ContentAdmin extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -720,29 +772,26 @@ public class ContentAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel btnClientes;
     private javax.swing.JLabel btnClose;
     private javax.swing.JLabel btnConfig;
+    private javax.swing.JLabel btnConvenios;
     private javax.swing.JLabel btnCrearFicha;
     private javax.swing.JLabel btnDoctores;
     private javax.swing.JLabel btnInstituciones;
     private javax.swing.JLabel btnInvent;
     private javax.swing.JLabel btnListarFichas;
+    private javax.swing.JLabel btnMessage;
     private javax.swing.JLabel btnMinimizeWindow;
     private javax.swing.JLabel btnSizeWindow;
     private javax.swing.JLabel btnSyncronize;
-    private javax.swing.JLabel btnSyncronize4;
     private javax.swing.JLabel btnTools;
     private javax.swing.JLabel btnUser;
-    private javax.swing.JLabel btnVentas;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel jpLeftBar;
     private javax.swing.JPanel jpSuperior;
     private javax.swing.JPanel jpUpBar;
     private javax.swing.JLabel lblLicence;
     private javax.swing.JLabel lblName;
     public static javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblUserName;
+    public static javax.swing.JLabel lblUserName;
     public static javax.swing.JPanel principalAdmin;
     // End of variables declaration//GEN-END:variables
 
@@ -750,56 +799,35 @@ public class ContentAdmin extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
 
-    private void cerrar() throws SQLException, ClassNotFoundException{//cerrar con opciones en nueva implementacion
-        String botones1[] = {"Cerrar","Cancelar"};
-        int opcion = JOptionPane.showOptionDialog(this, "¿Desea cerrar la aplicación?", "Cerrar", 0, JOptionPane.INFORMATION_MESSAGE, null, botones1, this);
-        if(opcion == JOptionPane.YES_OPTION){
-            String botones2[] = {"Aceptar","Anular"};
-            if(load.isConnected() && load.isLocal() && load.isActive()){
-                opcion = JOptionPane.showOptionDialog(this, "Se respaldará la base de datos", "Respaldar", 0, JOptionPane.INFORMATION_MESSAGE, null, botones2, this);
-                if(opcion == JOptionPane.YES_OPTION){
-                    try{
-                        if(load.isActive()){
-                            new Splash().setVisible(true);
-                            load.crearBackUp("sdxod", "root", load.getDbPass());
-                        }else
-                           JOptionPane.showMessageDialog(null,"No se pueden respaldar los datos,\ntoda la información se puede perder si no renueva su licencia.","Es necesaria la renovación de la Licencia",JOptionPane.ERROR_MESSAGE); 
-                    }catch(Exception e){
-                        JOptionPane.showMessageDialog(null, "No se pudo ejecutar el respaldo","Error",JOptionPane.WARNING_MESSAGE);
-                    }
-                }else{
-                    JOptionPane.showMessageDialog(null,"La información valiosa del sistema podría perderse para siempre.\nHaga respaldo de datos periódicamente por su seguridad.","Es necesario respaldar la base de datos",JOptionPane.ERROR_MESSAGE); 
-                }
-            }
-            
+    private void cerrar() throws SQLException, ClassNotFoundException, InterruptedException{//cerrar con opciones en nueva implementacion
+        if(OptionPane.getConfirmation("Cerrar", "¿Desea cerrar la aplicación?", JOptionPane.INFORMATION_MESSAGE)){
+            this.setVisible(false);
+            if(OptionPane.getConfirmation("Respaldar información", "¿Deseas respaldar los datos?", JOptionPane.INFORMATION_MESSAGE))
+                GlobalValuesBD.backUpLocalBd();
+              
             System.exit(0);
-        }   
-    }
-    
-    private boolean validarAdmin() {//en v4 validar con GlobalValues.ID_USER
-        JPasswordField pwd = new JPasswordField(10);
-        int res = JOptionPane.showConfirmDialog(null,pwd, "Ingrese clave de administrador",JOptionPane.OK_CANCEL_OPTION);
-        if(res < 0){
-            return false;
-        }else{
-            if(res == 2)
-                return false;
-            String respuesta = pwd.getText();
-            FnInfo load = new FnInfo();
-            try {
-                if(respuesta.equals(load.getPass())){
-                    return true;
-                }else
-                    JOptionPane.showMessageDialog(null, "La contraseña es incorrecta","Acceso denegado",JOptionPane.ERROR_MESSAGE);
-        }catch (SQLException | ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, "Error: "+ex.getMessage(),"Error",JOptionPane.WARNING_MESSAGE);
-            }
         }
-        return false;
     }
 
-    
+    /**
+     * imprrme en la información de la licencia el estado de sincronizacion una vez
+     * que se encuentra en ejecucion.
+     */
+    private void lblSync() {
+        SubProcess.lblSyncStatus(lblLicence);
+    }
 
-    
-
+    private void setLblLicencia() {
+        lblLicence.setText(GV.licenciaEstadoStr());
+        this.setTitle(GV.projectName()+" "+GV.version()+"     "+GV.licenciaEstadoStr());
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(() -> {
+                while(true){
+                    String licencia = "";
+                    licencia = GV.licenciaEstadoStr();
+                    lblLicence.setText(licencia);
+                    this.setTitle(GV.projectName()+" "+GV.version()+"     "+licencia);
+                }
+        });
+    }
 }

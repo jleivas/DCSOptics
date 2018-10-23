@@ -5,14 +5,14 @@
  */
 package entities.ficha;
 
-import entities.abstractclasses.SyncStringId;
+import entities.abstractclasses.SyncFichaClass;
 import java.util.Date;
 
 /**
  *
  * @author Lenovo G470
  */
-public class HistorialPago extends SyncStringId{
+public class HistorialPago extends SyncFichaClass{
     
     private Date fecha;
     private int abono;
@@ -23,8 +23,8 @@ public class HistorialPago extends SyncStringId{
     public HistorialPago() {
     }
 
-    public HistorialPago(String cod, Date fecha, int abono, int estado, 
-            int tipoPago, String idFicha, Date lastUpdate, int lastHour) {
+    public HistorialPago(String cod, Date fecha, int abono, 
+            int tipoPago, String idFicha,int estado, Date lastUpdate, int lastHour) {
         setCod(cod);
         setFecha(fecha);
         setAbono(abono);
@@ -42,7 +42,7 @@ public class HistorialPago extends SyncStringId{
     }
 
     public void setIdFicha(String idFicha) {
-        this.idFicha = idFicha;
+        this.idFicha = getStr(idFicha);
     }
 
     public void setFecha(Date fecha) {

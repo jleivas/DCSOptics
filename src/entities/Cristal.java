@@ -5,15 +5,14 @@
  */
 package entities;
 
-import entities.abstractclasses.SyncIntId;
+import entities.abstractclasses.SyncIntIdValidaName;
 import java.util.Date;
 
 /**
  *
  * @author home
  */
-public class Cristal extends SyncIntId{
-    private String nombre;
+public class Cristal extends SyncIntIdValidaName{
     private int precio;
 
     public Cristal() {
@@ -29,15 +28,11 @@ public class Cristal extends SyncIntId{
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        super.setNombre(getStr(nombre).toUpperCase());
     }
 
     public void setPrecio(int precio) {
         this.precio = precio;
-    }
-
-    public String getNombre() {
-        return nombre;
     }
 
     public int getPrecio() {
@@ -47,7 +42,7 @@ public class Cristal extends SyncIntId{
     @Override
     public String toString() {
         return "\nID: "+getId()+
-                " - Nombre: "+this.nombre+
+                " - Nombre: "+getNombre()+
                 " - Precio: "+this.precio+
                 " - LAST_UPDATE:"+fn.date.Cmp.dateToString(getLastUpdate(), "dd-mm-yyyy")+
                 " - Estado:"+getEstado();

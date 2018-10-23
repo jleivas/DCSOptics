@@ -10,7 +10,6 @@ package fn;
  * @author sdx
  */
 public class Icons {
-    static FnInfo load = new FnInfo();
     public static String getEnteredIcon(String stIcon) {
         stIcon = stIcon.substring(stIcon.indexOf("/icons"));
         return stIcon.replaceAll(".png", "_1.png");
@@ -18,10 +17,11 @@ public class Icons {
 
     public static String getEnteredIconIfActive(String stIcon) {
         stIcon = stIcon.substring(stIcon.indexOf("/icons"));
-        if(load.isActive())
-            return stIcon.replaceAll(".png", "_1.png");
-        else
-            return stIcon.replaceAll(".png", "_2.png");
+//        if(GV.licence()>0)
+//            return stIcon.replaceAll(".png", "_1.png");
+//        else
+//            return stIcon.replaceAll(".png", "_2.png");
+        return stIcon.replaceAll(".png", "_1.png");//borrar
     }
 
     public static String getExitedIcon(String img) {
@@ -31,7 +31,7 @@ public class Icons {
 
     public static String getEnteredIconIfConnected(String stIcon) {
         stIcon = stIcon.substring(stIcon.indexOf("/icons"));
-        if(load.isConnected())
+        if(GV.isOnline())
             return stIcon.replaceAll(".png", "_1.png");
         else
             return stIcon.replaceAll(".png", "_2.png");

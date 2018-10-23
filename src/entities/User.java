@@ -36,27 +36,27 @@ public class User extends SyncIntId{
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = mailValidate(email);
     }
 
     public String getEmail() {
-        return email;
+        return getStr(email);
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = getStr(username);
     }
 
     public String getUsername() {
-        return username;
+        return getStr(username);
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = getToName(nombre);
     }
 
     public void setPass(String pass) {
-        this.pass = pass;
+        this.pass = getStr(pass);
     }
 
     public void setTipo(int tipo) {
@@ -64,11 +64,11 @@ public class User extends SyncIntId{
     }
 
     public String getNombre() {
-        return nombre;
+        return getToName(nombre);
     }
 
     public String getPass() {
-        return pass;
+        return getStr(pass);
     }
 
     public int getTipo() {
@@ -86,6 +86,4 @@ public class User extends SyncIntId{
                 " - LAST_UPDATE:"+fn.date.Cmp.dateToString(getLastUpdate(), "dd-mm-yyyy")+
                 " - Estado:"+getEstado();
     }
-    
-    
 }

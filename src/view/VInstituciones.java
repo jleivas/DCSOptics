@@ -5,23 +5,54 @@
  */
 package view;
 
+import dao.Dao;
 import entities.Institucion;
-import fn.FnInstitucion;
-import javax.swing.JOptionPane;
+import fn.Boton;
+import fn.GV;
 import javax.swing.table.DefaultTableModel;
+import fn.Icons;
+import fn.OptionPane;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author home
  */
 public class VInstituciones extends javax.swing.JPanel {
-
-    
+    Boton boton = new Boton();
+    Dao load= new Dao();
+    private static Institucion stInstitucion = null;
+    TableRowSorter trs;
+    DefaultTableModel modelo = new DefaultTableModel() {
+           @Override
+           public boolean isCellEditable(int fila, int columna) {
+               return false; //Con esto conseguimos que la tabla no se pueda editar
+           }
+        };
+    /**
+     * Creates new form VClientes
+     */
     public VInstituciones() {
+        ContentAdmin.lblTitle.setText("Registro de institucion.");
+//        load.sincronize(new Institucion());
         initComponents();
-        ContentAdmin.lblTitle.setText("Registro de Instituciones");
-        cargarDatos(0);
+        modelo.addColumn("Id");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Email");
+        modelo.addColumn("Telefono");
+        modelo.addColumn("Comuna");
+        tblListar.setModel(modelo);
+        ContentAdmin.lblTitle.setText("Instituciones");
+        load();
+        loadPanels(1);
+        GV.cursorDF();
+        cDF();
     }
 
     /**
@@ -34,159 +65,131 @@ public class VInstituciones extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        txtBuscar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
+        cboMostrar = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblListar = new javax.swing.JTable();
-        btnAbrir = new javax.swing.JButton();
-        btnEliminar = new javax.swing.JButton();
-        btnRestaurar = new javax.swing.JButton();
-        btnBuscarEliminados = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        btnAbrir = new javax.swing.JLabel();
+        btnEliminar = new javax.swing.JLabel();
+        btnRestaurar = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        txtBuscar = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
+        pnl1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtNombreNew = new javax.swing.JTextField();
-        txtTelefonoNew = new javax.swing.JTextField();
+        txtNombreN = new javax.swing.JTextField();
+        txtTelefonoN = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtEmailNew = new javax.swing.JTextField();
+        txtEmailN = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtDireccionNew = new javax.swing.JTextField();
+        txtDireccionN = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtComunaNew = new javax.swing.JTextField();
+        txtComunaN = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtCiudadNew = new javax.swing.JTextField();
-        btnGuardar = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
+        txtCiudadN = new javax.swing.JTextField();
+        btnGuardar = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        txtWebN = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtRut = new javax.swing.JTextField();
+        pnl2 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
-        txtTelefono = new javax.swing.JTextField();
+        txtNombreU = new javax.swing.JTextField();
+        txtTelefonoU = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        txtEmail = new javax.swing.JTextField();
+        txtEmailU = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
-        txtDireccion = new javax.swing.JTextField();
+        txtDireccionU = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        txtComuna = new javax.swing.JTextField();
+        txtComunaU = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
-        txtCiudad = new javax.swing.JTextField();
-        btnModificar = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        txtId = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
-        btnActivos = new javax.swing.JButton();
-        btnEliminados = new javax.swing.JButton();
+        txtCiudadU = new javax.swing.JTextField();
+        btnModificar = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        txtWebU = new javax.swing.JTextField();
+        btnCancelar = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Instituciones", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 18))); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lista de registros", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Lista de registros", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
 
-        btnBuscar.setBackground(new java.awt.Color(153, 255, 153));
-        btnBuscar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnBuscar.setForeground(new java.awt.Color(0, 102, 0));
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnBuscar.setText("Buscar");
-        btnBuscar.setBorder(null);
-        btnBuscar.setBorderPainted(false);
-        btnBuscar.setContentAreaFilled(false);
-        btnBuscar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnBuscar.setIconTextGap(-3);
-        btnBuscar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnBuscar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
+        cboMostrar.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
+        cboMostrar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Activos", "Eliminados" }));
+        cboMostrar.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboMostrarItemStateChanged(evt);
             }
         });
 
         tblListar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Rut", "Nombre", "Email", "Telefono"
+                "Id", "Nombre", "Email", "Telefono", "Comuna"
             }
         ));
         jScrollPane1.setViewportView(tblListar);
 
-        btnAbrir.setBackground(new java.awt.Color(153, 255, 153));
-        btnAbrir.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnAbrir.setForeground(new java.awt.Color(0, 102, 0));
-        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnAbrir.setText("Cargar");
-        btnAbrir.setBorder(null);
-        btnAbrir.setBorderPainted(false);
-        btnAbrir.setContentAreaFilled(false);
-        btnAbrir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAbrir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAbrir.setIconTextGap(-3);
-        btnAbrir.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnAbrir.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnAbrir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAbrirActionPerformed(evt);
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Eye_50px.png"))); // NOI18N
+        btnAbrir.setToolTipText("Cargar");
+        btnAbrir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseExited(evt);
             }
         });
 
-        btnEliminar.setBackground(new java.awt.Color(153, 255, 153));
-        btnEliminar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnEliminar.setForeground(new java.awt.Color(51, 0, 0));
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDanger1.jpg"))); // NOI18N
-        btnEliminar.setText("Eliminar");
-        btnEliminar.setBorder(null);
-        btnEliminar.setBorderPainted(false);
-        btnEliminar.setContentAreaFilled(false);
-        btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEliminar.setIconTextGap(-3);
-        btnEliminar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDanger3.jpg"))); // NOI18N
-        btnEliminar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDanger2.jpg"))); // NOI18N
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Trash_50px.png"))); // NOI18N
+        btnEliminar.setToolTipText("Eliminar");
+        btnEliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnEliminarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnEliminarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnEliminarMouseExited(evt);
             }
         });
 
-        btnRestaurar.setBackground(new java.awt.Color(153, 255, 153));
-        btnRestaurar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnRestaurar.setForeground(new java.awt.Color(0, 102, 0));
-        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnRestaurar.setText("Restaurar");
-        btnRestaurar.setBorder(null);
-        btnRestaurar.setBorderPainted(false);
-        btnRestaurar.setContentAreaFilled(false);
-        btnRestaurar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnRestaurar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnRestaurar.setIconTextGap(-3);
-        btnRestaurar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnRestaurar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnRestaurar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRestaurarActionPerformed(evt);
+        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Data_Backup_50px.png"))); // NOI18N
+        btnRestaurar.setToolTipText("Restaurar");
+        btnRestaurar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnRestaurarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnRestaurarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnRestaurarMouseExited(evt);
             }
         });
 
-        btnBuscarEliminados.setBackground(new java.awt.Color(153, 255, 153));
-        btnBuscarEliminados.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnBuscarEliminados.setForeground(new java.awt.Color(0, 102, 0));
-        btnBuscarEliminados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnBuscarEliminados.setText("Buscar");
-        btnBuscarEliminados.setBorder(null);
-        btnBuscarEliminados.setBorderPainted(false);
-        btnBuscarEliminados.setContentAreaFilled(false);
-        btnBuscarEliminados.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscarEliminados.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnBuscarEliminados.setIconTextGap(-3);
-        btnBuscarEliminados.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnBuscarEliminados.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnBuscarEliminados.addActionListener(new java.awt.event.ActionListener() {
+        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Search_Property_25px_1.png"))); // NOI18N
+
+        txtBuscar.setToolTipText("Buscar");
+        txtBuscar.setBorder(null);
+        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarEliminadosActionPerformed(evt);
+                txtBuscarActionPerformed(evt);
+            }
+        });
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyTyped(evt);
             }
         });
 
@@ -194,395 +197,404 @@ public class VInstituciones extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 633, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnBuscarEliminados, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnAbrir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel19)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAbrir)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRestaurar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnRestaurar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar)
-                    .addComponent(btnBuscarEliminados))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAbrir)
-                    .addComponent(btnEliminar)
-                    .addComponent(btnRestaurar))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnAbrir, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnRestaurar, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(cboMostrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Agregar institucion", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
+        pnl1.setBackground(new java.awt.Color(255, 255, 255));
+        pnl1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Crear nuevo registro", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel2.setText("Nombre");
 
-        jLabel3.setText("Teléfono");
+        jLabel3.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel3.setText("Teléfonos");
 
-        txtNombreNew.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtNombreN.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNombreNewKeyTyped(evt);
+                txtNombreNKeyTyped(evt);
             }
         });
 
-        txtTelefonoNew.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtTelefonoN.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtTelefonoNewKeyTyped(evt);
+                txtTelefonoNKeyTyped(evt);
             }
         });
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel4.setText("Email");
 
-        txtEmailNew.addActionListener(new java.awt.event.ActionListener() {
+        txtEmailN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtEmailNewActionPerformed(evt);
+                txtEmailNActionPerformed(evt);
             }
         });
-        txtEmailNew.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtEmailN.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtEmailNewKeyTyped(evt);
+                txtEmailNKeyTyped(evt);
             }
         });
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel5.setText("Dirección");
 
-        txtDireccionNew.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtDireccionN.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtDireccionNewKeyTyped(evt);
+                txtDireccionNKeyTyped(evt);
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel6.setText("Comuna");
 
-        txtComunaNew.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtComunaN.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtComunaNewKeyTyped(evt);
+                txtComunaNKeyTyped(evt);
             }
         });
 
+        jLabel7.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel7.setText("Ciudad");
 
-        txtCiudadNew.addActionListener(new java.awt.event.ActionListener() {
+        txtCiudadN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCiudadNewActionPerformed(evt);
+                txtCiudadNActionPerformed(evt);
             }
         });
-        txtCiudadNew.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtCiudadN.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtCiudadNewKeyTyped(evt);
+                txtCiudadNKeyTyped(evt);
             }
         });
 
-        btnGuardar.setBackground(new java.awt.Color(153, 255, 153));
-        btnGuardar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnGuardar.setForeground(new java.awt.Color(0, 0, 51));
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo1.jpg"))); // NOI18N
-        btnGuardar.setText("Guardar");
-        btnGuardar.setBorder(null);
-        btnGuardar.setBorderPainted(false);
-        btnGuardar.setContentAreaFilled(false);
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnGuardar.setIconTextGap(-3);
-        btnGuardar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo3.jpg"))); // NOI18N
-        btnGuardar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo2.jpg"))); // NOI18N
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Save_50px.png"))); // NOI18N
+        btnGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseExited(evt);
+            }
+        });
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel8.setText("Web");
+
+        txtWebN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
+                txtWebNActionPerformed(evt);
+            }
+        });
+        txtWebN.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtWebNKeyTyped(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+        jLabel9.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel9.setText("Rut");
+
+        txtRut.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtRutKeyTyped(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnl1Layout = new javax.swing.GroupLayout(pnl1);
+        pnl1.setLayout(pnl1Layout);
+        pnl1Layout.setHorizontalGroup(
+            pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl1Layout.createSequentialGroup()
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtNombreNew, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-                            .addComponent(txtTelefonoNew))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4))
-                    .addComponent(txtDireccionNew, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtCiudadNew, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnl1Layout.createSequentialGroup()
+                        .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtNombreN, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                            .addComponent(txtTelefonoN))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(txtDireccionN, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCiudadN, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtWebN, javax.swing.GroupLayout.Alignment.LEADING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtEmailNew)
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl1Layout.createSequentialGroup()
+                        .addComponent(txtEmailN)
                         .addGap(10, 10, 10))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(pnl1Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtComunaNew)
+                        .addComponent(txtComunaN)
                         .addContainerGap())
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(pnl1Layout.createSequentialGroup()
+                        .addGap(0, 292, Short.MAX_VALUE)
                         .addComponent(btnGuardar)
+                        .addContainerGap())
+                    .addGroup(pnl1Layout.createSequentialGroup()
+                        .addComponent(txtRut, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
                         .addContainerGap())))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        pnl1Layout.setVerticalGroup(
+            pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtNombreNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombreN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtRut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtTelefonoNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTelefonoN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(txtEmailNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtEmailN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtDireccionNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDireccionN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(txtComunaNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtComunaN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(txtCiudadNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnGuardar))
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnl1Layout.createSequentialGroup()
+                        .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(txtCiudadN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(txtWebN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addComponent(btnGuardar)))
         );
 
-        jPanel3.setBackground(new java.awt.Color(204, 255, 204));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Abrir institucion", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
+        pnl2.setBackground(new java.awt.Color(108, 217, 186));
+        pnl2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Editar registro", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
 
+        jLabel11.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel11.setText("Nombre");
 
-        jLabel12.setText("Teléfono");
+        jLabel12.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel12.setText("Fonos");
 
-        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtNombreU.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNombreKeyTyped(evt);
+                txtNombreUKeyTyped(evt);
             }
         });
 
-        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtTelefonoU.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtTelefonoKeyTyped(evt);
+                txtTelefonoUKeyTyped(evt);
             }
         });
 
+        jLabel13.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel13.setText("Email");
 
-        txtEmail.addActionListener(new java.awt.event.ActionListener() {
+        txtEmailU.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtEmailActionPerformed(evt);
+                txtEmailUActionPerformed(evt);
             }
         });
-        txtEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtEmailU.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtEmailKeyTyped(evt);
+                txtEmailUKeyTyped(evt);
             }
         });
 
+        jLabel14.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel14.setText("Dirección");
 
-        txtDireccion.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtDireccionU.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtDireccionKeyTyped(evt);
+                txtDireccionUKeyTyped(evt);
             }
         });
 
+        jLabel15.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel15.setText("Comuna");
 
-        txtComuna.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtComunaU.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtComunaKeyTyped(evt);
+                txtComunaUKeyTyped(evt);
             }
         });
 
+        jLabel16.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel16.setText("Ciudad");
 
-        txtCiudad.addActionListener(new java.awt.event.ActionListener() {
+        txtCiudadU.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCiudadActionPerformed(evt);
+                txtCiudadUActionPerformed(evt);
             }
         });
-        txtCiudad.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtCiudadU.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtCiudadKeyTyped(evt);
+                txtCiudadUKeyTyped(evt);
             }
         });
 
-        btnModificar.setBackground(new java.awt.Color(153, 255, 153));
-        btnModificar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnModificar.setForeground(new java.awt.Color(0, 0, 51));
-        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo1.jpg"))); // NOI18N
-        btnModificar.setText("Modificar");
-        btnModificar.setBorder(null);
-        btnModificar.setBorderPainted(false);
-        btnModificar.setContentAreaFilled(false);
-        btnModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnModificar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnModificar.setIconTextGap(-3);
-        btnModificar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo3.jpg"))); // NOI18N
-        btnModificar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo2.jpg"))); // NOI18N
-        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Save_50px.png"))); // NOI18N
+        btnModificar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnModificarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnModificarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnModificarMouseExited(evt);
+            }
+        });
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel17.setText("Web");
+
+        txtWebU.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarActionPerformed(evt);
+                txtWebUActionPerformed(evt);
+            }
+        });
+        txtWebU.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtWebUKeyTyped(evt);
             }
         });
 
-        jLabel1.setText("Id");
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cancel_50px.png"))); // NOI18N
+        btnCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCancelarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCancelarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCancelarMouseExited(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
-                        .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel1))
+        javax.swing.GroupLayout pnl2Layout = new javax.swing.GroupLayout(pnl2);
+        pnl2.setLayout(pnl2Layout);
+        pnl2Layout.setHorizontalGroup(
+            pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-                                    .addComponent(txtTelefono))
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel13))
-                            .addComponent(txtDireccion, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtCiudad, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnl2Layout.createSequentialGroup()
+                        .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtNombreU, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                            .addComponent(txtTelefonoU))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel13))
+                    .addComponent(txtDireccionU, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCiudadU, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtWebU, javax.swing.GroupLayout.Alignment.LEADING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addComponent(txtEmailU)
+                        .addGap(10, 10, 10))
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(txtEmail)
-                                .addGap(10, 10, 10))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel15)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtComuna)
-                                .addContainerGap())
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnModificar)
-                                .addContainerGap())))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(txtComunaU)
+                        .addContainerGap())
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addGap(0, 213, Short.MAX_VALUE)
+                        .addComponent(btnCancelar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnModificar)
+                        .addContainerGap())))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        pnl2Layout.setVerticalGroup(
+            pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNombreU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTelefonoU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13)
-                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtEmailU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
-                    .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDireccionU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel15)
-                    .addComponent(txtComuna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtComunaU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(txtCiudad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnModificar))
-        );
-
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mostrar", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
-
-        btnActivos.setBackground(new java.awt.Color(153, 255, 153));
-        btnActivos.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnActivos.setForeground(new java.awt.Color(0, 102, 0));
-        btnActivos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnActivos.setText("Activos");
-        btnActivos.setBorder(null);
-        btnActivos.setBorderPainted(false);
-        btnActivos.setContentAreaFilled(false);
-        btnActivos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnActivos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnActivos.setIconTextGap(-3);
-        btnActivos.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnActivos.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnActivos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActivosActionPerformed(evt);
-            }
-        });
-
-        btnEliminados.setBackground(new java.awt.Color(153, 255, 153));
-        btnEliminados.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnEliminados.setForeground(new java.awt.Color(0, 102, 0));
-        btnEliminados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnEliminados.setText("Eliminados");
-        btnEliminados.setBorder(null);
-        btnEliminados.setBorderPainted(false);
-        btnEliminados.setContentAreaFilled(false);
-        btnEliminados.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEliminados.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEliminados.setIconTextGap(-3);
-        btnEliminados.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnEliminados.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnEliminados.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminadosActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(btnActivos, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                .addComponent(btnEliminados, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnActivos)
-                    .addComponent(btnEliminados))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel16)
+                            .addComponent(txtCiudadU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel17)
+                            .addComponent(txtWebU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addComponent(btnModificar)
+                    .addComponent(btnCancelar)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -592,14 +604,14 @@ public class VInstituciones extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(285, 285, 285)))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 25, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnl1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -607,442 +619,496 @@ public class VInstituciones extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pnl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 143, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        String buscar = txtBuscar.getText();
-        buscarDatos(buscar,1);
-        limpiarTextField();
-    }//GEN-LAST:event_btnBuscarActionPerformed
+    private void txtEmailNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailNActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEmailNActionPerformed
 
-    private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
-        try{
-            int fila = tblListar.getSelectedRow();
-            int id = Integer.parseInt(tblListar.getValueAt(fila, 0).toString());
-            abrirRegistro(id);
-            
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un registro", "Seleccione", JOptionPane.INFORMATION_MESSAGE);
+    private void txtCiudadNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCiudadNActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCiudadNActionPerformed
+
+    private void txtEmailUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailUActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEmailUActionPerformed
+
+    private void txtCiudadUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCiudadUActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCiudadUActionPerformed
+
+    private void txtNombreNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreNKeyTyped
+        int largo = 45;
+        if(txtNombreN.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "El nombre solo debe contener hasta 45 caracteres", 2);
         }
-            
-    }//GEN-LAST:event_btnAbrirActionPerformed
+    }//GEN-LAST:event_txtNombreNKeyTyped
 
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+    private void txtTelefonoNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoNKeyTyped
+        int largo = 12;
+        if(txtTelefonoN.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "El teléfono solo debe contener hasta 12 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtTelefonoNKeyTyped
+
+    private void txtEmailNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailNKeyTyped
+        int largo = 45;
+        if(txtEmailN.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "El Email solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtEmailNKeyTyped
+
+    private void txtDireccionNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionNKeyTyped
+        int largo = 45;
+        if(txtDireccionN.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "La dirección solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtDireccionNKeyTyped
+
+    private void txtComunaNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtComunaNKeyTyped
+        int largo = 45;
+        if(txtComunaN.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "La comuna solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtComunaNKeyTyped
+
+    private void txtCiudadNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiudadNKeyTyped
+        int largo = 45;
+        if(txtCiudadN.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "La ciudad solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtCiudadNKeyTyped
+
+    private void txtNombreUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreUKeyTyped
+        int largo = 45;
+        if(txtNombreU.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "El nombre solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtNombreUKeyTyped
+
+    private void txtTelefonoUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoUKeyTyped
+        int largo = 12;
+        if(txtTelefonoU.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "El telefono solo debe contener hasta 12 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtTelefonoUKeyTyped
+
+    private void txtEmailUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailUKeyTyped
+        int largo = 45;
+        if(txtEmailU.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "El email solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtEmailUKeyTyped
+
+    private void txtDireccionUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionUKeyTyped
+        int largo = 45;
+        if(txtDireccionU.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "La dirección solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtDireccionUKeyTyped
+
+    private void txtComunaUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtComunaUKeyTyped
+        int largo = 45;
+        if(txtComunaU.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "La comuna solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtComunaUKeyTyped
+
+    private void txtCiudadUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiudadUKeyTyped
+        int largo = 45;
+        if(txtCiudadU.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "La ciudad solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtCiudadUKeyTyped
+
+    private void btnAbrirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseClicked
         try{
+            cWT();
             int fila = tblListar.getSelectedRow();
-            int id = Integer.parseInt(tblListar.getValueAt(fila, 0).toString());
-            FnInstitucion load = new FnInstitucion();
-            Institucion temp = load.cargar(id);
-            int respuesta = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar a "+temp.getNombre()+"?");
-            if(respuesta == JOptionPane.YES_OPTION){
-                if(load.eliminar(id)){
-                    JOptionPane.showMessageDialog(null, "El registro ha sido eliminado", "Eliminar", JOptionPane.INFORMATION_MESSAGE);
-                }else{
-                    JOptionPane.showMessageDialog(null, "No se pudo eliminar el registro", "Eliminar", JOptionPane.WARNING_MESSAGE);
+            String id = (tblListar.getValueAt(fila, 0).toString());
+            
+            abrirInstitucion(id);
+            cDF();
+        }catch(Exception e){
+            OptionPane.showMsg("Seleccione un elemento en la tabla","Debe hacer clic sobre un elemento de la tabla,\n"
+                    + "Luego presione el botón \"Ver\".",  2);
+            cDF();
+        }
+    }//GEN-LAST:event_btnAbrirMouseClicked
+
+    private void btnEliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseClicked
+        if(GV.tipoUserAdmin()){
+            try{
+                cWT();
+                int fila = tblListar.getSelectedRow();
+                String id = (tblListar.getValueAt(fila, 0).toString());
+                if(OptionPane.getConfirmation("Eliminar Institucion", "¿Esta seguro que desea eliminar el registro?", 2)){
+                    cWT();
+                    Institucion temp = (Institucion)load.get(id,0,new Institucion());
+                    if(!load.restoreOrDeleteFromUI(temp)){
+                        cDF();
+                        return;
+                    }
                 }
-                cargarDatos(0);
+                cargarDatos("0");
+            }catch(Exception e){
+                OptionPane.showMsg("Seleccione Institucion","Error al cargar valores,\n"
+                        + "es posible que no se haya seleccionado un registro:\n"
+                        + "Debe hacer clic sobre un elemento de la tabla,\n"
+                        + "Luego presione el botón \"Ver\".\n"
+                        + "Otro posible error: el valor seleccionado no tiene un identificador válido.",2);
             }
-            
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un registro", "Seleccione", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }//GEN-LAST:event_btnEliminarActionPerformed
-
-    private void txtEmailNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailNewActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtEmailNewActionPerformed
-
-    private void txtCiudadNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCiudadNewActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCiudadNewActionPerformed
-
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String nombre=txtNombreNew.getText();
-        if(nombre.length() > 3){
-            String telefono=txtTelefonoNew.getText();
-            String mail=txtEmailNew.getText();
-            String direccion=txtDireccionNew.getText();
-            String comuna=txtComunaNew.getText();
-            String ciudad=txtCiudadNew.getText();
-            int estado=1;
-
-            Institucion nueva= new Institucion(0, nombre, telefono, mail, direccion, comuna, ciudad, estado);
-            FnInstitucion fn = new FnInstitucion();
-            String mensaje="ERROR";
-            try {
-              mensaje=fn.guardar(nueva);  
-            } catch (Exception e) {
-                mensaje="ERROR"+e;
-            }
-
-            JOptionPane.showMessageDialog(null, mensaje, "Guardar", JOptionPane.INFORMATION_MESSAGE);
-            cargarDatos(0);
+            cDF();
         }else{
-            JOptionPane.showMessageDialog(null, "Ingrese un nombre válido", "Guardar", JOptionPane.WARNING_MESSAGE);
+            GV.mensajeAccessDenied();
         }
-            
-        
-        
-        
-    }//GEN-LAST:event_btnGuardarActionPerformed
+    }//GEN-LAST:event_btnEliminarMouseClicked
 
-    private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtEmailActionPerformed
-
-    private void txtCiudadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCiudadActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCiudadActionPerformed
-
-    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        int id = Integer.parseInt(txtId.getText());
-        String nombre= txtNombre.getText();
-        String telefono = txtTelefono.getText();
-        String email = txtEmail.getText();
-        String direccion = txtDireccion.getText();
-        String comuna = txtComuna.getText();
-        String ciudad = txtCiudad.getText();
-        int estado = 1;
-        
-        Institucion mod = new Institucion(id, nombre, telefono, email, direccion, comuna, ciudad, estado);
-        FnInstitucion load = new FnInstitucion();
-        try {
-            if(load.modificar(mod))
-                JOptionPane.showMessageDialog(null, "Operación realizada con exito", "Modificar", JOptionPane.INFORMATION_MESSAGE);
-            else
-                JOptionPane.showMessageDialog(null, "No se pudo efectuar la operación", "Modificar", JOptionPane.WARNING_MESSAGE);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado "+ex.getMessage(), "Modificar", JOptionPane.WARNING_MESSAGE);
-        } catch (ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado "+ex.getMessage(), "Modificar", JOptionPane.WARNING_MESSAGE);
-        }
-        cargarDatos(0);
-    }//GEN-LAST:event_btnModificarActionPerformed
-
-    private void txtNombreNewKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreNewKeyTyped
-        int largo = 45;
-        if(txtNombreNew.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El nombre solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtNombreNewKeyTyped
-
-    private void txtTelefonoNewKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoNewKeyTyped
-        int largo = 12;
-        if(txtTelefonoNew.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El teléfono solo debe contener hasta 12 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtTelefonoNewKeyTyped
-
-    private void txtEmailNewKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailNewKeyTyped
-        int largo = 45;
-        if(txtEmailNew.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El Email solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtEmailNewKeyTyped
-
-    private void txtDireccionNewKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionNewKeyTyped
-        int largo = 45;
-        if(txtDireccionNew.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "La dirección solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtDireccionNewKeyTyped
-
-    private void txtComunaNewKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtComunaNewKeyTyped
-        int largo = 45;
-        if(txtComunaNew.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "La comuna solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtComunaNewKeyTyped
-
-    private void txtCiudadNewKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiudadNewKeyTyped
-        int largo = 45;
-        if(txtCiudadNew.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "La ciudad solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtCiudadNewKeyTyped
-
-    private void btnActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivosActionPerformed
-        cargarDatos(0);
-    }//GEN-LAST:event_btnActivosActionPerformed
-
-    private void btnEliminadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminadosActionPerformed
-        cargarDatos(-1);
-    }//GEN-LAST:event_btnEliminadosActionPerformed
-
-    private void btnRestaurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestaurarActionPerformed
-        try{
-            int fila = tblListar.getSelectedRow();
-            int id = Integer.parseInt(tblListar.getValueAt(fila, 0).toString());
-            FnInstitucion load = new FnInstitucion();
-            int respuesta = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea restaurar esta institución?");
-            if(respuesta == JOptionPane.YES_OPTION){
-                if(load.restaurar(id)){
-                    JOptionPane.showMessageDialog(null, "El valor ha sido restaurado", "Restaurar", JOptionPane.INFORMATION_MESSAGE);
-                }else{
-                    JOptionPane.showMessageDialog(null, "No se pudo restaurar", "Restaurar", JOptionPane.WARNING_MESSAGE);
+    private void btnRestaurarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseClicked
+        if(GV.tipoUserAdmin()){
+            try{
+                cWT();
+                int fila = tblListar.getSelectedRow();
+                String id = (String)tblListar.getValueAt(fila, 0);
+                if(OptionPane.getConfirmation("Confirmación de Institucion", "¿Esta seguro que desea restaurar este registro?", 1)){
+                    cWT();
+                    Institucion temp = (Institucion)load.get(id,0,new Institucion());
+                    if(!load.restoreOrDeleteFromUI(temp)){
+                        cDF();
+                        return;
+                    }
+                    cargarDatos("-1");
                 }
-                cargarDatos(-1);
+            }catch(Exception e){
+                OptionPane.showMsg("Seleccione Institucion","Error al cargar valores,\n"
+                        + "es posible que no hay seleccionado un registro\n"
+                        + "o el valor seleccionado no tiene un identificador válido.",2);
             }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un valor en la tabla", "Seleccione", JOptionPane.INFORMATION_MESSAGE);
+            cDF();
+        }else{
+            GV.mensajeAccessDenied();
         }
-    }//GEN-LAST:event_btnRestaurarActionPerformed
+    }//GEN-LAST:event_btnRestaurarMouseClicked
 
-    private void btnBuscarEliminadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEliminadosActionPerformed
-        String buscar = txtBuscar.getText();
-        buscarDatos(buscar,0);
+    private void btnAbrirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseEntered
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnAbrir.getIcon().toString()))));
+    }//GEN-LAST:event_btnAbrirMouseEntered
+
+    private void btnAbrirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseExited
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnAbrir.getIcon().toString()))));
+    }//GEN-LAST:event_btnAbrirMouseExited
+
+    private void btnEliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseEntered
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnEliminar.getIcon().toString()))));
+    }//GEN-LAST:event_btnEliminarMouseEntered
+
+    private void btnEliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseExited
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnEliminar.getIcon().toString()))));
+    }//GEN-LAST:event_btnEliminarMouseExited
+
+    private void btnRestaurarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseEntered
+        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnRestaurar.getIcon().toString()))));
+    }//GEN-LAST:event_btnRestaurarMouseEntered
+
+    private void btnRestaurarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseExited
+        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnRestaurar.getIcon().toString()))));
+    }//GEN-LAST:event_btnRestaurarMouseExited
+
+    private void cboMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboMostrarItemStateChanged
+        cWT();
+        load();
+        cDF();
+    }//GEN-LAST:event_cboMostrarItemStateChanged
+
+    private void btnGuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseClicked
+        cWT();
+        String rut = GV.getFilterString(txtRut.getText());
+        String nombre=GV.getFilterString(txtNombreN.getText());
+        if(!GV.validaRut(rut)){
+            if(!OptionPane.getConfirmation("Revise el identificador", "¿Está seguro que el identificador o rut ("+rut+") ingresado es correcto?\n"
+                    + "una vez registrado no se podrá modificar.", 2)){
+                cDF();
+                return;
+            }
+        }
+        String telefono=GV.getFilterString(txtTelefonoN.getText());
+        String mail=GV.getFilterString(GV.mailValidate(txtEmailN.getText().toLowerCase()));
+        String direccion=GV.getFilterString(txtDireccionN.getText());
+        String comuna=GV.getFilterString(txtComunaN.getText());
+        String ciudad=GV.getFilterString(txtCiudadN.getText());
+        String web = GV.getFilterString(txtWebN.getText());
+        Institucion institucion= new Institucion(rut, nombre, telefono, mail,web, direccion, comuna, ciudad, 1, null, 0);
+        if(!load.addFromUI(institucion)){
+            cDF();
+            return;
+        }
+        cargarDatos("0");
+        cDF();
+    }//GEN-LAST:event_btnGuardarMouseClicked
+
+    private void btnGuardarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseEntered
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnGuardar.getIcon().toString()))));
+    }//GEN-LAST:event_btnGuardarMouseEntered
+
+    private void btnGuardarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseExited
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnGuardar.getIcon().toString()))));
+    }//GEN-LAST:event_btnGuardarMouseExited
+
+    private void btnModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseClicked
+        cWT();
+        String nombre= GV.getFilterString(txtNombreU.getText());
+        String telefono = GV.getFilterString(txtTelefonoU.getText());
+        String email = GV.getFilterString(GV.mailValidate(txtEmailU.getText()));
+        
+        stInstitucion.setCiudad(txtCiudadU.getText());
+        stInstitucion.setComuna(txtComunaU.getText());
+        stInstitucion.setDireccion(txtDireccionU.getText());
+        stInstitucion.setEmail(email);
+        stInstitucion.setNombre(nombre);
+        stInstitucion.setTelefono(telefono);
+        stInstitucion.setWeb(txtWebU.getText());
+        cWT();
+        if(!load.updateFromUI(stInstitucion)){
+            cDF();
+            return;
+        }
+        cargarDatos("0");
+        cDF();
+    }//GEN-LAST:event_btnModificarMouseClicked
+
+    private void btnModificarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseEntered
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnModificar.getIcon().toString()))));// TODO add your handling code here:
+    }//GEN-LAST:event_btnModificarMouseEntered
+
+    private void btnModificarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseExited
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnModificar.getIcon().toString()))));// TODO add your handling code here:
+    }//GEN-LAST:event_btnModificarMouseExited
+
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarActionPerformed
+
+    private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
+        txtBuscar.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(final KeyEvent e) {
+//                trs.setRowFilter(RowFilter.regexFilter(txtBuscar.getText(), 1));
+                trs.setRowFilter(RowFilter.regexFilter("(?i)"+txtBuscar.getText(), 0,1,2,3,4,5,7,8,9,10));
+            }
+            
+        });
+        
+        
+        
+        trs = new TableRowSorter(modelo);
+        
+        tblListar.setRowSorter(trs);
+    }//GEN-LAST:event_txtBuscarKeyTyped
+
+    private void txtWebNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWebNActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtWebNActionPerformed
+
+    private void txtWebNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtWebNKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtWebNKeyTyped
+
+    private void txtWebUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtWebUActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtWebUActionPerformed
+
+    private void txtWebUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtWebUKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtWebUKeyTyped
+
+    private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
         limpiarTextField();
-    }//GEN-LAST:event_btnBuscarEliminadosActionPerformed
+        loadPanels(1);
+    }//GEN-LAST:event_btnCancelarMouseClicked
 
-    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
-        int largo = 45;
-        if(txtNombre.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El nombre solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtNombreKeyTyped
+    private void btnCancelarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseEntered
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnCancelar.getIcon().toString()))));// TODO add your handling code here:
+    }//GEN-LAST:event_btnCancelarMouseEntered
 
-    private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
-        int largo = 12;
-        if(txtTelefono.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El telefono solo debe contener hasta 12 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtTelefonoKeyTyped
+    private void btnCancelarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseExited
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnCancelar.getIcon().toString()))));// TODO add your handling code here:
+    }//GEN-LAST:event_btnCancelarMouseExited
 
-    private void txtEmailKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyTyped
-        int largo = 45;
-        if(txtEmail.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El email solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtEmailKeyTyped
-
-    private void txtDireccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyTyped
-        int largo = 45;
-        if(txtDireccion.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "La dirección solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtDireccionKeyTyped
-
-    private void txtComunaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtComunaKeyTyped
-        int largo = 45;
-        if(txtComuna.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "La comuna solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtComunaKeyTyped
-
-    private void txtCiudadKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCiudadKeyTyped
-        int largo = 45;
-        if(txtCiudad.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "La ciudad solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtCiudadKeyTyped
+    private void txtRutKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRutKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtRutKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAbrir;
-    private javax.swing.JButton btnActivos;
-    private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnBuscarEliminados;
-    private javax.swing.JButton btnEliminados;
-    private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnModificar;
-    private javax.swing.JButton btnRestaurar;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel btnAbrir;
+    private javax.swing.JLabel btnCancelar;
+    private javax.swing.JLabel btnEliminar;
+    private javax.swing.JLabel btnGuardar;
+    private javax.swing.JLabel btnModificar;
+    private javax.swing.JLabel btnRestaurar;
+    private javax.swing.JComboBox<String> cboMostrar;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel pnl1;
+    private javax.swing.JPanel pnl2;
     private javax.swing.JTable tblListar;
     private javax.swing.JTextField txtBuscar;
-    private javax.swing.JTextField txtCiudad;
-    private javax.swing.JTextField txtCiudadNew;
-    private javax.swing.JTextField txtComuna;
-    private javax.swing.JTextField txtComunaNew;
-    private javax.swing.JTextField txtDireccion;
-    private javax.swing.JTextField txtDireccionNew;
-    private javax.swing.JTextField txtEmail;
-    private javax.swing.JTextField txtEmailNew;
-    private javax.swing.JTextField txtId;
-    private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtNombreNew;
-    private javax.swing.JTextField txtTelefono;
-    private javax.swing.JTextField txtTelefonoNew;
+    private javax.swing.JTextField txtCiudadN;
+    private javax.swing.JTextField txtCiudadU;
+    private javax.swing.JTextField txtComunaN;
+    private javax.swing.JTextField txtComunaU;
+    private javax.swing.JTextField txtDireccionN;
+    private javax.swing.JTextField txtDireccionU;
+    private javax.swing.JTextField txtEmailN;
+    private javax.swing.JTextField txtEmailU;
+    private javax.swing.JTextField txtNombreN;
+    private javax.swing.JTextField txtNombreU;
+    private javax.swing.JTextField txtRut;
+    private javax.swing.JTextField txtTelefonoN;
+    private javax.swing.JTextField txtTelefonoU;
+    private javax.swing.JTextField txtWebN;
+    private javax.swing.JTextField txtWebU;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarDatos(int listar) {
+    
+    private void load(){
+        if(cboMostrar.getSelectedIndex()==0){//en nueva version cargar ventana completa con lista de clientes estatica global
+            cargarDatos("0");
+        }else{
+            if(!GV.tipoUserAdmin()){
+                OptionPane.showMsg("Opción no disponible", "No tienes permisos suficientes para ejecutar esta operación.",2);
+                cboMostrar.setSelectedIndex(0);
+                return;
+            }
+            cargarDatos("-1");
+        }
+    }
+    private void cargarDatos(String listar) {
         limpiarTextField();
-        if(listar == -1){
+        loadPanels(1);
+        if(listar.equals("-1")){
             btnRestaurar.setVisible(true);
             btnEliminar.setVisible(false);
             btnAbrir.setVisible(false);
             btnModificar.setVisible(false);
-            btnBuscar.setVisible(false);
-            btnBuscarEliminados.setVisible(true);
         }else{
             btnRestaurar.setVisible(false);
             btnEliminar.setVisible(true);
             btnAbrir.setVisible(true);
             btnModificar.setVisible(true);
-            btnBuscar.setVisible(true);
-            btnBuscarEliminados.setVisible(false);
         }
-        txtId.setEditable(false);
-        DefaultTableModel modelo;
-        modelo = new DefaultTableModel() {
-           @Override
-           public boolean isCellEditable(int fila, int columna) {
-               return false; //Con esto conseguimos que la tabla no se pueda editar
-           }
-        };
-        
-        modelo.addColumn("Id");
-        modelo.addColumn("Nombre");
-        modelo.addColumn("Email");
-        modelo.addColumn("Teléfono");
-        tblListar.setModel(modelo);
-        FnInstitucion datbd= new FnInstitucion();
-        int cont =0;
         try{
-            for (Institucion temp : datbd.listar(listar)) {
-                Object[] fila = new Object[4];
-                fila[0] = temp.getId();
+            modelo.setNumRows(0);
+            for (Object object : load.listar(listar, new Institucion())) {
+                Institucion temp = (Institucion)object;
+                Object[] fila = new Object[5];
+                fila[0] = temp.getCod();
                 fila[1] = temp.getNombre();
                 fila[2] = temp.getEmail();
                 fila[3] = temp.getTelefono();
+                fila[4] = temp.getComuna();
                 modelo.addRow(fila);
             }
             tblListar.updateUI();
             if(tblListar.getRowCount() == 0){
-                JOptionPane.showMessageDialog(null, "No existen instituciones registradas.");
+                GV.emptyTable(cboMostrar, txtBuscar, "Instituciones");
             }
             
         }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Error, ["+e.getMessage()+"]");
+            OptionPane.showMsg("Ocurrió un error inesperado", "Error al cargar valores en la tabla, ["+e.getMessage()+"]",3);
         }
     }
 
-    private void abrirRegistro(int id) throws SQLException, ClassNotFoundException {
-            FnInstitucion load = new FnInstitucion();
-            Institucion temp = load.cargar(id);
-            if(temp!=null){
-                txtId.setText(Integer.toString(temp.getId()));
-                if(temp.getNombre().equals("null"))
-                    txtNombre.setText("");
-                else
-                    txtNombre.setText(temp.getNombre());
-                if(temp.getCiudad().equals("null"))
-                    txtCiudad.setText("");
-                else
-                    txtCiudad.setText(temp.getCiudad());;
-                if(temp.getComuna().equals("null"))
-                    txtComuna.setText("");
-                else
-                    txtComuna.setText(temp.getComuna());
-                if(temp.getDireccion().equals("null"))
-                    txtDireccion.setText("");
-                else
-                    txtDireccion.setText(temp.getDireccion());
-                if(temp.getTelefono().equals("null"))
-                    txtTelefono.setText("");
-                else
-                    txtTelefono.setText(temp.getTelefono());
-                if(temp.getEmail().equals("null"))
-                    txtEmail.setText("");
-                else
-                    txtEmail.setText(temp.getEmail());
-                
-                
+    private void abrirInstitucion(String id) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        loadPanels(2);
+        stInstitucion = (Institucion)load.get(id,0,new Institucion());
+            if(stInstitucion!=null){
+                txtNombreU.setText(stInstitucion.getNombre());
+                txtCiudadU.setText(stInstitucion.getCiudad());
+                txtComunaU.setText(stInstitucion.getComuna());
+                txtDireccionU.setText(stInstitucion.getDireccion());
+                txtTelefonoU.setText(stInstitucion.getTelefono());
+                txtEmailU.setText(stInstitucion.getEmail());
+                txtWebU.setText(stInstitucion.getWeb());
             }else{
-                JOptionPane.showMessageDialog(null, "Error al cargar datos", "Seleccione un valor en la lista", JOptionPane.INFORMATION_MESSAGE);
+                OptionPane.showMsg("Seleccione Institucion","Error al cargar valores,\n"
+                    + "es posible que no se haya seleccionado un registro\n"
+                    + "o el valor seleccionado no tiene un identificador válido.",2);
             }
-    }
-
-    private void buscarDatos(String buscar, int i) {
-        DefaultTableModel modelo;
-        modelo = new DefaultTableModel() {
-           @Override
-           public boolean isCellEditable(int fila, int columna) {
-               return false; //Con esto conseguimos que la tabla no se pueda editar
-           }
-        };
-        
-        modelo.addColumn("Id");
-        modelo.addColumn("Nombre");
-        modelo.addColumn("Email");
-        modelo.addColumn("Teléfono");
-        tblListar.setModel(modelo);
-        FnInstitucion datbd= new FnInstitucion();
-        int cont =0;
-        try{
-            for (Institucion temp : datbd.buscar(buscar,i)) {
-                Object[] fila = new Object[4];
-                fila[0] = temp.getId();
-                fila[1] = temp.getNombre();
-                fila[2] = temp.getEmail();
-                fila[3] = temp.getTelefono();
-                modelo.addRow(fila);
-            }
-            tblListar.updateUI();
-            if(tblListar.getRowCount() == 0){
-                JOptionPane.showMessageDialog(null, "No se encontraron resultados, pruebe con otros valores de búsqueda.");
-                if(i == 1){
-                    cargarDatos(0);
-                }else{
-                    cargarDatos(-1);
-                }
-            }
-            
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Error, ["+e.getMessage()+"]");
-        }
     }
 
     private void limpiarTextField() {
-        txtId.setText("");
-        txtCiudad.setText("");
-        txtComuna.setText("");
-        txtDireccion.setText("");
-        txtEmail.setText("");
-        txtNombre.setText("");
-        txtTelefono.setText("");
-        txtCiudadNew.setText("");
-        txtComunaNew.setText("");
-        txtDireccionNew.setText("");
-        txtEmailNew.setText("");
-        txtNombreNew.setText("");
-        txtTelefonoNew.setText("");
+        txtCiudadU.setText("");
+        txtRut.setText("");
+        txtComunaU.setText("");
+        txtDireccionU.setText("");
+        txtEmailU.setText("");
+        txtNombreU.setText("");
+        txtWebN.setText("");
+        txtWebU.setText("");
+        txtTelefonoU.setText("");
+        txtCiudadN.setText("");
+        txtComunaN.setText("");
+        txtDireccionN.setText("");
+        txtEmailN.setText("");
+        txtNombreN.setText("");
+        txtTelefonoN.setText("");
+    }
+    
+    private void cWT(){
+        GV.cursorWAIT(this);
+    }
+    private void cDF(){
+        GV.cursorDF(this);
+    }
+
+    private void loadPanels(int option) {
+        if(option == 2){
+            pnl1.setVisible(false);
+            pnl2.setVisible(true);
+        }else{
+            pnl1.setVisible(true);
+            pnl2.setVisible(false);
+        }
+    }
+
+    private void rejectedOperation() {
+        OptionPane.showMsg("Opción no disponible", "No tienes permisos suficientes para ejecutar esta operación.",2);
     }
 }

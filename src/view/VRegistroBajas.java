@@ -5,31 +5,53 @@
  */
 package view;
 
-import com.mxrck.autocompleter.TextAutoCompleter;
-import entities.Lente;
+import dao.Dao;
 import entities.RegistroBaja;
-import fn.FnRegistroBajas;
-import java.awt.Color;
-import javax.swing.JOptionPane;
+import fn.Boton;
+import fn.GV;
 import javax.swing.table.DefaultTableModel;
+import fn.Icons;
+import fn.OptionPane;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import javax.swing.RowFilter;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author home
  */
 public class VRegistroBajas extends javax.swing.JPanel {
-    
-    FnRegistroBajas load = new FnRegistroBajas();
-    private static int cont = 0;
+    Boton boton = new Boton();
+    Dao load= new Dao();
+    TableRowSorter trs;
+    private static List<Object> stList = new ArrayList<>();
+    DefaultTableModel modelo = new DefaultTableModel() {
+           @Override
+           public boolean isCellEditable(int fila, int columna) {
+               return false; //Con esto conseguimos que la tabla no se pueda editar
+           }
+        };
     /**
      * Creates new form VClientes
      */
-    public VRegistroBajas() throws SQLException, ClassNotFoundException{
+    public VRegistroBajas() {
+        ContentAdmin.lblTitle.setText("Registro de Bajas manuales");
+//        load.sincronize(new Oficina());
         initComponents();
-        llenarTabla(load.listar(""));
-        autocompletar();
+        modelo.addColumn("Código");
+        modelo.addColumn("Lente");
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Redución");
+        tblListar.setModel(modelo);
+        load();
+        GV.cursorDF();
+        cDF();
     }
 
     /**
@@ -42,22 +64,28 @@ public class VRegistroBajas extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        txtBuscar = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblListar = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        btnAbrir = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        txtBuscar = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
+        pnl2 = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        txtFecha = new javax.swing.JTextField();
+        txtIdLente = new javax.swing.JTextField();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        btnCerrar = new javax.swing.JLabel();
+        txtReduccion = new javax.swing.JSpinner();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtObs = new javax.swing.JTextArea();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Registro de reducción de stock", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 18))); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lista de registros", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
-
-        txtBuscar.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtBuscarFocusLost(evt);
-            }
-        });
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Lista de registros", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
 
         tblListar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -67,56 +95,171 @@ public class VRegistroBajas extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Fecha", "Armazon", "Cantidad", "Observacion"
+                "Codigo", "Lente", "Fecha", "Reducción"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, true, false, false
-            };
+        ));
+        jScrollPane1.setViewportView(tblListar);
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Eye_50px.png"))); // NOI18N
+        btnAbrir.setToolTipText("Cargar");
+        btnAbrir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseExited(evt);
             }
         });
-        tblListar.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(tblListar);
-        if (tblListar.getColumnModel().getColumnCount() > 0) {
-            tblListar.getColumnModel().getColumn(0).setResizable(false);
-            tblListar.getColumnModel().getColumn(0).setPreferredWidth(80);
-            tblListar.getColumnModel().getColumn(1).setResizable(false);
-            tblListar.getColumnModel().getColumn(1).setPreferredWidth(200);
-            tblListar.getColumnModel().getColumn(2).setResizable(false);
-            tblListar.getColumnModel().getColumn(2).setPreferredWidth(50);
-            tblListar.getColumnModel().getColumn(3).setResizable(false);
-            tblListar.getColumnModel().getColumn(3).setPreferredWidth(500);
-        }
 
-        jLabel1.setText("Buscar");
+        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Search_Property_25px_1.png"))); // NOI18N
+
+        txtBuscar.setToolTipText("Buscar");
+        txtBuscar.setBorder(null);
+        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscarActionPerformed(evt);
+            }
+        });
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(jLabel19)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 399, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btnAbrir))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addComponent(btnAbrir)
+                .addGap(36, 36, 36))
+        );
+
+        pnl2.setBackground(new java.awt.Color(108, 217, 186));
+        pnl2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Abrir registro", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
+
+        jLabel20.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel20.setText("Fecha");
+
+        jLabel21.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel21.setText("Lente");
+
+        txtFecha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFechaActionPerformed(evt);
+            }
+        });
+        txtFecha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtFechaKeyTyped(evt);
+            }
+        });
+
+        txtIdLente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtIdLenteKeyTyped(evt);
+            }
+        });
+
+        jLabel23.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel23.setText("Reducción");
+
+        jLabel24.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel24.setText("Observacion");
+
+        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cancel_50px.png"))); // NOI18N
+        btnCerrar.setToolTipText("Cerrar");
+        btnCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCerrarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCerrarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCerrarMouseExited(evt);
+            }
+        });
+
+        txtObs.setColumns(20);
+        txtObs.setRows(5);
+        jScrollPane2.setViewportView(txtObs);
+
+        javax.swing.GroupLayout pnl2Layout = new javax.swing.GroupLayout(pnl2);
+        pnl2.setLayout(pnl2Layout);
+        pnl2Layout.setHorizontalGroup(
+            pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel23)
+                            .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                                .addComponent(txtIdLente))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtReduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCerrar)))
+                .addContainerGap())
+        );
+        pnl2Layout.setVerticalGroup(
+            pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(txtIdLente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel23)
+                    .addComponent(txtReduccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel24)
+                        .addGap(35, 35, 35))
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCerrar))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -125,103 +268,167 @@ public class VRegistroBajas extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(198, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 144, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 22, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtBuscarFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtBuscarFocusLost
-        try {
-                Lente lente = load.cargarLente(txtBuscar.getText());
-                if(lente != null){
-                    txtBuscar.setForeground(Color.black);
-                    llenarTabla(load.listar(lente.getId()));
-                }else{
-                    txtBuscar.setForeground(Color.red);
-                }
-            } catch (SQLException | ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, "Error inesperado: "+ex.getMessage(),"Error al buscar",JOptionPane.INFORMATION_MESSAGE);
+    private void btnAbrirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseClicked
+        try{
+            cWT();
+            int fila = tblListar.getSelectedRow();
+            String codigo = tblListar.getValueAt(fila, 0).toString();
+            
+            abrirRegistro(codigo);
+            
+        }catch(Exception e){
+            OptionPane.showMsg("Seleccione un elemento en la tabla","Debe hacer clic sobre un elemento de la tabla,\n"
+                    + "Luego presione el botón \"Ver\".",  2);
+        }
+        cDF();
+    }//GEN-LAST:event_btnAbrirMouseClicked
+
+    private void btnAbrirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseEntered
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnAbrir.getIcon().toString()))));
+    }//GEN-LAST:event_btnAbrirMouseEntered
+
+    private void btnAbrirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseExited
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnAbrir.getIcon().toString()))));
+    }//GEN-LAST:event_btnAbrirMouseExited
+
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarActionPerformed
+
+    private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
+        txtBuscar.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(final KeyEvent e) {
+//                trs.setRowFilter(RowFilter.regexFilter(txtBuscar.getText(), 1));
+                trs.setRowFilter(RowFilter.regexFilter("(?i)"+txtBuscar.getText(), 0,1,2,3,4,5,7,8,9,10));
             }
-    }//GEN-LAST:event_txtBuscarFocusLost
+            
+        });
+        
+        
+        
+        trs = new TableRowSorter(modelo);
+        
+        tblListar.setRowSorter(trs);
+    }//GEN-LAST:event_txtBuscarKeyTyped
+
+    private void txtIdLenteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdLenteKeyTyped
+       
+    }//GEN-LAST:event_txtIdLenteKeyTyped
+
+    private void btnCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarMouseClicked
+        pnl2.setVisible(false);
+    }//GEN-LAST:event_btnCerrarMouseClicked
+
+    private void btnCerrarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarMouseEntered
+        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnCerrar.getIcon().toString()))));
+    }//GEN-LAST:event_btnCerrarMouseEntered
+
+    private void btnCerrarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCerrarMouseExited
+        btnCerrar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnCerrar.getIcon().toString()))));
+    }//GEN-LAST:event_btnCerrarMouseExited
+
+    private void txtFechaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFechaKeyTyped
+       
+    }//GEN-LAST:event_txtFechaKeyTyped
+
+    private void txtFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFechaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel btnAbrir;
+    private javax.swing.JLabel btnCerrar;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel pnl2;
     private javax.swing.JTable tblListar;
     private javax.swing.JTextField txtBuscar;
+    private javax.swing.JTextField txtFecha;
+    private javax.swing.JTextField txtIdLente;
+    private javax.swing.JTextArea txtObs;
+    private javax.swing.JSpinner txtReduccion;
     // End of variables declaration//GEN-END:variables
 
-    
-    private void llenarTabla(ArrayList<RegistroBaja> lista){
-        DefaultTableModel modelo;
-        modelo = new DefaultTableModel() {
-           @Override
-           public boolean isCellEditable(int fila, int columna) {
-               return false; //Con esto conseguimos que la tabla no se pueda editar
-           }
-        };
-        
-        modelo.addColumn("Fecha");
-        modelo.addColumn("Armazón");
-        modelo.addColumn("Cantidad");
-        modelo.addColumn("Observación");
-        
-        
-        
-        tblListar.setModel(modelo);
-        
-        
+    private void load(){
+        cargarDatos("0");
+    }
+    private void cargarDatos(String listar) {
+        limpiarTextField();
+        pnl2.setVisible(false);
+            
         try{
-            for (RegistroBaja temp : lista) {
+            modelo.setNumRows(0);
+            stList = load.listar(listar, new RegistroBaja());
+            for (Object object : stList) {
+                RegistroBaja temp = (RegistroBaja)object;
                 Object[] fila = new Object[4];
-                fila[0] = temp.getFecha();
-                
+                fila[0] = temp.getCod();
                 fila[1] = temp.getIdLente();
-                fila[2] = temp.getCantidad();
-                fila[3] = temp.getObs();
+                fila[2] = temp.getFecha();
+                fila[3] = temp.getCantidad();
                 modelo.addRow(fila);
             }
             tblListar.updateUI();
-            
-            
             if(tblListar.getRowCount() == 0){
-                cont++;
-                
-                txtBuscar.setText("");
-                if(cont == 1){
-                    JOptionPane.showMessageDialog(null, "No existen registros.");
-                    llenarTabla(load.listar(""));
-                }
-                
-            }else{
-                cont = 0;
+                OptionPane.showMsg("No existen registros", "No existen registros de bajas registrados.",1);
             }
             
         }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Error, ["+e.getMessage()+"]");
+            OptionPane.showMsg("Ocurrió un error inesperado", "Error al cargar valores en la tabla, ["+e.getMessage()+"]",3);
         }
     }
 
-    
-    
+    private void abrirRegistro(String id) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+            
+            RegistroBaja temp = (RegistroBaja)GV.buscarPorIdEnLista(id, stList, new RegistroBaja());
+            if(temp!=null){
+                pnl2.setVisible(true);
+                txtFecha.setText(GV.dateToString(temp.getFecha(), "dd/mm/yyyy"));
+                txtIdLente.setText(temp.getIdLente());
+                txtObs.setText(temp.getObs());
+                GV.spinnerNumberDisable(txtReduccion,temp.getCantidad());
+            }else{
+                OptionPane.showMsg("Seleccione Registro","Error al cargar valores,\n"
+                    + "es posible que no se haya seleccionado un registro\n"
+                    + "o el valor seleccionado no tiene un identificador válido.",2);
+            }
+    }
 
-//    private String cargarCodigoLente(String idLente) throws SQLException, ClassNotFoundException {
-//        return load.cargarCodigoLente(idLente);
-//    }
-    
-    private void autocompletar() throws SQLException, ClassNotFoundException {
-        TextAutoCompleter textAutoCompleter = new TextAutoCompleter(txtBuscar);
-        textAutoCompleter.setMode(0);
-        for (Lente temp : load.listarLentes()) {
-            textAutoCompleter.addItem(temp.getCodigo());
-        }
+    private void limpiarTextField() {
+        txtFecha.setText("");
+        txtIdLente.setText("");
+        txtObs.setText("");
+        GV.spinnerNumberDisable(txtReduccion, 0);
+    }
+    private void cWT(){
+        GV.cursorWAIT(this);
+    }
+    private void cDF(){
+        GV.cursorDF(this);
     }
 }

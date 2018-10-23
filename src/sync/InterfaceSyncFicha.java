@@ -20,8 +20,7 @@ public interface InterfaceSyncFicha {
     public boolean update(Object object);
     public Despacho getLastDespacho(String idFicha);
     public ArrayList<HistorialPago> getPagos(String idFicha);
-    public int getMaxId(String strParam, int intParam, Object objParam);
-    public String getId(String strParam, int intParam, Object type);
+    public String getId(String strParam, int intParam,Object type);
     public ArrayList<Object> listar(String idParam, Object type);
     public ArrayList<Object> listar(Date param, Object type);
     public Armazon getLejos(String idFicha);

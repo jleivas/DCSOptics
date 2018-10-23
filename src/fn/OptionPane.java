@@ -5,12 +5,11 @@
  */
 package fn;
 
-import fn.close.Close;
 import java.awt.BorderLayout;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import static view.OPanel.OpanelContent;
+import static view.opanel.MPanel.MpanelContent;
+import static view.opanel.OPanel.OpanelContent;
+import view.opanel.OpanelConfirm;
 import view.opanel.OpanelMessage;
 
 /**
@@ -21,10 +20,33 @@ public class OptionPane {
     private static int ancho = 549;
     private static int alto = 220;
     private static int locat = 5;
+    private static String className = "OptionPane";
+    private static boolean confirm = false;
     
-    public static void showPanel(javax.swing.JPanel p1, String title){
-        GlobalValues.INFOPANEL.lblTitle.setText(title);
-        GlobalValues.INFOPANEL.setVisible(true);
+    private static String CONFIG_TITLE = "Opciones de configuración";
+    private static String INVENTARY_TITLE = "Opciones de inventario";
+    private static String INVENTARY_CHOOSER_TITLE = "Seleccione inventario";
+    private static String MAIL_EXPORT_TITLE = "Exportar correos electrónicos";
+    private static String CLIENT_CHOOSER_TITLE = "Seleccione cliente";
+    private static String DATE_CHOOSER_TITLE = "Seleccione una fecha";
+    private static String USER_CHOOSER_TITLE = "Seleccione usuario";
+    private static String TOOL_TITLE = "Opciones de herramienta";
+    private static String USER_DATA_TITLE = "Modificar mis datos";
+    private static String COMPANY_DATA_TITLE = "Modificar datos de la empresa";
+    private static String REGISTRAR_OFICINA = "Modificar datos de la oficina";
+    private static String COMPANY_DATA_TITLE_CREATE = "Ingrese los datos de la empresa";
+    private static String REGISTRAR_OFICINA_CREATE = "Ingrese los datos de la oficina";
+    private static String CONV_CHOOSER_TITLE = "Seleccione un convenio";
+    private static String FICHA_GARANTIA_TITLE = "Ingresa datos de entrega para generar garantía";
+    private static String DELIVER_DATA_TITLE = "Datos de despacho";
+    private static String CONVENY_DATA_RECEPTOR = "Ingrese los datos del receptor";
+    private static String PAY_AGREEENT_FEES = "Registro de cuotas pagadas";
+    private static String REGISTRAR_LICENCIA = "Ingrese su licencia";
+    private static String REGISTRAR_TOKEN = "Ingrese un token";
+    
+    public static void showOptionPanel(javax.swing.JPanel p1, String title){
+        GV.opanel().lblTitle.setText(title);
+        GV.opanel().setVisible(true);
         p1.setSize(ancho, alto);
         p1.setLocation(locat, locat);
         OpanelContent.removeAll();
@@ -33,109 +55,159 @@ public class OptionPane {
         OpanelContent.repaint();
     }
     
+    /**
+     * 
+     * @param title
+     * @param message
+     * @param statusMsg 1: Information, 2: Warning, 3: Error
+     */
     public static void showMsg(String title, String message, int statusMsg){
         if(title.length() > 40){
             message = title.toUpperCase()+"\n\n"+message;
             title = title.substring(0,38)+"...";
         }
-        GlobalValues.MSG_STATUS = statusMsg;
+        GV.setMsgStatus(statusMsg);
         OpanelMessage p1 = new OpanelMessage();
-        GlobalValues.INFOPANEL.lblTitle.setText(title);
+        GV.mpanel().lblTitle.setText(title);
         if(p1 instanceof OpanelMessage){
             ((OpanelMessage) p1).lblTitle.setText(title);
-            ((OpanelMessage) p1).lblMessage.setText(message);
+            ((OpanelMessage) p1).updateMsg(title, message,statusMsg);
         }
         
-        GlobalValues.INFOPANEL.setVisible(true);
+        GV.mpanel().setVisible(true);
         p1.setSize(ancho, alto);
         p1.setLocation(locat, locat);
         
-        OpanelContent.removeAll();
-        OpanelContent.add(p1,BorderLayout.CENTER);
-        OpanelContent.revalidate();
-        OpanelContent.repaint();
+        MpanelContent.removeAll();
+        MpanelContent.add(p1,BorderLayout.CENTER);
+        MpanelContent.revalidate();
+        MpanelContent.repaint();
     }
 
-    public void closeOPanel() {
-        GlobalValues.INFOPANEL.setVisible(false);
-    }
-
-    
-    static String getUserLocalId() {
-        System.out.println("OPTIONPANE:getUserLocalId()");
-        JTextField id = new JTextField();
-            int res = JOptionPane.showConfirmDialog(null,id, "Ingrese un licencia válida",JOptionPane.OK_CANCEL_OPTION);
-            if(res < 0){
-                Close.close(0);
-            }else{
-                if(res == 2)
-                    Close.close(0);
-                return id.getText();
-            }
-        return null;
-    }
-
-    static String getUserUri() {
-        System.out.println("OPTIONPANE:getUserUri()");
-        String strUri = "";
-        JTextField jtfUri = new JTextField();
-            int res = JOptionPane.showConfirmDialog(null,jtfUri, "Ingrese un puerto de validación",JOptionPane.OK_CANCEL_OPTION);
-            if(res < 0){
-                Close.close(0);
-            }else{
-                if(res == 2)
-                    Close.close(0);
-                strUri = jtfUri.getText();
-                if(strUri.startsWith("https://")){
-                    strUri = strUri.replaceAll("https://", "http://");
-                }
-                if(!strUri.startsWith("http://")){
-                    if(!strUri.startsWith("www.")){
-                        strUri = "www."+strUri;
-                    }
-                    strUri = "http://"+strUri;
-                }
-                if(!strUri.endsWith(".xml")){
-                    if(!strUri.endsWith("/validate")){
-                        strUri = strUri+"/validate";
-                    }
-                    strUri = strUri+".xml";
-                }
-                return strUri;
-            }
-        return null;
-    }
-
-    static String getUserPort() {
-        JPasswordField pwd = new JPasswordField(10);
-            int res = JOptionPane.showConfirmDialog(null,pwd, "Ingrese clave de validación",JOptionPane.OK_CANCEL_OPTION);
-            if(res < 0){
-                Close.close(0);
-            }else{
-                if(res == 2)
-                    Close.close(0);
-                return pwd.getText();
-            }
-        return null;
+    public static void closeInfoPanel() {
+        GV.mpanel().setVisible(false);
     }
     
-    public static boolean getUpdateConfirmation(){
-        int opcion = JOptionPane.NO_OPTION;
-        String botones1[] = {"Actualizar ahora","Cancelar"};
-        opcion = JOptionPane.showOptionDialog(null, "Existe una nueva versión disponible, ¿Desea actualizar el sistema?", "Actualización disponible", 0, 0, null, botones1, null);
-        if(opcion == JOptionPane.YES_OPTION){
+    public static void closeOptionPanel() {
+        GV.opanel().setVisible(false);
+    }
+
+    public static boolean getConfirmation(String title, String message, int statusMsg){
+        int resp = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if(resp == JOptionPane.YES_OPTION)
             return true;
-        }
         return false;
     }
+    public static boolean getConfirm(){
+        if(confirm){
+            setConfirm(false);
+            return true;
+        }
+        return confirm;
+    }
+    private static void showConfirm(String title, String message, int statusMsg){
+        if(title.length() > 40){
+            message = title.toUpperCase()+"\n\n"+message;
+            title = title.substring(0,38)+"...";
+        }
+        GV.setMsgStatus(statusMsg);
+        OpanelConfirm p1 = new OpanelConfirm();
+        GV.mpanel().lblTitle.setText(title);
+        if(p1 instanceof OpanelConfirm){
+            ((OpanelConfirm) p1).lblTitle.setText(title);
+            ((OpanelConfirm) p1).lblMessage.setText(message);
+        }
+        
+        GV.mpanel().setVisible(true);
+        p1.setSize(ancho, alto);
+        p1.setLocation(locat, locat);
+        
+        MpanelContent.removeAll();
+        MpanelContent.add(p1,BorderLayout.CENTER);
+        MpanelContent.revalidate();
+        MpanelContent.repaint();
+    }
+    public static void setConfirm(boolean param){
+        confirm = param;
+    }
 
-    public static void showInfoMessage(String message, String title) {
-        JOptionPane.showMessageDialog(null,message,title,JOptionPane.INFORMATION_MESSAGE);
+    public static String titleConfig(){
+        return CONFIG_TITLE;
     }
-    public static void showErrorMessage(String message, String title) {
-        JOptionPane.showMessageDialog(null,message,title,JOptionPane.ERROR_MESSAGE);
+    
+    public static String titleCompanyData(){
+        return COMPANY_DATA_TITLE;
     }
-    public static void showWarningMessage(String message, String title) {
-        JOptionPane.showMessageDialog(null,message,title,JOptionPane.WARNING_MESSAGE);
+    
+    public static String titleCompanyDataCreate(){
+        return COMPANY_DATA_TITLE_CREATE;
+    }
+    
+    public static String titleInventary(){
+        return INVENTARY_TITLE;
+    }
+    
+    public static String titleInventaryChooser(){
+        return INVENTARY_CHOOSER_TITLE;
+    }
+    
+    public static String titleMailExport(){
+        return MAIL_EXPORT_TITLE;
+    }
+    
+    public static String titleClientChooser(){
+        return CLIENT_CHOOSER_TITLE;
+    }
+    
+    public static String titleConvenyChooser() {
+        return CONV_CHOOSER_TITLE;
+    }
+    
+    public static String titleDateChooser(){
+        return DATE_CHOOSER_TITLE;
+    }
+    
+    public static String titleUserChooser(){
+        return USER_CHOOSER_TITLE;
+    }
+    
+    public static String titleTool(){
+        return TOOL_TITLE;
+    }
+    
+    public static String titleUserData(){
+        return USER_DATA_TITLE;
+    }
+
+    public static String titleFichaGuarantee() {
+        return FICHA_GARANTIA_TITLE;
+    }
+
+    public static String titleDeliver() {
+        return DELIVER_DATA_TITLE;
+    }
+
+    public static String titleConvenyDataReceptor() {
+        return CONVENY_DATA_RECEPTOR;
+    }
+
+    public static String titlePayAgreementFees() {
+        return PAY_AGREEENT_FEES;
+    }
+
+    public static String titleRegistrarLicencia() {
+        return REGISTRAR_LICENCIA;
+    }
+
+    public static String titleOfficeData() {
+        return REGISTRAR_OFICINA;
+    }
+    
+    public static String titleOfficeDataCreate() {
+        return REGISTRAR_OFICINA_CREATE;
+    }
+
+    public static String titleRegistrarToken() {
+        return REGISTRAR_TOKEN;
     }
 }

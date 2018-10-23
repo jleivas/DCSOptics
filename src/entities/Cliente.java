@@ -21,12 +21,16 @@ public class Cliente extends SyncStringId{
     private String comuna;
     private String ciudad;
     private int sexo;
-    private int edad;
+    private Date nacimiento;
 
     public Cliente() {
     }
 
-    public Cliente(String rut, String nombre, String telefono1, String telefono2, String email, String direccion, String comuna, String ciudad, int sexo, int edad, int estado, Date lastUpdate, int lastHour) {
+    public Cliente(String rut, String nombre, 
+            String telefono1, String telefono2, 
+            String email, String direccion, String comuna, 
+            String ciudad, int sexo, Date nacimiento, 
+            int estado, Date lastUpdate, int lastHour) {
         setCod(rut);
         setNombre(nombre);
         setTelefono1(telefono1);
@@ -36,82 +40,82 @@ public class Cliente extends SyncStringId{
         setComuna(comuna);
         setCiudad(ciudad);
         setSexo(sexo);
-        setEdad(edad);
+        setNacimiento(nacimiento);
         setEstado(estado);
         setLastUpdate(lastUpdate);
         setLastHour(lastHour);
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = getToName(nombre);
     }
 
     public void setTelefono1(String telefono1) {
-        this.telefono1 = telefono1;
+        this.telefono1 = getStr(telefono1);
     }
     
     public void setTelefono2(String telefono2) {
-        this.telefono2 = telefono2;
+        this.telefono2 = getStr(telefono2);
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = mailValidate(email);
     }
 
     public void setDireccion(String direccion) {
-        this.direccion = direccion;
+        this.direccion = getToName(direccion);
     }
 
     public void setComuna(String comuna) {
-        this.comuna = comuna;
+        this.comuna = getToName(comuna);
     }
 
     public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
+        this.ciudad = getToName(ciudad);
     }
 
     public void setSexo(int sexo) {
         this.sexo = sexo;
     }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
+    public void setNacimiento(Date nacimiento) {
+        this.nacimiento = nacimiento;
     }
 
     public String getNombre() {
-        return nombre;
+        return getToName(nombre);
     }
 
     public String getTelefono1() {
-        return telefono1;
+        return getStr(telefono1);
     }
     
     public String getTelefono2() {
-        return telefono2;
+        return getStr(telefono2);
     }
 
     public String getEmail() {
-        return email;
+        return getStr(email);
     }
 
     public String getDireccion() {
-        return direccion;
+        return getToName(direccion);
     }
 
     public String getComuna() {
-        return comuna;
+        return getToName(comuna);
     }
 
     public String getCiudad() {
-        return ciudad;
+        return getToName(ciudad);
     }
 
     public int getSexo() {
         return sexo;
     }
 
-    public int getEdad() {
-        return edad;
+    public Date getNacimiento() {
+        return nacimiento;
     }
 
     @Override
@@ -124,7 +128,7 @@ public class Cliente extends SyncStringId{
                 + ", comuna="+ comuna +"\n"
                 + ", ciudad=" + ciudad+"\n" 
                 + ", sexo=" + sexo+"\n" 
-                + ", edad=" + edad+"\n" 
+                + ", fecha nac.=" + nacimiento+"\n" 
                 + ", estado=" + getEstado()+"\n" 
                 + ", lastUpdate=" + getLastUpdate() + '}';
     }

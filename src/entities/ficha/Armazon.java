@@ -5,18 +5,20 @@
  */
 package entities.ficha;
 
-import entities.abstractclasses.SyncStringId;
+import entities.abstractclasses.SyncFichaClass;
 import java.util.Date;
 
 /**
  *
  * @author Lenovo G470
  */
-public class Armazon extends SyncStringId{
+public class Armazon extends SyncFichaClass{
     
     private int tipo;
     private String marca;
+    private int precioMarca;
     private String cristal;
+    private int precioCristal;
     private String add;
     private String odA;
     private String odEsf;
@@ -33,13 +35,16 @@ public class Armazon extends SyncStringId{
     public Armazon() {
     }
 
-    public Armazon(String cod, int tipo, String marca, String cristal, String add, 
-            String odA, String odEsf, String odCil, String oiA, String oiEsf, 
-            String oiCil, int dp, int endurecido, int capa, int plusMax, String IdFicha, 
+    public Armazon(String cod, int tipo, String marca, int precioMarca,
+            String cristal,int precioCristal, String add, 
+            String odA, String odEsf, String odCil, String oiA, 
+            String oiEsf,String oiCil, int dp, int endurecido, 
+            int capa, int plusMax, String IdFicha, 
             int estado, Date lastUpdate, int lastHour) {
         setCod(cod);
         setTipo(tipo);
         setCristal(cristal);
+        setPrecioCristal(precioCristal);
         setAdd(add);
         setOdA(odA);
         setOdEsf(odEsf);
@@ -53,6 +58,7 @@ public class Armazon extends SyncStringId{
         setPlusMax(plusMax);
         setIdFicha(IdFicha);
         setMarca(marca);
+        setPrecioMarca(precioMarca);
         setEstado(estado);
         setLastUpdate(lastUpdate);
         setLastHour(lastHour);
@@ -62,36 +68,52 @@ public class Armazon extends SyncStringId{
         this.tipo = tipo;
     }
 
+    public void setPrecioMarca(int precioMarca) {
+        this.precioMarca = precioMarca;
+    }
+
+    public void setPrecioCristal(int precioCristal) {
+        this.precioCristal = precioCristal;
+    }
+
+    public int getPrecioMarca() {
+        return precioMarca;
+    }
+
+    public int getPrecioCristal() {
+        return precioCristal;
+    }
+
     public void setCristal(String cristal) {
-        this.cristal = cristal;
+        this.cristal = getStr(cristal);
     }
 
     public void setAdd(String add) {
-        this.add = add;
+        this.add = getStr(add);
     }
 
     public void setOdA(String od) {
-        this.odA = od;
+        this.odA = getStr(od);
     }
 
     public void setOdEsf(String odEsf) {
-        this.odEsf = odEsf;
+        this.odEsf = getStr(odEsf);
     }
 
     public void setOdCil(String odCilA) {
-        this.odCil = odCilA;
+        this.odCil = getStr(odCilA);
     }
 
     public void setOiA(String oi) {
-        this.oiA = oi;
+        this.oiA = getStr(oi);
     }
 
     public void setOiEsf(String oiEsf) {
-        this.oiEsf = oiEsf;
+        this.oiEsf = getStr(oiEsf);
     }
 
     public void setOiCil(String oiCilA) {
-        this.oiCil = oiCilA;
+        this.oiCil = getStr(oiCilA);
     }
 
     public void setDp(int dp) {
@@ -111,11 +133,12 @@ public class Armazon extends SyncStringId{
     }
 
     public void setIdFicha(String IdFicha) {
-        this.IdFicha = IdFicha;
+        this.IdFicha = getStr(IdFicha);
     }
     
     public void setMarca(String marca) {
-        this.marca = marca;
+        String cod = getStr(marca);
+        this.marca = (cod.contains("[")) ? cod.substring(0, cod.indexOf("[")) : cod;
     }
 
     public int getTipo() {

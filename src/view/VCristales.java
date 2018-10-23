@@ -5,30 +5,52 @@
  */
 package view;
 
+import dao.Dao;
 import entities.Cristal;
-import fn.FnCristal;
-import javax.swing.JOptionPane;
+import fn.Boton;
+import fn.GV;
 import javax.swing.table.DefaultTableModel;
+import fn.Icons;
+import fn.OptionPane;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author home
  */
 public class VCristales extends javax.swing.JPanel {
-    
-    FnCristal load = new FnCristal();
+    Boton boton = new Boton();
+    Dao load= new Dao();
+    private static Cristal stCristal =  null;
+    TableRowSorter trs;
+    DefaultTableModel modelo = new DefaultTableModel() {
+           @Override
+           public boolean isCellEditable(int fila, int columna) {
+               return false; //Con esto conseguimos que la tabla no se pueda editar
+           }
+        };
     /**
      * Creates new form VClientes
      */
-    public VCristales() throws SQLException, ClassNotFoundException {
+    public VCristales() {
+        ContentAdmin.lblTitle.setText("Cristales");
+//        load.sincronize(new Cristal());
         initComponents();
-        limpiarTextField();
-        llenarTabla(load.listar(0));
-        btnRestaurar.setVisible(false);
-        btnBuscarEliminados.setVisible(false);
-        paneles1();
+        modelo.addColumn("Id");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Precio");
+        tblListar.setModel(modelo);
+        load();
+        loadPanels(1);
+        GV.cursorDF();
+        cDF();
     }
 
     /**
@@ -41,53 +63,39 @@ public class VCristales extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        txtBuscar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
+        cboMostrar = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblListar = new javax.swing.JTable();
-        btnAbrir = new javax.swing.JButton();
-        btnEliminar = new javax.swing.JButton();
-        btnRestaurar = new javax.swing.JButton();
-        btnBuscarEliminados = new javax.swing.JButton();
-        pnlGuardar = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        btnAbrir = new javax.swing.JLabel();
+        btnEliminar = new javax.swing.JLabel();
+        btnRestaurar = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        txtBuscar = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
+        pnl1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        txtNombreN = new javax.swing.JTextField();
+        lblPorc1 = new javax.swing.JLabel();
+        btnGuardar = new javax.swing.JLabel();
+        txtPrecioN = new javax.swing.JSpinner();
+        pnl2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        txtNombreNew = new javax.swing.JTextField();
-        btnGuardar = new javax.swing.JButton();
-        txtPrecioNew = new javax.swing.JSpinner();
-        pnlModificar = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
-        btnModificar = new javax.swing.JButton();
-        lblIdCristal = new javax.swing.JLabel();
-        txtPrecio = new javax.swing.JSpinner();
-        jPanel5 = new javax.swing.JPanel();
-        btnActivos = new javax.swing.JButton();
-        btnEliminados = new javax.swing.JButton();
+        txtNombreU = new javax.swing.JTextField();
+        lblPorc2 = new javax.swing.JLabel();
+        btnModificar = new javax.swing.JLabel();
+        txtPrecioU = new javax.swing.JSpinner();
+        btnCancelar = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Lista de registros", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Lista de registros", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
 
-        btnBuscar.setBackground(new java.awt.Color(153, 255, 153));
-        btnBuscar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnBuscar.setForeground(new java.awt.Color(0, 102, 0));
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnBuscar.setText("Buscar");
-        btnBuscar.setBorder(null);
-        btnBuscar.setBorderPainted(false);
-        btnBuscar.setContentAreaFilled(false);
-        btnBuscar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnBuscar.setIconTextGap(-3);
-        btnBuscar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnBuscar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
+        cboMostrar.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
+        cboMostrar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Activos", "Eliminados" }));
+        cboMostrar.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cboMostrarItemStateChanged(evt);
             }
         });
 
@@ -104,79 +112,60 @@ public class VCristales extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblListar);
 
-        btnAbrir.setBackground(new java.awt.Color(153, 255, 153));
-        btnAbrir.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnAbrir.setForeground(new java.awt.Color(0, 102, 0));
-        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnAbrir.setText("Cargar");
-        btnAbrir.setBorder(null);
-        btnAbrir.setBorderPainted(false);
-        btnAbrir.setContentAreaFilled(false);
-        btnAbrir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAbrir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAbrir.setIconTextGap(-3);
-        btnAbrir.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnAbrir.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnAbrir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAbrirActionPerformed(evt);
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Eye_50px.png"))); // NOI18N
+        btnAbrir.setToolTipText("Cargar");
+        btnAbrir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAbrirMouseExited(evt);
             }
         });
 
-        btnEliminar.setBackground(new java.awt.Color(153, 255, 153));
-        btnEliminar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnEliminar.setForeground(new java.awt.Color(102, 0, 0));
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDanger1.jpg"))); // NOI18N
-        btnEliminar.setText("Eliminar");
-        btnEliminar.setBorder(null);
-        btnEliminar.setBorderPainted(false);
-        btnEliminar.setContentAreaFilled(false);
-        btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEliminar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEliminar.setIconTextGap(-3);
-        btnEliminar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDanger3.jpg"))); // NOI18N
-        btnEliminar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDanger2.jpg"))); // NOI18N
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Trash_50px.png"))); // NOI18N
+        btnEliminar.setToolTipText("Eliminar");
+        btnEliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnEliminarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnEliminarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnEliminarMouseExited(evt);
             }
         });
 
-        btnRestaurar.setBackground(new java.awt.Color(153, 255, 153));
-        btnRestaurar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnRestaurar.setForeground(new java.awt.Color(0, 102, 0));
-        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnRestaurar.setText("Restaurar");
-        btnRestaurar.setBorder(null);
-        btnRestaurar.setBorderPainted(false);
-        btnRestaurar.setContentAreaFilled(false);
-        btnRestaurar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnRestaurar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnRestaurar.setIconTextGap(-3);
-        btnRestaurar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnRestaurar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnRestaurar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRestaurarActionPerformed(evt);
+        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Data_Backup_50px.png"))); // NOI18N
+        btnRestaurar.setToolTipText("Restaurar");
+        btnRestaurar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnRestaurarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnRestaurarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnRestaurarMouseExited(evt);
             }
         });
 
-        btnBuscarEliminados.setBackground(new java.awt.Color(153, 255, 153));
-        btnBuscarEliminados.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnBuscarEliminados.setForeground(new java.awt.Color(0, 102, 0));
-        btnBuscarEliminados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnBuscarEliminados.setText("Buscar");
-        btnBuscarEliminados.setBorder(null);
-        btnBuscarEliminados.setBorderPainted(false);
-        btnBuscarEliminados.setContentAreaFilled(false);
-        btnBuscarEliminados.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBuscarEliminados.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnBuscarEliminados.setIconTextGap(-3);
-        btnBuscarEliminados.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnBuscarEliminados.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnBuscarEliminados.addActionListener(new java.awt.event.ActionListener() {
+        jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Search_Property_25px_1.png"))); // NOI18N
+
+        txtBuscar.setToolTipText("Buscar");
+        txtBuscar.setBorder(null);
+        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarEliminadosActionPerformed(evt);
+                txtBuscarActionPerformed(evt);
+            }
+        });
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyTyped(evt);
             }
         });
 
@@ -184,240 +173,186 @@ public class VCristales extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 633, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnBuscarEliminados, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnRestaurar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel19)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAbrir, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAbrir)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRestaurar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar)
-                    .addComponent(btnBuscarEliminados))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAbrir)
-                    .addComponent(btnEliminar)
-                    .addComponent(btnRestaurar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnAbrir, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnRestaurar, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(cboMostrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36))
         );
 
-        pnlGuardar.setBackground(new java.awt.Color(255, 255, 255));
-        pnlGuardar.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Agregar cristal", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
+        pnl1.setBackground(new java.awt.Color(255, 255, 255));
+        pnl1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Crear nuevo registro", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
 
-        jLabel2.setText("Nombre");
+        jLabel1.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel1.setText("Nombre");
 
-        jLabel3.setText("Precio");
-
-        txtNombreNew.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtNombreN.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNombreNewKeyTyped(evt);
+                txtNombreNKeyTyped(evt);
             }
         });
 
-        btnGuardar.setBackground(new java.awt.Color(153, 255, 153));
-        btnGuardar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnGuardar.setForeground(new java.awt.Color(0, 0, 51));
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo1.jpg"))); // NOI18N
-        btnGuardar.setText("Guardar");
-        btnGuardar.setBorder(null);
-        btnGuardar.setBorderPainted(false);
-        btnGuardar.setContentAreaFilled(false);
-        btnGuardar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnGuardar.setIconTextGap(-3);
-        btnGuardar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo3.jpg"))); // NOI18N
-        btnGuardar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo2.jpg"))); // NOI18N
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
+        lblPorc1.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        lblPorc1.setText("Precio");
+
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Save_50px.png"))); // NOI18N
+        btnGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnGuardarMouseExited(evt);
             }
         });
 
-        txtPrecioNew.setModel(new javax.swing.SpinnerNumberModel(0, 0, 999999999, 1));
+        txtPrecioN.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
-        javax.swing.GroupLayout pnlGuardarLayout = new javax.swing.GroupLayout(pnlGuardar);
-        pnlGuardar.setLayout(pnlGuardarLayout);
-        pnlGuardarLayout.setHorizontalGroup(
-            pnlGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlGuardarLayout.createSequentialGroup()
-                .addGroup(pnlGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlGuardarLayout.createSequentialGroup()
-                        .addComponent(txtNombreNew, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnGuardar))
-                    .addGroup(pnlGuardarLayout.createSequentialGroup()
-                        .addComponent(txtPrecioNew, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+        javax.swing.GroupLayout pnl1Layout = new javax.swing.GroupLayout(pnl1);
+        pnl1.setLayout(pnl1Layout);
+        pnl1Layout.setHorizontalGroup(
+            pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl1Layout.createSequentialGroup()
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lblPorc1, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPrecioN, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombreN, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
+                .addComponent(btnGuardar)
                 .addContainerGap())
         );
-        pnlGuardarLayout.setVerticalGroup(
-            pnlGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlGuardarLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(pnlGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtNombreNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlGuardarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtPrecioNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(49, 49, 49)
+        pnl1Layout.setVerticalGroup(
+            pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl1Layout.createSequentialGroup()
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtNombreN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPorc1)
+                    .addComponent(txtPrecioN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50))
+            .addGroup(pnl1Layout.createSequentialGroup()
                 .addComponent(btnGuardar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnlModificar.setBackground(new java.awt.Color(204, 255, 204));
-        pnlModificar.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Abrir cristal", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
+        pnl2.setBackground(new java.awt.Color(108, 217, 186));
+        pnl2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Editar registro", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
 
-        jLabel11.setText("Nombre");
+        jLabel3.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        jLabel3.setText("Nombre");
 
-        jLabel12.setText("Precio");
-
-        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtNombreU.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNombreKeyTyped(evt);
+                txtNombreUKeyTyped(evt);
             }
         });
 
-        btnModificar.setBackground(new java.awt.Color(153, 255, 153));
-        btnModificar.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnModificar.setForeground(new java.awt.Color(0, 0, 51));
-        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo1.jpg"))); // NOI18N
-        btnModificar.setText("Modificar");
-        btnModificar.setBorder(null);
-        btnModificar.setBorderPainted(false);
-        btnModificar.setContentAreaFilled(false);
-        btnModificar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnModificar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnModificar.setIconTextGap(-3);
-        btnModificar.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo3.jpg"))); // NOI18N
-        btnModificar.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnInfo2.jpg"))); // NOI18N
-        btnModificar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarActionPerformed(evt);
+        lblPorc2.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
+        lblPorc2.setText("Precio");
+
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Save_50px.png"))); // NOI18N
+        btnModificar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnModificarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnModificarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnModificarMouseExited(evt);
             }
         });
 
-        lblIdCristal.setText("0");
+        txtPrecioU.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
-        txtPrecio.setModel(new javax.swing.SpinnerNumberModel(0, 0, 999999999, 1));
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cancel_50px.png"))); // NOI18N
+        btnCancelar.setToolTipText("Cancelar");
+        btnCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCancelarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCancelarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCancelarMouseExited(evt);
+            }
+        });
 
-        javax.swing.GroupLayout pnlModificarLayout = new javax.swing.GroupLayout(pnlModificar);
-        pnlModificar.setLayout(pnlModificarLayout);
-        pnlModificarLayout.setHorizontalGroup(
-            pnlModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlModificarLayout.createSequentialGroup()
-                .addGroup(pnlModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE))
+        javax.swing.GroupLayout pnl2Layout = new javax.swing.GroupLayout(pnl2);
+        pnl2.setLayout(pnl2Layout);
+        pnl2Layout.setHorizontalGroup(
+            pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lblPorc2, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPrecioU, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombreU, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancelar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnModificar)
                 .addContainerGap())
-            .addGroup(pnlModificarLayout.createSequentialGroup()
-                .addComponent(lblIdCristal)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
-        pnlModificarLayout.setVerticalGroup(
-            pnlModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlModificarLayout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(lblIdCristal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(52, 52, 52)
-                .addComponent(btnModificar))
-        );
-
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mostrar", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe Print", 0, 11))); // NOI18N
-
-        btnActivos.setBackground(new java.awt.Color(153, 255, 153));
-        btnActivos.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnActivos.setForeground(new java.awt.Color(0, 102, 0));
-        btnActivos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnActivos.setText("Activos");
-        btnActivos.setBorder(null);
-        btnActivos.setBorderPainted(false);
-        btnActivos.setContentAreaFilled(false);
-        btnActivos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnActivos.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnActivos.setIconTextGap(-3);
-        btnActivos.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnActivos.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnActivos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActivosActionPerformed(evt);
-            }
-        });
-
-        btnEliminados.setBackground(new java.awt.Color(153, 255, 153));
-        btnEliminados.setFont(new java.awt.Font("Aharoni", 0, 14)); // NOI18N
-        btnEliminados.setForeground(new java.awt.Color(0, 102, 0));
-        btnEliminados.setIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault1.jpg"))); // NOI18N
-        btnEliminados.setText("Eliminados");
-        btnEliminados.setBorder(null);
-        btnEliminados.setBorderPainted(false);
-        btnEliminados.setContentAreaFilled(false);
-        btnEliminados.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEliminados.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnEliminados.setIconTextGap(-3);
-        btnEliminados.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault3.jpg"))); // NOI18N
-        btnEliminados.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/botonGraph/btnDefault2.jpg"))); // NOI18N
-        btnEliminados.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminadosActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(btnActivos, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+        pnl2Layout.setVerticalGroup(
+            pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtNombreU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnEliminados, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnActivos)
-                    .addComponent(btnEliminados))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPorc2)
+                    .addComponent(txtPrecioU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50))
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnModificar)
+                    .addComponent(btnCancelar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -427,13 +362,10 @@ public class VCristales extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlModificar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(285, 285, 285)))
+                    .addComponent(pnl1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnl2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -441,275 +373,327 @@ public class VCristales extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addComponent(pnl1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlModificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 106, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        String buscar = txtBuscar.getText();
-        btnAbrir.setVisible(true);
-        try {
-            paneles1();
-            llenarTabla(load.buscar(buscar));
-        } catch (SQLException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: "+ex.getMessage(),"Cargar Cristales",JOptionPane.WARNING_MESSAGE);
-        }
-        limpiarTextField();
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
-    private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
+    private void btnAbrirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseClicked
         try{
+            cWT();
             int fila = tblListar.getSelectedRow();
-            int id = Integer.parseInt(tblListar.getValueAt(fila, 0).toString());
-            abrirCristal(id);
-            paneles2();
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un registro", "Seleccione", JOptionPane.INFORMATION_MESSAGE);
-        }
+            String nombre = tblListar.getValueAt(fila, 1).toString();
             
-    }//GEN-LAST:event_btnAbrirActionPerformed
+            abrirCristal(nombre);
+            
+        }catch(Exception e){
+            OptionPane.showMsg("Seleccione un elemento en la tabla","Debe hacer clic sobre un elemento de la tabla,\n"
+                    + "Luego presione el botón \"Ver\".",  2);
+        }
+        cDF();
+    }//GEN-LAST:event_btnAbrirMouseClicked
 
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+    private void btnEliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseClicked
         try{
+            cWT();
             int fila = tblListar.getSelectedRow();
-            int id = Integer.parseInt(tblListar.getValueAt(fila, 0).toString());
-            Cristal cristal = load.cargar(id);
-            int respuesta = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea eliminar el cristal "+cristal.getNombre()+"?");
-            if(respuesta == JOptionPane.YES_OPTION){
-                if(load.eliminar(id)){
-                    JOptionPane.showMessageDialog(null, "El cristal ha sido eliminado", "Eliminar", JOptionPane.INFORMATION_MESSAGE);
-                }else{
-                    JOptionPane.showMessageDialog(null, "No se pudo eliminar el cristal", "Eliminar", JOptionPane.WARNING_MESSAGE);
+            String nombre = tblListar.getValueAt(fila, 1).toString();
+            Cristal temp = (Cristal)load.get(nombre,0,new Cristal());
+            if(OptionPane.getConfirmation("Eliminar registro", "¿Esta seguro que desea eliminar el cristal "+temp.getNombre()+"?", 2)){
+                if(!load.restoreOrDeleteFromUI(temp)){
+                    cDF();
+                    return;
                 }
-                llenarTabla(load.listar(0));
             }
-            
+            cargarDatos("0");
+            cDF();
         }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un cristal", "Seleccione cristal", JOptionPane.INFORMATION_MESSAGE);
+            OptionPane.showMsg("Seleccione Cristal","Error al cargar valores,\n"
+                    + "es posible que no se haya seleccionado un registro:\n"
+                    + "Debe hacer clic sobre un elemento de la tabla,\n"
+                    + "Luego presione el botón \"Ver\".\n"
+                    + "Otro posible error: el valor seleccionado no tiene un identificador válido.",2);
+            cDF();
         }
-    }//GEN-LAST:event_btnEliminarActionPerformed
+    }//GEN-LAST:event_btnEliminarMouseClicked
 
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        btnAbrir.setVisible(true);
-        String nombre=txtNombreNew.getText();
-        int precio=(int) txtPrecioNew.getValue();
-        int estado=1;
-
-        Cristal cristal= new Cristal(0, nombre, precio, estado);
-        FnCristal fn = new FnCristal();
-        try {
-          if(fn.guardar(cristal))
-              JOptionPane.showMessageDialog(null, "Cristal guardado", "Guardar", JOptionPane.INFORMATION_MESSAGE);
-          else
-              JOptionPane.showMessageDialog(null, "No se pudo guardar cristal", "Guardar", JOptionPane.ERROR_MESSAGE);
-          limpiarTextField();
-          llenarTabla(load.listar(0));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: "+e.getMessage(), "Guardar", JOptionPane.INFORMATION_MESSAGE);
-        }
-
-        
-    }//GEN-LAST:event_btnGuardarActionPerformed
-
-    private void txtNombreNewKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreNewKeyTyped
-        int largo = 45;
-        if(txtNombreNew.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El nombre solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_txtNombreNewKeyTyped
-
-    private void btnActivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivosActionPerformed
-        try {
-            btnBuscarEliminados.setVisible(false);
-            btnBuscar.setVisible(true);
-            btnRestaurar.setVisible(false);
-            btnAbrir.setVisible(true);
-            btnEliminar.setVisible(true);
-            llenarTabla(load.listar(0));
-            paneles1();
-        } catch (SQLException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: "+ex.getMessage(),"Cargar Cristales",JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_btnActivosActionPerformed
-
-    private void btnEliminadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminadosActionPerformed
-        try {
-            btnBuscarEliminados.setVisible(true);
-            
-            btnBuscar.setVisible(false);
-            btnRestaurar.setVisible(true);
-            btnEliminar.setVisible(false);
-            btnAbrir.setVisible(false);
-            llenarTabla(load.listar(-1));
-            paneles1();
-        } catch (SQLException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: "+ex.getMessage(),"Cargar Cristales",JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_btnEliminadosActionPerformed
-
-    private void btnRestaurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestaurarActionPerformed
+    private void btnRestaurarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseClicked
         try{
+            cWT();
             int fila = tblListar.getSelectedRow();
-            int id = Integer.parseInt(tblListar.getValueAt(fila, 0).toString());
-            
-            int respuesta = JOptionPane.showConfirmDialog(null, "¿Esta seguro que desea restaurar este cristal?");
-            if(respuesta == JOptionPane.YES_OPTION){
-                if(load.restaurar(id)){
-                    JOptionPane.showMessageDialog(null, "El cristal ha sido restaurado", "Restaurar", JOptionPane.INFORMATION_MESSAGE);
-                }else{
-                    JOptionPane.showMessageDialog(null, "No se pudo restaurar el cristal", "Restaurar", JOptionPane.WARNING_MESSAGE);
+            String nombre = tblListar.getValueAt(fila, 1).toString();
+            Cristal temp = (Cristal)load.get(nombre, 0, new Cristal());
+            if(OptionPane.getConfirmation("Confirmación de registro", "¿Esta seguro que desea restaurar este registro?", 1)){
+                cWT();
+                if(!load.restoreOrDeleteFromUI(temp)){
+                    cDF();
+                    return;
                 }
-                llenarTabla(load.listar(-1));
             }
+            cargarDatos("-1");
         }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un cristal", "Seleccione", JOptionPane.INFORMATION_MESSAGE);
+            OptionPane.showMsg("Seleccione Cristal","Error al cargar valores,\n"
+                    + "es posible que no se haya seleccionado un registro:\n"
+                    + "Debe hacer clic sobre un elemento de la tabla,\n"
+                    + "Luego presione el botón \"Ver\".\n"
+                    + "Otro posible error: el valor seleccionado no tiene un identificador válido.",2);
         }
-    }//GEN-LAST:event_btnRestaurarActionPerformed
+        cDF();
+    }//GEN-LAST:event_btnRestaurarMouseClicked
 
-    private void btnBuscarEliminadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarEliminadosActionPerformed
-        String buscar = txtBuscar.getText();
-        try {
-            paneles1();
-            llenarTabla(load.buscarEliminados(buscar));
-        } catch (SQLException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: "+ex.getMessage(),"Cargar Cristales",JOptionPane.WARNING_MESSAGE);
-        }
-        limpiarTextField();
-    }//GEN-LAST:event_btnBuscarEliminadosActionPerformed
+    private void btnAbrirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseEntered
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnAbrir.getIcon().toString()))));
+    }//GEN-LAST:event_btnAbrirMouseEntered
 
-    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        int id = Integer.parseInt(lblIdCristal.getText());
-        String nombre= txtNombre.getText();
-        int precio = (int) txtPrecio.getValue();
-        int estado = 1;
+    private void btnAbrirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseExited
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnAbrir.getIcon().toString()))));
+    }//GEN-LAST:event_btnAbrirMouseExited
 
-        Cristal cristal = new Cristal(id, nombre, precio, estado);
-        try {
-            if(load.modificar(cristal)){
-                JOptionPane.showMessageDialog(null, "Operación realizada con exito", "Modificar", JOptionPane.INFORMATION_MESSAGE);
-                limpiarTextField();
-                pnlGuardar.setVisible(true);
-                pnlModificar.setVisible(false);
+    private void btnEliminarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseEntered
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnEliminar.getIcon().toString()))));
+    }//GEN-LAST:event_btnEliminarMouseEntered
+
+    private void btnEliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseExited
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnEliminar.getIcon().toString()))));
+    }//GEN-LAST:event_btnEliminarMouseExited
+
+    private void btnRestaurarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseEntered
+        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnRestaurar.getIcon().toString()))));
+    }//GEN-LAST:event_btnRestaurarMouseEntered
+
+    private void btnRestaurarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseExited
+        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnRestaurar.getIcon().toString()))));
+    }//GEN-LAST:event_btnRestaurarMouseExited
+
+    private void cboMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboMostrarItemStateChanged
+        cWT();
+        load();
+        cDF();
+    }//GEN-LAST:event_cboMostrarItemStateChanged
+
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarActionPerformed
+
+    private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
+        txtBuscar.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(final KeyEvent e) {
+                trs.setRowFilter(RowFilter.regexFilter("(?i)"+txtBuscar.getText(), 0,1,2,3,4,5,7,8,9,10));
             }
-            else
-            JOptionPane.showMessageDialog(null, "No se pudo efectuar la operación", "Modificar", JOptionPane.WARNING_MESSAGE);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado "+ex.getMessage(), "Modificar", JOptionPane.WARNING_MESSAGE);
-        }
+            
+        });
         
-        try {
-            llenarTabla(load.listar(0));
-        } catch (SQLException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Error inesperado "+ex.getMessage(), "Cargar cristales", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_btnModificarActionPerformed
+        
+        
+        trs = new TableRowSorter(modelo);
+        
+        tblListar.setRowSorter(trs);
+    }//GEN-LAST:event_txtBuscarKeyTyped
 
-    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
-        int largo = 45;
-        if(txtNombre.getText().length() >= largo){
-            evt.consume();
-            JOptionPane.showMessageDialog(null, "El nombre solo debe contener hasta 45 caracteres", "Error de ingreso de datos", JOptionPane.WARNING_MESSAGE);
+    private void btnGuardarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseExited
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnGuardar.getIcon().toString()))));
+    }//GEN-LAST:event_btnGuardarMouseExited
+
+    private void btnGuardarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseEntered
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnGuardar.getIcon().toString()))));
+    }//GEN-LAST:event_btnGuardarMouseEntered
+
+    private void btnGuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseClicked
+        cWT();
+        String nombre = GV.getFilterString(txtNombreN.getText());  
+        int precio = 0;
+        try {
+            txtPrecioN.commitEdit();
+        } catch (ParseException ex) {
+            Logger.getLogger(VCristales.class.getName()).log(Level.SEVERE, null, ex);
+            GV.mensajeExcepcion("El precio ingresado es incorrecto\n"+ex.getMessage(),2);
+            cDF();
+            return;
         }
-    }//GEN-LAST:event_txtNombreKeyTyped
+        precio = (int)txtPrecioN.getValue();
+        Cristal cristal= new Cristal(0, nombre, precio, 1, null, 0);
+        if(!load.addFromUI(cristal)){
+            cDF();
+            return;
+        }
+        cargarDatos("0");
+        cDF();
+    }//GEN-LAST:event_btnGuardarMouseClicked
+
+    private void txtNombreNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreNKeyTyped
+        int largo = 45;
+        if(txtNombreN.getText().length() >= largo){
+            evt.consume();
+            OptionPane.showMsg("Error de ingreso de datos", "El nombre solo debe contener hasta 45 caracteres", 2);
+        }
+    }//GEN-LAST:event_txtNombreNKeyTyped
+
+    private void txtNombreUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreUKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombreUKeyTyped
+
+    private void btnModificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseClicked
+       
+        String nombre = GV.getFilterString(txtNombreU.getText());
+        int precio=0;
+        try {
+            txtPrecioU.commitEdit();
+        } catch (ParseException ex) {
+            Logger.getLogger(VCristales.class.getName()).log(Level.SEVERE, null, ex);
+            GV.mensajeExcepcion("El precio ingresado es incorrecto\n"+ex.getMessage(),2);
+            return;
+        }
+        precio = (int)txtPrecioU.getValue();
+        stCristal.setNombre(nombre);
+        stCristal.setPrecio(precio);
+        cWT();
+        if(!load.updateFromUI(stCristal)){
+            cDF();
+            return;
+        }
+        cargarDatos("0");
+        cDF();
+    }//GEN-LAST:event_btnModificarMouseClicked
+
+    private void btnModificarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseEntered
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnModificar.getIcon().toString()))));
+    }//GEN-LAST:event_btnModificarMouseEntered
+
+    private void btnModificarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnModificarMouseExited
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnModificar.getIcon().toString()))));
+    }//GEN-LAST:event_btnModificarMouseExited
+
+    private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
+        limpiarTextField();
+        loadPanels(1);
+    }//GEN-LAST:event_btnCancelarMouseClicked
+
+    private void btnCancelarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseEntered
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnCancelar.getIcon().toString()))));
+    }//GEN-LAST:event_btnCancelarMouseEntered
+
+    private void btnCancelarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseExited
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnCancelar.getIcon().toString()))));
+    }//GEN-LAST:event_btnCancelarMouseExited
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAbrir;
-    private javax.swing.JButton btnActivos;
-    private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnBuscarEliminados;
-    private javax.swing.JButton btnEliminados;
-    private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnGuardar;
-    private javax.swing.JButton btnModificar;
-    private javax.swing.JButton btnRestaurar;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel btnAbrir;
+    private javax.swing.JLabel btnCancelar;
+    private javax.swing.JLabel btnEliminar;
+    private javax.swing.JLabel btnGuardar;
+    private javax.swing.JLabel btnModificar;
+    private javax.swing.JLabel btnRestaurar;
+    private javax.swing.JComboBox<String> cboMostrar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblIdCristal;
-    private javax.swing.JPanel pnlGuardar;
-    private javax.swing.JPanel pnlModificar;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblPorc1;
+    private javax.swing.JLabel lblPorc2;
+    private javax.swing.JPanel pnl1;
+    private javax.swing.JPanel pnl2;
     private javax.swing.JTable tblListar;
     private javax.swing.JTextField txtBuscar;
-    private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtNombreNew;
-    private javax.swing.JSpinner txtPrecio;
-    private javax.swing.JSpinner txtPrecioNew;
+    private javax.swing.JTextField txtNombreN;
+    private javax.swing.JTextField txtNombreU;
+    private javax.swing.JSpinner txtPrecioN;
+    private javax.swing.JSpinner txtPrecioU;
     // End of variables declaration//GEN-END:variables
 
     
-    private void llenarTabla(ArrayList<Cristal> lista){
-        DefaultTableModel modelo;
-        modelo = new DefaultTableModel() {
-           @Override
-           public boolean isCellEditable(int fila, int columna) {
-               return false; //Con esto conseguimos que la tabla no se pueda editar
-           }
-        };
-        
-        modelo.addColumn("Id");
-        modelo.addColumn("Nombre");
-        modelo.addColumn("Precio");
-        tblListar.setModel(modelo);
+    
+    private void load(){
+        if(cboMostrar.getSelectedIndex()==0){//en nueva version cargar ventana completa con lista de clientes estatica global
+            cargarDatos("0");
+        }else{
+            cargarDatos("-1");
+        }
+    }
+    private void cargarDatos(String listar) {
+        limpiarTextField();
+        loadPanels(1);
+        if(listar.equals("-1")){
+            btnRestaurar.setVisible(true);
+            btnEliminar.setVisible(false);
+            btnAbrir.setVisible(false);
+            btnModificar.setVisible(false);
+        }else{
+            btnRestaurar.setVisible(false);
+            btnEliminar.setVisible(true);
+            btnAbrir.setVisible(true);
+            btnModificar.setVisible(true);
+        }
         try{
-            for (Cristal temp : lista) {
+            modelo.setNumRows(0);
+            for (Object object : load.listar(listar, new Cristal())) {
+                Cristal temp = (Cristal)object;
                 Object[] fila = new Object[4];
                 fila[0] = temp.getId();
                 fila[1] = temp.getNombre();
-                fila[2] = temp.getPrecio();
+                fila[2] = GV.strToPrice(temp.getPrecio());
                 modelo.addRow(fila);
             }
             tblListar.updateUI();
             if(tblListar.getRowCount() == 0){
-                JOptionPane.showMessageDialog(null, "No existen cristales registrados.");
+                GV.emptyTable(cboMostrar, txtBuscar, "Cristales");
             }
             
         }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Error, ["+e.getMessage()+"]");
+            OptionPane.showMsg("Ocurrió un error inesperado", "Ocurrió un error inesperado al cargar valores en la tabla, ["+e.getMessage()+"]",3);
         }
     }
 
-    private void abrirCristal(int id) throws SQLException, ClassNotFoundException {
-            Cristal temp = load.cargar(id);
-            if(temp!=null){
-                lblIdCristal.setText(""+temp.getId());
-                if(temp.getNombre().equals("null"))
-                    txtNombre.setText("");
+    private void abrirCristal(String nombre) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        loadPanels(2);
+        stCristal = (Cristal)load.get(nombre,0,new Cristal());
+            if(stCristal!=null){
+                if(stCristal.getNombre().isEmpty() || stCristal.getNombre().equals("null"))
+                    txtNombreU.setText("");
                 else
-                    txtNombre.setText(temp.getNombre());
-                txtPrecio.setValue(temp.getPrecio());
-                
+                    txtNombreU.setText(stCristal.getNombre());
+                txtPrecioU.setValue((int)stCristal.getPrecio());
             }else{
-                JOptionPane.showMessageDialog(null, "Error al cargar el cristal", "Seleccione Cristal", JOptionPane.INFORMATION_MESSAGE);
+                OptionPane.showMsg("Seleccione registro","Error al cargar valores,\n"
+                    + "es posible que no se haya seleccionado un registro\n"
+                    + "o el valor seleccionado no tiene un identificador válido.",2);
             }
     }
 
     private void limpiarTextField() {
-        lblIdCristal.setVisible(false);
-        txtNombre.setText("");
-        txtPrecio.setValue(0);
-        txtNombreNew.setText("");
-        txtPrecioNew.setValue(0);
+        txtNombreU.setText("");
+        txtNombreN.setText("");
+        txtPrecioN.setValue((int)0);
+        txtPrecioU.setValue((int)0);
+        txtPrecioN.setVisible(true);
+        lblPorc1.setVisible(true);
+        txtPrecioU.setVisible(true);
+        lblPorc2.setVisible(true);
     }
 
-    private void paneles1() {
-        pnlGuardar.setVisible(true);
-        pnlModificar.setVisible(false);
+    private void loadPanels(int option) {
+        if(option == 2){
+            pnl1.setVisible(false);
+            pnl2.setVisible(true);
+        }else{
+            pnl1.setVisible(true);
+            pnl2.setVisible(false);
+        }
     }
     
-    private void paneles2() {
-        pnlGuardar.setVisible(false);
-        pnlModificar.setVisible(true);
+    private void cWT(){
+        GV.cursorWAIT(this);
     }
+    private void cDF(){
+        GV.cursorDF(this);
+    }
+    
 }

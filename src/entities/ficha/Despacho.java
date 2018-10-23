@@ -5,14 +5,14 @@
  */
 package entities.ficha;
 
-import entities.abstractclasses.SyncStringId;
+import entities.abstractclasses.SyncFichaClass;
 import java.util.Date;
 
 /**
  *
  * @author Lenovo G470
  */
-public class Despacho extends SyncStringId{
+public class Despacho extends SyncFichaClass{
     
     private String rut;
     private String nombre;
@@ -25,21 +25,21 @@ public class Despacho extends SyncStringId{
     public Despacho(String cod, String rut, String nombre, Date fecha, 
             String idFicha, int estado, Date lastUpdate, int lastHour) {
         setCod(cod);
-        this.rut = rut;
-        this.nombre = nombre;
-        this.fecha = fecha;
-        this.idFicha = idFicha;
+        setRut(rut);
+        setNombre(nombre);
+        setFecha(fecha);
+        setIdFicha(idFicha);
         setEstado(estado);
         setLastUpdate(lastUpdate);
         setLastHour(lastHour);
     }
 
     public void setRut(String rut) {
-        this.rut = rut;
+        this.rut = getStr(rut);
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = getStr(nombre);
     }
 
     public void setFecha(Date fecha) {
@@ -47,7 +47,7 @@ public class Despacho extends SyncStringId{
     }
 
     public void setIdFicha(String idFicha) {
-        this.idFicha = idFicha;
+        this.idFicha = getStr(idFicha);
     }
 
     public String getRut() {
