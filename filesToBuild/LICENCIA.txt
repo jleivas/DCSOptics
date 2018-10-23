@@ -1,0 +1,40 @@
+
+TÉRMINOS DE LICENCIA DEL SOFTWARE DE SOFTDIREX
+
+DATA CONTROL SYSTEM OPTICS
+
+Los presentes términos de licencia constituyen un contrato entre Softdirex (o, en función de donde resida, una de sus filiales) y usted. Se aplican al software antes mencionado. Los términos también se aplican a cualquier servicio o actualización de Softdirex  para el software, excepto en la medida que tengan términos diferentes.
+
+SI CUMPLE CON ESTOS TÉRMINOS DE LICENCIA, DISPONDRÁ DE LOS DERECHOS SIGUIENTES.
+
+1. DERECHOS DE INSTALACIÓN Y DE USO. 
+
+a. General. Puede utilizar solo un número de copias del software por licencia para gestionar y almacenar los datos de su optica, incluyendo la implementación dentro de su red corporativa interna.
+
+b. Uso de demostración. Puede hacer uso de licencias de pruebas solo una vez, ésto no compromete transacciones de dinero por compra de licencias.
+
+c. Copia de seguridad. el software puede realizar una o más copias de seguridad automáticamente, para que pueda volver a instalarlo en el mismo equipo o traspasr la licencia a otro hardware siempre y cuando la licencia del software esté en vigencia, de lo contrario no se asegura el respaldo de los datos.
+
+d. Programas de terceros. 
+	i. El software puede incluir componentes de terceros con notificaciones legales independientes o que se rijan por otros contratos.
+	ii. El software contiene componentes de terceros que se licencian en virtud de licencias de código abierto con obligaciones de disponibilidad de código fuente. 
+
+e. Extensiones. El software le da la opción de agregar otros paquetes de software de Softdirex, dependiendo del plan seleccionado por usted, las extenciones pueden llegar a tener costos adicionales, éstos deben ser informados y negociados entre usted y Softdirex antes de su implementación. Esos paquetes poseen la misma licencia. Softdirex no distribuye licencia ni proporciona garantías de ningún tipo por los paquetes de terceros.
+
+2. DATOS. El software puede recopilar información sobre usted, sus clientes y el uso que hace del software, y enviar dicha información a Softdirex. Softdirex puede utilizar esta información para mejorar nuestros productos y servicios. El software también incluye la recopilación de datos de sus clientes. Si utiliza estas funciones, debe cumplir con la legislación aplicable, que incluye la entrega de notificaciones pertinentes a los clientes cuyos datos son almacenados por el software. Softdirex no se hace responsable por el mal uso de los datos almacenados por parte del usuario del software.
+
+3. ACTUALIZACIONES. El software puede instalar actualizaciones automáticas. Al utilizar el software, usted acepta recibir actualizaciones automáticas con notificación adicional y permite a Softdirex descargarlas e instalarlas para usted.
+
+4. LA LICENCIA. El software se vende bajo licencia de pago mensual o anual negociado ántes de la instalación de este software. Este contrato le otorga todos los derechos de uso del software. Softdirex se reserva todos los demás derechos. Sin embargo existen algunbas liitaciones, no podrá:
+	• eludir las limitaciones técnicas del software;
+	• utilizar técnicas de ingeniería inversa, descompilar ni desensamblar el software o de alguna forma intentar obtener el código fuente del software, salvo y únicamente en la medida que: (i) lo permita la legislación aplicable, a pesar de esta limitación;
+	• utilizar el software de ninguna manera que esté en contra de la ley o
+	• compartir, publicar o dar en préstamo el software, proporcionar el software como una solución alojada para que otros la utilicen, ni transmitir el software o este contrato a ningún tercero.
+
+5. SERVICIOS DE SOPORTE TÉCNICO. Debido a que este software se presenta bajo licencia, podemos prestar servicios de soporte técnico para el mismo siempre y cuando la licencia esté vigente, para ello usted debe pagar el monto negociado por Softdirex.
+
+6. CONTRATO COMPLETO. Este contrato y los términos aplicables a complementos, actualizaciones, servicios basados en Internet y servicios de soporte técnico que utilice constituyen el contrato completo respecto al software y a los servicios de soporte técnico.
+
+7. EFECTOS LEGALES. En este contrato se describen determinados derechos legales. Puede que usted tenga otros derechos en virtud de las leyes de su estado o país. El presente contrato no modifica los derechos que le asisten en virtud de la legislación de su jurisdicción si dicha legislación no lo permite.
+
+8. EXCLUSIÓN DE GARANTÍAS. EL SOFTWARE SE CONCEDE BAJO LICENCIA Y, POR CONSIGUIENTE, USTED ASUME EL RIESGO DE UTILIZARLO. SOFTDIREX NO OTORGA NINGUNA GARANTÍA NI CONDICIÓN EXPRESAS EN CASO DEL MAL USO DEL SOFTWARE. EN LA MEDIDA EN QUE ASÍ LO PERMITA LA LEGISLACIÓN LOCAL, SOFTDIREX EXCLUYE LAS GARANTÍAS IMPLÍCITAS DE COMERCIABILIDAD, IDONEIDAD PARA UN FIN PARTICULAR Y AUSENCIA DE INFRACCIÓN DE DERECHOS.

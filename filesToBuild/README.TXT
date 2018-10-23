@@ -1,0 +1,2 @@
+BUILD EXE FILE  ==> Launch4j
+BUILD INSTALLER ==> SSE Setup
