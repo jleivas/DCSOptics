@@ -816,6 +816,14 @@ public class GlobalValuesBD {
         LISTA_FICHAS = listarAllFichas(null, null, null, null,idCnv, null);
     }
     
+    public static Object openFichaByCod(String cod){
+        List<Object> lista = listarAllFichas(null, null, null, null,null, cod);
+        if(lista.size() > 0){
+            return lista.get(0);
+        }
+        return null;
+    }
+    
     public static List<Object> getFichasByConveny(int idCnv){
         return listarAllFichas(null, null, null, null,""+idCnv, null);
     }

@@ -732,8 +732,7 @@ public class GlobalValuesFunctions {
     }
 
     public static boolean licenciaIsEnableToSendMails() {
-        return (GV.licenciaTipoPlan() != GlobalValuesVariables.licenciaTipoFree() && 
-                GV.licenciaTipoPlan() != GlobalValuesVariables.licenciaTipo2X());
+        return (GV.licenciaTipoPlan() != GlobalValuesVariables.licenciaTipoFree());
     }
 
     public static boolean licenciaIsEnableToSendInternMessages() {

@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.RootPaneContainer;
 import view.opanel.OpanelConfig;
 import view.opanel.OpanelInventario;
+import view.opanel.OpanelSelectFichaToOpen;
 import view.opanel.OpanelTools;
 import view.opanel.OpanelUserData;
 
@@ -114,6 +115,7 @@ public class ContentAdmin extends javax.swing.JFrame {
         btnClose = new javax.swing.JLabel();
         btnMinimizeWindow = new javax.swing.JLabel();
         lblLicence = new javax.swing.JLabel();
+        btnOpenFicha = new javax.swing.JLabel();
         jpSuperior = new javax.swing.JPanel();
         lblName = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
@@ -243,7 +245,7 @@ public class ContentAdmin extends javax.swing.JFrame {
                 btnSyncronizeMouseExited(evt);
             }
         });
-        jpUpBar.add(btnSyncronize, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+        jpUpBar.add(btnSyncronize, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, -1, -1));
 
         btnTools.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Maintenance_25px.png"))); // NOI18N
         btnTools.setToolTipText("Herramientas");
@@ -291,6 +293,21 @@ public class ContentAdmin extends javax.swing.JFrame {
         lblLicence.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         lblLicence.setText("Estado de licencia");
         jpUpBar.add(lblLicence, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 10, 340, 20));
+
+        btnOpenFicha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Opened_Folder_25px.png"))); // NOI18N
+        btnOpenFicha.setToolTipText("Sincronizar datos");
+        btnOpenFicha.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnOpenFichaMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnOpenFichaMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnOpenFichaMouseExited(evt);
+            }
+        });
+        jpUpBar.add(btnOpenFicha, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, -1, -1));
 
         jpSuperior.setBackground(new java.awt.Color(242, 240, 237));
         jpSuperior.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -726,6 +743,22 @@ public class ContentAdmin extends javax.swing.JFrame {
         }  
     }//GEN-LAST:event_btnSyncronizeMouseClicked
 
+    private void btnOpenFichaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnOpenFichaMouseClicked
+        if(!GV.licenciaExpirada()){
+            OptionPane.showOptionPanel(new OpanelSelectFichaToOpen(), OptionPane.titleTool());
+        }else{
+            GV.mensajeLicenceExpired();
+        }
+    }//GEN-LAST:event_btnOpenFichaMouseClicked
+
+    private void btnOpenFichaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnOpenFichaMouseEntered
+        btnOpenFicha.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnOpenFicha.getIcon().toString()))));
+    }//GEN-LAST:event_btnOpenFichaMouseEntered
+
+    private void btnOpenFichaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnOpenFichaMouseExited
+        btnOpenFicha.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnOpenFicha.getIcon().toString()))));
+    }//GEN-LAST:event_btnOpenFichaMouseExited
+
     /**
      * @param args the command line arguments
      */
@@ -780,6 +813,7 @@ public class ContentAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel btnListarFichas;
     private javax.swing.JLabel btnMessage;
     private javax.swing.JLabel btnMinimizeWindow;
+    private javax.swing.JLabel btnOpenFicha;
     private javax.swing.JLabel btnSizeWindow;
     private javax.swing.JLabel btnSyncronize;
     private javax.swing.JLabel btnTools;

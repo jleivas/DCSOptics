@@ -923,6 +923,10 @@ public class GV extends GlobalValuesCursor{
         GlobalValuesBD.listarFichasByConveny(idCnv);
     }
     
+    public static Ficha openFichaByCod(String cod) {
+        return (Ficha)GlobalValuesBD.openFichaByCod(cod);
+    }
+    
     public static List<Object> getFichas() {
         return GlobalValuesBD.getFichas();
     }
@@ -1180,7 +1184,8 @@ public class GV extends GlobalValuesCursor{
     }
     
     public static void mensajeLicenceExpired() {
-        OptionPane.showMsg("Renueve su licencia", "La versión de su licencia se encuentra expirada", 2);
+        OptionPane.showMsg("Renueve su licencia", "La versión de su licencia se encuentra expirada.\n"
+                + "Algunas opciones no estarán disponibles.", 2);
     }
 
     public static boolean licenciaLocal() {
