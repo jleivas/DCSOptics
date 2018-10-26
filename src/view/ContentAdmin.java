@@ -295,7 +295,7 @@ public class ContentAdmin extends javax.swing.JFrame {
         jpUpBar.add(lblLicence, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 10, 340, 20));
 
         btnOpenFicha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Opened_Folder_25px.png"))); // NOI18N
-        btnOpenFicha.setToolTipText("Sincronizar datos");
+        btnOpenFicha.setToolTipText("Cargar receta oftalmológica");
         btnOpenFicha.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnOpenFichaMouseClicked(evt);

@@ -300,7 +300,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/icons8_Opened_Folder_25px.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Sincronizar datos"/>
+                <Property name="toolTipText" type="java.lang.String" value="Cargar receta oftalmol&#xf3;gica"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnOpenFichaMouseClicked"/>
