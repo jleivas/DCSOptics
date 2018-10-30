@@ -73,10 +73,12 @@ public class GV extends GlobalValuesCursor{
     
     public static void initValues(){
         Log.setLog(className,Log.getReg());
+        GlobalValuesFunctions.validaOs();
         SubProcess.isOnline();
         loadLastUpdateFromXML();//cargar LAST_UPDATE de fichero xml al iniciar programa
         SubProcess.licenciaComprobarOnline();
         validaBD();
+        GlobalValuesVariables.setIdEquipo(LOCAL_SYNC.getIdEquipo());
         Acceso init = new Acceso();
         init.setVisible(true);
     }
@@ -229,6 +231,14 @@ public class GV extends GlobalValuesCursor{
     /**************************BEGIN FUNTIONS**********************************/
     public static boolean usernameYaExiste(String username) {
         return GlobalValuesFunctions.usernameYaExiste(username);
+    }
+    
+    public static String getContentAdminTitle(){
+        return GlobalValuesFunctions.getContentAdminTitle();
+    }
+    
+    public static boolean isWindowsOs() {
+        return GlobalValuesFunctions.isWindows();
     }
     
     public static int getSyncCount(){
@@ -532,6 +542,11 @@ public class GV extends GlobalValuesCursor{
     public static SalesReportFicha getSalesReportFicha(){
         return GlobalValuesVariables.getSalesReportFicha();
     }
+    
+    public static int getIdEquipo(){
+        return GlobalValuesVariables.getIdEquipo();
+    }
+    
     
     public static String fechaPorDefectoString(){
         return GlobalValuesVariables.getFechaDefault();

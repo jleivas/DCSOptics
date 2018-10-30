@@ -577,31 +577,30 @@ public class Dao{
     }
 
     public void createFicha(Ficha ficha, HistorialPago hp) {
-        try {
-            SubProcess.suspendConnectionOnline();
-            add(ficha.getCliente());
-            add(ficha.getCerca());
-            add(ficha.getLejos());
-            add(ficha.getDespacho());
-            add(ficha.getDoctor());
-            add(ficha);
-            if(ficha.getCerca() != null){
-                if(!GV.getFicha().getCerca().getMarca().isEmpty()){
-                    decreaseStock(ficha.getCerca().getMarca(), 1);
-                }
-            }
-            if(ficha.getLejos() != null){
-                if(!GV.getFicha().getLejos().getMarca().isEmpty()){
-                    decreaseStock(ficha.getLejos().getMarca(), 1);
-                }
-            }
-            if(hp != null){
-                add(hp);
-            }
-            SubProcess.activateConnectionOnline();
-            GV.sendMailFicha(ficha);
-        } catch (InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(Dao.class.getName()).log(Level.SEVERE, null, ex);
+//        if(ficha.getCerca() != null){
+//            if(!GV.getFicha().getCerca().getMarca().isEmpty()){
+//                decreaseStock(ficha.getCerca().getMarca(), 1);
+//            }
+//        }
+//        if(ficha.getLejos() != null){
+//            if(!GV.getFicha().getLejos().getMarca().isEmpty()){
+//                decreaseStock(ficha.getLejos().getMarca(), 1);
+//            }
+//        }
+        setLastUpdates(hp);
+        setLastUpdates(ficha.getCliente());
+        setLastUpdates(ficha.getDoctor());
+        setLastUpdates(ficha.getCerca());
+        setLastUpdates(ficha.getLejos());
+        setLastUpdates(ficha);
+        GV.LOCAL_SYNC.saveFicha(ficha, hp);
+    }
+    
+    private void setLastUpdates(SyncClass object){
+        Date lastDate = new Date();
+        if(object != null){
+            (object).setLastUpdate(lastDate);//actualizamos la ultima fecha de modificacion
+            (object).setLastHour(Cmp.hourToInt(lastDate));
         }
     }
 

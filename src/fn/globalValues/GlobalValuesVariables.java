@@ -30,7 +30,7 @@ public class GlobalValuesVariables {
     
     /*  Nombres de sistema  */
     private static String PROJECTNAME="DCS Optics";
-    private static String VERSION = "v4.0.1";
+    private static String VERSION = "v4.0.2";
     private static String EQUIPO;//el nombre debe concatenarse con la fecha de instalacion
     private static int EQUIPO_ID = 1;
     private static String INVENTARIO_NAME;
@@ -39,6 +39,7 @@ public class GlobalValuesVariables {
     private static String COMPANY_RUT;
     private static String COMPANY_GIRO;
     private static String MESSAGE_FILE;//texto informativo que se imprimirá en la ficha
+    private static boolean IS_WINDOWS = true;
     
     /* Seguridad */
     private static String SALT = noGit.NG.SALT;//favorite pet
@@ -551,5 +552,21 @@ public class GlobalValuesVariables {
     
     public static String getFechaDefault(){
         return FECHA_DEFAULT;
+    }
+    
+    public static void setIdEquipo(int id){
+        EQUIPO_ID = id;
+    }
+    
+    public static int getIdEquipo(){
+        return EQUIPO_ID;
+    }
+    
+    public static void setIsWindowsOs(boolean value){
+        IS_WINDOWS = value;
+    }
+    
+    public static boolean getIsWindows(){
+        return IS_WINDOWS;
     }
 }

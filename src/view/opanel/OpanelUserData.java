@@ -9,9 +9,9 @@ import entities.User;
 import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
+import fn.globalValues.GlobalValuesFunctions;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import view.ContentAdmin;
 
 /**
  *
@@ -304,7 +304,7 @@ public class OpanelUserData extends javax.swing.JPanel {
                 GV.setUser(stUser);
                 
                 load.update(stUser);
-                ContentAdmin.lblUserName.setText(GV.user().getNombre());
+                GlobalValuesFunctions.contentAdminUpdateLabelUser();
                 GV.cursorDF(this);
                 OptionPane.closeOptionPanel();
             }else{

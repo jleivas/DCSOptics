@@ -40,7 +40,6 @@ import reportes.FichaDataSource;
 import reportes.FichaRecursoDatos;
 import reportes.FichasConvenioRecursoDatos;
 import reportes.SalesFichaRecursoDatos;
-import view.ContentAdmin;
 
 /**
  *
@@ -82,7 +81,7 @@ public class GlobalValuesPrint {
         InputStream is = null;
         JasperPrint jsp = null;
         FichaRecursoDatos dt = new FichaRecursoDatos();
-        dt.addTitle(ContentAdmin.lblTitle.getText(), "Documento generado por "+GV.projectName());
+        dt.addTitle(GV.getContentAdminTitle(), "Documento generado por "+GV.projectName());
         for (Object ficha : fichas) {
             dt.addFicha((Ficha)ficha);
         }

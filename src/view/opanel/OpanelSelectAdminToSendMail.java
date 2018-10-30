@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import view.ContentAdmin;
 
 /**
  *
@@ -156,7 +155,7 @@ public class OpanelSelectAdminToSendMail extends javax.swing.JPanel {
                     GV.cursorDF(this);
                     return;
                 }
-                GlobalValuesFunctions.sendReportSalesMail(GV.getSalesReportFicha(), user.getEmail(),ContentAdmin.lblTitle.getText());
+                GlobalValuesFunctions.sendReportSalesMail(GV.getSalesReportFicha(), user.getEmail(),GV.getContentAdminTitle());
                 OptionPane.showMsg("Reporte enviado", "Se ha enviado el reporte satisfactoriamente", 1);
                 OptionPane.closeOptionPanel();
                 GV.cursorDF(this);

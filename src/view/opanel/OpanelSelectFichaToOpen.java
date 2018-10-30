@@ -5,9 +5,6 @@
  */
 package view.opanel;
 
-import com.mxrck.autocompleter.TextAutoCompleter;
-import dao.Dao;
-import entities.User;
 import entities.ficha.Ficha;
 import fn.Boton;
 import fn.GV;
@@ -17,7 +14,6 @@ import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import view.ContentAdmin;
 
 /**
  *

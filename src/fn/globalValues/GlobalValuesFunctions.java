@@ -50,11 +50,13 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import org.apache.commons.codec.binary.Base64;
+import view.ContentAdmin;
 import view.opanel.OpanelCompanyData;
 import view.opanel.OpanelConvenyReceptor;
 import view.opanel.OpanelOfficeData;
 import view.opanel.OpanelSetLicencia;
 import view.opanel.OpanelSetToken;
+import viewMac.ContentAdminMac;
 
 /**
  *
@@ -835,6 +837,14 @@ public class GlobalValuesFunctions {
     public static boolean usernameYaExiste(String username) {
         return load.usernameYaExiste(username);
     }
+
+    public static String getContentAdminTitle() {
+        if(isWindows()){
+            return ContentAdmin.lblTitle.getText();
+        }else{
+            return ContentAdminMac.lblTitle.getText();
+        }
+    }
     
     
     public void convenioGenerarReporte(Convenio cnv){
@@ -1088,6 +1098,22 @@ public class GlobalValuesFunctions {
     
     public static String tokenGetBdUrl(String unKey){
         return unKey.substring(unKey.lastIndexOf("<")+1);
+    }
+    
+    public static void validaOs(){
+        GlobalValuesVariables.setIsWindowsOs((System.getProperty("os.name").toLowerCase().startsWith("win")));
+    }
+    
+    public static boolean isWindows(){
+        return GlobalValuesVariables.getIsWindows();
+    }
+    
+    public static void contentAdminUpdateLabelUser(){
+        if(isWindows()){
+            ContentAdmin.lblUserName.setText(GV.user().getNombre());
+        }else{
+            ContentAdminMac.lblUserName.setText(GV.user().getNombre());
+        }
     }
     
     public static void fichasToDelivery(List<Object> fichas){

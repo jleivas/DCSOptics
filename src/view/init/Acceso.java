@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import view.ContentAdmin;
+import viewMac.ContentAdminMac;
 
 /**
  *
@@ -212,8 +213,16 @@ public class Acceso extends javax.swing.JFrame {
                     GV.username(usu.getUsername());
                     GV.setUser(usu);
                     GlobalValuesXmlFiles.crearRegistroLocal();
-                    ContentAdmin principalAdmin = new ContentAdmin();
-                    principalAdmin.setVisible(true);
+                    ContentAdmin principalAdmin;
+                    ContentAdminMac principalAdminMac;
+                    if(GV.isWindowsOs()){
+                        principalAdmin = new ContentAdmin();
+                        principalAdmin.setVisible(true);
+                    }else{
+                        principalAdminMac = new ContentAdminMac();
+                        principalAdminMac.setVisible(true);
+                    }
+                    
                     this.dispose();
                 } catch (SQLException | ClassNotFoundException ex) {
                     try {
