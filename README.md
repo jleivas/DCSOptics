@@ -37,6 +37,7 @@ técnico para la puesta en marcha del sistema.
  - Validaciones de acceso mas amigable
  - Autocompletado con menor consumo de recursos
  - Previsualizar garantia despues de ser generada y corregir formato de hora
+ - Ajuste de filtrado de registros de fichas
 
  #### [Version 4.0.2 (V-402)](https://github.com/softdirex/TestSync/search?q=V-402&type=Commits)
  
