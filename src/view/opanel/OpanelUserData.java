@@ -10,7 +10,6 @@ import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
 import fn.globalValues.GlobalValuesFunctions;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -256,11 +255,15 @@ public class OpanelUserData extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCancelarMousePressed
 
     private void btnGuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseClicked
+        if(!GV.isOnline()){
+            OptionPane.showMsg("No se puede modificar el registro", "Para poder modificar estos datos debes tener acceso a internet.", 2);
+            return;
+        }
         GV.cursorWAIT(this);
         String pass = null;
-        String userName = txtUsername.getText();
+        String userName = GV.getFilterString(txtUsername.getText());
         
-        String temp = txtPass1.getText().trim().replaceAll(" ","");
+        String temp = GV.getFilterString(txtPass1.getText().trim().replaceAll(" ",""));
         if(OptionPane.getConfirmation("Modificar mis datos", "¿Estas seguro que deseas modificar tus datos?", JOptionPane.INFORMATION_MESSAGE)){
             GV.cursorWAIT(this);
             if(temp.length() > 4){
@@ -280,29 +283,19 @@ public class OpanelUserData extends javax.swing.JPanel {
                 if(pass != null){
                     stUser.setPass(pass);
                 }
-                if(!stUser.getUsername().equals(userName)){
-                    try {
-                        GV.cursorWAIT(this);
-                        if(load.get(userName, 0, new User())!= null){
-                            OptionPane.showMsg("No se puede modificar", "El nombre de usuario "+userName+" ya se encuentra en uso\n"
-                                    + "Intente con otro valor...",JOptionPane.WARNING_MESSAGE);
-                            GV.cursorDF(this);
-                            return;
-                        }
-                    } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                        OptionPane.showMsg("Error inesperado", "Ocurrió un error al intentar consultar el nombre de usuario\n"
-                                + "en la base de datos.\nDetalle:"+ex.getMessage(), JOptionPane.ERROR_MESSAGE);
-                        GV.cursorDF(this);
-                        return;
-                    }
-                }
                 GV.cursorWAIT(this);
-                stUser.setEmail(txtMail.getText());
-                stUser.setNombre(txtNombre.getText());
-                stUser.setUsername(txtUsername.getText());
+                stUser.setEmail(GV.getFilterString(txtMail.getText()));
+                stUser.setNombre(GV.getFilterString(txtNombre.getText()));
+                stUser.setUsername(GV.getFilterString(txtUsername.getText()));
                 stUser.setTipo(cboTipo.getSelectedIndex());
+                if(!GV.isOnline() || !load.updateFromUI(stUser)){
+                    if(!GV.isOnline()){
+                        OptionPane.showMsg("No se puede modificar el registro", "Para poder modificar estos datos debes tener acceso a internet.", 2);
+                    }
+                    GV.cursorDF(this);
+                    return;
+                } 
                 GV.setUser(stUser);
-                
                 load.update(stUser);
                 GlobalValuesFunctions.contentAdminUpdateLabelUser();
                 GV.cursorDF(this);

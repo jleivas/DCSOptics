@@ -12,16 +12,13 @@ import fn.GV;
 import javax.swing.table.DefaultTableModel;
 import fn.Icons;
 import fn.OptionPane;
-import fn.date.Cmp;
-import fn.globalValues.GlobalValuesVariables;
+import static fn.globalValues.GlobalValuesFunctions.getResetPass;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
+import view.opanel.OpanelUserData;
 
 /**
  *
@@ -885,6 +882,14 @@ public class VUsuarios extends javax.swing.JPanel {
     }
 
     private void abrirUsuario(String username) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        if(username.equals(GV.user().getUsername())){
+            OptionPane.showOptionPanel(new OpanelUserData(), OptionPane.titleUserData());
+            return;
+        }
+        if(username.equals("root") && !GV.user().getUsername().equals("root")){
+            OptionPane.showMsg("No se puede modificar usuario", "No tienes los permisos suficientes para modificar el usuario de soporte.", 2);
+            return;
+        }
         loadPanels(2);
         staticUser = (User)load.get(username, 0, new User());
             if(staticUser!=null){
@@ -896,7 +901,7 @@ public class VUsuarios extends javax.swing.JPanel {
                 txtUpdateName.setText(staticUser.getNombre());
                 txtUpdateEmail.setText(staticUser.getEmail());
                 txtUpdateUsername.setText(staticUser.getUsername());
-                txtUpdatePass.setText(GV.companyName().replaceAll(" ", "")+Cmp.dateToString(new Date(), "yyyy"));
+                txtUpdatePass.setText(getResetPass());
                 cboTipo2.setSelectedIndex(staticUser.getTipo());
                 
             }else{
@@ -956,7 +961,7 @@ public class VUsuarios extends javax.swing.JPanel {
         txtNewName.setText("");
         txtNewEmail.setText("");
         txtNewUsername.setText("");
-        String newPass = (GV.companyName().toLowerCase().contains("softdirex"))? "Softdirex":GV.companyName().replaceAll(" ", "")+Cmp.dateToString(new Date(), "yyyy");
+        String newPass = getResetPass();
         txtNewPass.setText(newPass);
         
     }

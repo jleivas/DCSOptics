@@ -307,6 +307,7 @@ public class OpanelGuaranteeData extends javax.swing.JPanel {
             GV.crearGarantia(ficha);
             GV.getFichas().add(ficha);
             OptionPane.closeOptionPanel();
+            GV.printFicha(ficha);
         }else{
             return;
         }
@@ -462,7 +463,7 @@ public class OpanelGuaranteeData extends javax.swing.JPanel {
             if(h1<auxH)return false;
         }
         if(hora1>=hora2)return false;
-        horaEntrega = h1+min1+" - "+h2+min2;
+        horaEntrega = h1+":"+min1+" - "+h2+":"+min2;
         return true;
     }
 

@@ -29,8 +29,8 @@ import java.util.logging.Logger;
 public class GlobalValuesVariables {
     
     /*  Nombres de sistema  */
-    private static String PROJECTNAME="DCS Optics";
-    private static String VERSION = "v4.0.2";
+    private static String PROJECTNAME="Optics";
+    private static String VERSION = "v4.0.3";
     private static String EQUIPO;//el nombre debe concatenarse con la fecha de instalacion
     private static int EQUIPO_ID = 1;
     private static String INVENTARIO_NAME;
@@ -44,6 +44,7 @@ public class GlobalValuesVariables {
     /* Seguridad */
     private static String SALT = noGit.NG.SALT;//favorite pet
     private static String PASS;
+    private static int INTENTOS_ACCESO = 0;
     
     /* LICENCIA */
     private static String COMPANY_NAME;
@@ -568,5 +569,17 @@ public class GlobalValuesVariables {
     
     public static boolean getIsWindows(){
         return IS_WINDOWS;
+    }
+    
+    public static int getIntentosAcceso(){
+        return INTENTOS_ACCESO;
+    }
+    
+    public static void setIntentosAccesoSuma(){
+        INTENTOS_ACCESO = INTENTOS_ACCESO + 1;
+    }
+    
+    public static void setIntentosAccesoReset(){
+        INTENTOS_ACCESO = 0;
     }
 }

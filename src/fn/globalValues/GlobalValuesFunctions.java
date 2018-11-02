@@ -645,14 +645,32 @@ public class GlobalValuesFunctions {
                 return null;
             }
             if(GV.dsC(user.getPass()).equals(pass)){
+                GlobalValuesVariables.setIntentosAccesoReset();
                 return user;
             }else{
-                OptionPane.showMsg("Acceso denegado", "Clave de acceso inválida", 2);
+                GlobalValuesVariables.setIntentosAccesoSuma();
+                if(GlobalValuesVariables.getIntentosAcceso() < 3){
+                    OptionPane.showMsg("Acceso denegado", "Clave de acceso inválida", 2);
+                }else{
+                    OptionPane.showMsg("Acceso denegado", "Clave de acceso inválida:\n"
+                        + "Si usted está seguro que la clave ingresada es la correcta\n"
+                        + "consulte una posible solución en el ícono de ayuda \"?\".", 2);
+                }
             }
         }else{
             OptionPane.showMsg("Acceso denegado", "El usuario no existe", 2);
         }
         return null;
+    }
+    
+    public static String helpUserPassAccessDenied(){
+        return "Si usted no ha modificado su contraseña, es probable que haya sido\n"
+                + "reseteada por el sistema, esto ocurre cuando:\n"
+                + "a) Un administrador actualizó sus datos en este equipo.\n"
+                + "b) Un administrador actualizó sus datos en otro equipo\n"
+                + "   y el sistema local fué sincronizado.\n\n"
+                + "Pruebe con la siguiente clave: "+ getResetPass() + "\n"
+                + "Si no tiene éxito, contáctese con su proveedor de software";
     }
     
     public static void showRegistroLicencia(){
@@ -844,6 +862,10 @@ public class GlobalValuesFunctions {
         }else{
             return ContentAdminMac.lblTitle.getText();
         }
+    }
+
+    public static String getResetPass() {
+        return GV.projectName()+Cmp.dateToString(new Date(), "yyyy");
     }
     
     

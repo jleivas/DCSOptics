@@ -2099,7 +2099,7 @@ public class VCrearFichaMac extends javax.swing.JPanel {
     }//GEN-LAST:event_txtNacimientoFocusLost
 
     private void txtArmazonLejosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArmazonLejosFocusGained
-        comprobarDatosFicha();
+//        comprobarDatosFicha();
     }//GEN-LAST:event_txtArmazonLejosFocusGained
 
     private void txtODLejosESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODLejosESFFocusLost
@@ -2769,23 +2769,18 @@ public class VCrearFichaMac extends javax.swing.JPanel {
                 txtRutCliente.setForeground(rojo);
             }
         }
-        try {
-            stCliente = (Cliente)load.get(rutCliente,0,new Cliente());
-            if(stCliente != null){
-                txtNombreCliente.setText(stCliente.getNombre());
-                txtTelefonoCliente1.setText(stCliente.getTelefono1());
-                txtTelefonoCliente2.setText(stCliente.getTelefono2());
-                txtMailCliente.setText(stCliente.getEmail());
-                txtDireccionCliente.setText(stCliente.getDireccion());
-                txtComuna.setText(stCliente.getComuna());
-                txtCiudad.setText(stCliente.getCiudad());
-                cboSexo.setSelectedIndex(stCliente.getSexo());
-                txtNacimiento.setDate(stCliente.getNacimiento());
-            }else{
-//                resetTxtCliente();
-            }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(VCrearFichaMac.class.getName()).log(Level.SEVERE, null, ex);
+        stCliente = (Cliente)GV.buscarPorIdEnLista(rutCliente, listClientes, new Cliente());
+        
+        if(stCliente != null){
+            txtNombreCliente.setText(stCliente.getNombre());
+            txtTelefonoCliente1.setText(stCliente.getTelefono1());
+            txtTelefonoCliente2.setText(stCliente.getTelefono2());
+            txtMailCliente.setText(stCliente.getEmail());
+            txtDireccionCliente.setText(stCliente.getDireccion());
+            txtComuna.setText(stCliente.getComuna());
+            txtCiudad.setText(stCliente.getCiudad());
+            cboSexo.setSelectedIndex(stCliente.getSexo());
+            txtNacimiento.setDate(stCliente.getNacimiento());
         }
     }
 

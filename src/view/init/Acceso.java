@@ -10,6 +10,8 @@ import fn.Boton;
 import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
+import fn.globalValues.GlobalValuesFunctions;
+import fn.globalValues.GlobalValuesVariables;
 import fn.globalValues.GlobalValuesXmlFiles;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -45,6 +47,7 @@ public class Acceso extends javax.swing.JFrame {
         setIconImage(icon);
         this.setTitle(title);
         this.titulo.setText(title);
+        btnHelp.setVisible(false);
     }
 
     /**
@@ -56,6 +59,7 @@ public class Acceso extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnHelp = new javax.swing.JLabel();
         btnEnter = new javax.swing.JLabel();
         btnSyncronize17 = new javax.swing.JLabel();
         btnSyncronize16 = new javax.swing.JLabel();
@@ -69,6 +73,21 @@ public class Acceso extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Help_25px.png"))); // NOI18N
+        btnHelp.setToolTipText("Ayuda");
+        btnHelp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnHelpMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnHelpMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnHelpMouseExited(evt);
+            }
+        });
+        getContentPane().add(btnHelp, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 270, -1, -1));
 
         btnEnter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Enter_32px.png"))); // NOI18N
         btnEnter.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -161,10 +180,21 @@ public class Acceso extends javax.swing.JFrame {
 
     private void txtPassKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPassKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            System.out.println("has presionado enter");
             entrar();
         }
     }//GEN-LAST:event_txtPassKeyPressed
+
+    private void btnHelpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnHelpMouseClicked
+        OptionPane.showMsg("Sugerencia de clave", GlobalValuesFunctions.helpUserPassAccessDenied(), 1);
+    }//GEN-LAST:event_btnHelpMouseClicked
+
+    private void btnHelpMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnHelpMouseEntered
+        btnHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnHelp.getIcon().toString()))));
+    }//GEN-LAST:event_btnHelpMouseEntered
+
+    private void btnHelpMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnHelpMouseExited
+        btnHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnHelp.getIcon().toString()))));
+    }//GEN-LAST:event_btnHelpMouseExited
 
     /**
      * @param args the command line arguments
@@ -203,6 +233,9 @@ public class Acceso extends javax.swing.JFrame {
     }
             
     private void entrar(){
+        if(GlobalValuesVariables.getIntentosAcceso() >= 2){
+            btnHelp.setVisible(true);
+        }
         String user = txtUser.getText();
         String pass = txtPass.getText();
         User usu;
@@ -240,6 +273,7 @@ public class Acceso extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnEnter;
+    private javax.swing.JLabel btnHelp;
     private javax.swing.JLabel btnSyncronize16;
     private javax.swing.JLabel btnSyncronize17;
     private javax.swing.JLabel fondo;
