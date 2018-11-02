@@ -2360,12 +2360,6 @@ public class VCrearFichaMac extends javax.swing.JPanel {
             textAutoCompleter8.setMode(0);
         }
         
-        TextAutoCompleter textAutoCompleter2 = new TextAutoCompleter(txtRutCliente);
-        for (Object temp : listClientes) {
-            textAutoCompleter2.addItem(((Cliente)temp).getCod());
-            textAutoCompleter2.setMode(0);
-        }
-        
         TextAutoCompleter textAutoCompleter3 = new TextAutoCompleter(txtDoctor);
         for (Object temp : listDoctores) {
             textAutoCompleter3.addItem(((Doctor)temp).getNombre()+" <"+(((Doctor)temp).getCod())+">");

@@ -144,7 +144,6 @@ public class OpanelSelectClient extends javax.swing.JPanel {
                 rut = rut.replaceAll(">", "");
                 GV.rutClientSelected(rut);
                 GV.cursorWAIT(this);
-                GV.listarFichasByClient(rut);
                 GV.cursorDF(this);
                 OptionPane.closeOptionPanel();
                 boton.fichas(GV.cboFichasFilter());

@@ -143,9 +143,6 @@ public class OpanelSelectConvenyFilter extends javax.swing.JPanel {
             idConvenio = idConvenio.substring(idConvenio.indexOf("<")+1);
             idConvenio = idConvenio.replaceAll(">", "");
             GV.convenioIdSelected(idConvenio);
-            GV.cursorWAIT(this);
-            GV.listarFichasByConveny(idConvenio);
-            GV.cursorDF(this);
             OptionPane.closeOptionPanel();
             try {
                 boton.fichas(GV.cboFichasFilter());

@@ -1936,7 +1936,7 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtNombreClienteKeyTyped
 
     private void txtRutClienteKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRutClienteKeyTyped
-        txtRutClienteValidator();
+        
     }//GEN-LAST:event_txtRutClienteKeyTyped
 
     private void txtRutClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRutClienteActionPerformed
@@ -2356,12 +2356,6 @@ public class VCrearFicha extends javax.swing.JPanel {
             textAutoCompleter.setMode(0);
             textAutoCompleter8.addItem(((Institucion)temp).getNombre());
             textAutoCompleter8.setMode(0);
-        }
-        
-        TextAutoCompleter textAutoCompleter2 = new TextAutoCompleter(txtRutCliente);
-        for (Object temp : listClientes) {
-            textAutoCompleter2.addItem(((Cliente)temp).getCod());
-            textAutoCompleter2.setMode(0);
         }
         
         TextAutoCompleter textAutoCompleter3 = new TextAutoCompleter(txtDoctor);

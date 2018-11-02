@@ -192,9 +192,8 @@ public class OpanelSelectDate extends javax.swing.JPanel {
                     GV.setDateTo(txtFecha2.getDate());
                 }
             }
-            GV.listarFichasByDate(GV.dateFrom(),GV.dateTo());
-            GV.cursorDF(this);
             OptionPane.closeOptionPanel();
+            GV.cursorDF(this);
             boton.fichas(GV.cboFichasFilter());
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(OpanelSelectDate.class.getName()).log(Level.SEVERE, null, ex);

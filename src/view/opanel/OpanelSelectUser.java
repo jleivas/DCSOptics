@@ -143,7 +143,6 @@ public class OpanelSelectUser extends javax.swing.JPanel {
             idUser = idUser.substring(idUser.indexOf("<")+1);
             idUser = idUser.replaceAll(">", "");
             GV.userIdSelected(idUser);
-            GV.listarFichasByUser(idUser);
             OptionPane.closeOptionPanel();
             try {
                 boton.fichas(GV.cboFichasFilter());
