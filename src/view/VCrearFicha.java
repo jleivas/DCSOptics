@@ -1375,6 +1375,8 @@ public class VCrearFicha extends javax.swing.JPanel {
         jPanel7.add(lblDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 70, -1, -1));
 
         txtSaldo.setEditable(false);
+        txtSaldo.setFocusable(false);
+        txtSaldo.setRequestFocusEnabled(false);
         txtSaldo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtSaldoActionPerformed(evt);
@@ -1388,6 +1390,8 @@ public class VCrearFicha extends javax.swing.JPanel {
         jPanel7.add(txtSaldo, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 118, -1));
 
         txtDescuento.setEditable(false);
+        txtDescuento.setFocusable(false);
+        txtDescuento.setRequestFocusEnabled(false);
         txtDescuento.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 txtDescuentoPropertyChange(evt);
@@ -1396,6 +1400,8 @@ public class VCrearFicha extends javax.swing.JPanel {
         jPanel7.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 70, 80, -1));
 
         txtTotal.setEditable(false);
+        txtTotal.setFocusable(false);
+        txtTotal.setRequestFocusEnabled(false);
         txtTotal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtTotalActionPerformed(evt);
@@ -1481,7 +1487,6 @@ public class VCrearFicha extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, 0)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1806,7 +1811,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         }else{
             txtArmazonLejos.setForeground(rojo);
         }
-        comprobarDatosFicha();
+        comprobarDatosFicha(); 
     }//GEN-LAST:event_txtArmazonLejosFocusLost
 
     private void txtDoctorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDoctorFocusLost
@@ -2346,7 +2351,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         }
     }
 
-    private void autocompletar() throws SQLException, ClassNotFoundException {
+    private void autocompletar() {
         TextAutoCompleter textAutoCompleter = new TextAutoCompleter(txtInstitucion);
         textAutoCompleter.setMode(0);
         TextAutoCompleter textAutoCompleter8 = new TextAutoCompleter(txtEntrega);
@@ -2590,12 +2595,8 @@ public class VCrearFicha extends javax.swing.JPanel {
         cboDescuento.setVisible(false);
         cargarDatos();
         cargarCbos();
-        try {
-            autocompletar();
-            calcularSaldo();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        autocompletar();
+        calcularSaldo();
         
     }
 
@@ -3207,4 +3208,16 @@ public class VCrearFicha extends javax.swing.JPanel {
         listLentes = load.listar("st", new Lente());
         GV.setInventarioSeleccionado(0);
     }
+    
+    private static int contarCaracteres(String cadena, char caracter) {
+        int posicion, contador = 0;
+        //se busca la primera vez que aparece
+        posicion = cadena.indexOf(caracter);
+        while (posicion != -1) { //mientras se encuentre el caracter
+            contador++;           //se cuenta
+            //se sigue buscando a partir de la posición siguiente a la encontrada
+            posicion = cadena.indexOf(caracter, posicion + 1);
+        }
+        return contador;
+   }
 }

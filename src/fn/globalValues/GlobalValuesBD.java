@@ -516,9 +516,10 @@ public class GlobalValuesBD {
             if(GV.isCurrentDate(GV.getLastUpdate())){
                 GV.setLastUpdate(GV.dateSumaResta(GV.getLastUpdate(), -1, "DAYS"));
             }
-            sincronizar(allEntities());
-            GV.setLastUpdate(new Date());
-            GV.setSyncCount(GV.getSyncCount()+1);
+            if(sincronizar(allEntities())){
+                GV.setLastUpdate(new Date());
+                GV.setSyncCount(GV.getSyncCount()+1);
+            }
         }else{
             OptionPane.showMsg("No se puede procesar la solicitud", 
                     "Se ha agotado el limite de sincronizaciones por día", 2);
@@ -550,7 +551,7 @@ public class GlobalValuesBD {
         return entities;
     }
     
-    public static void sincronizar(List<Object> listaObjetos){
+    public static boolean sincronizar(List<Object> listaObjetos){
         GV.startSincronizacion();
 //        Boton boton = new Boton();
 //        boton.barraProgresoVisible();
@@ -571,7 +572,9 @@ public class GlobalValuesBD {
             OptionPane.showMsg("La sincrconización se ha suspendido", "No se sincronizaron los datos por uno de estos motivos:\n"
                     + "-Se ha cancelado manualmente\n"
                     + "-Ocurrió un error de datos en la red, compruebe su conexion a internet", 2);
+            return false;
         }
+        return true;
     }
     
     public static boolean sincronizeObject(Object object){

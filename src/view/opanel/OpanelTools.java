@@ -9,6 +9,7 @@ import fn.Boton;
 import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
+import fn.SubProcess;
 import javax.swing.JOptionPane;
 
 /**
@@ -138,6 +139,9 @@ public class OpanelTools extends javax.swing.JPanel {
                 case 1://Exportar correos
                     exportarCorreos();
                     break;
+                case 2://Sincronizacion completa
+                    sincronizacionCompleta();
+                    break;
                 default:
                     OptionPane.closeOptionPanel();
                     OptionPane.showMsg("Debe seleccionar una opción", "No ha seleccionado una opción válida en el combo-box", JOptionPane.INFORMATION_MESSAGE);
@@ -169,6 +173,7 @@ public class OpanelTools extends javax.swing.JPanel {
         cboOption.removeAllItems();
         cboOption.addItem("Seleccione");
         cboOption.addItem("Exportar correos");
+        cboOption.addItem("Sincronización completa");
     }
 
     private void exportarCorreos() {
@@ -183,5 +188,20 @@ public class OpanelTools extends javax.swing.JPanel {
                 GV.mensajeAccessDenied();
             }
         }
+    }
+
+    private void sincronizacionCompleta() {
+        GV.setLastUpdate(GV.strToDate("01-06-2018"));
+        if(GV.licenciaExpirada()){
+            GV.mensajeLicenceExpired();
+        }else{
+            if(GV.sincronizacionIsStopped()){
+                GV.cursorWAIT();
+                SubProcess.SyncAll();
+                GV.cursorDF();
+            }else{
+                OptionPane.showMsg("Imposible efectuar operación", "Ya se encuentra una sincronización en curso", 2);
+            }
+        }  
     }
 }
