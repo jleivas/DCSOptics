@@ -32,6 +32,11 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.0.3 (V-403)](https://github.com/softdirex/TestSync/search?q=V-403&type=Commits)
+ 
+ - Validaciones de acceso mas amigable
+ - Autocompletado con menor consumo de recursos
+ - Previsualizar garantia despues de ser generada y corregir formato de hora
 
  #### [Version 4.0.2 (V-402)](https://github.com/softdirex/TestSync/search?q=V-402&type=Commits)
  
