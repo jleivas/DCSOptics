@@ -26,7 +26,6 @@ public class SplashProgress extends javax.swing.JFrame implements Runnable{
         initComponents();
         int ancho = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
         int alto = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
-//        this.setBounds((ancho / 2) - (this.getWidth() / 2), (alto / 2) - (this.getHeight() / 2), 450, 300);
         this.setLocationRelativeTo(null);
         txtPorcentaje.setHorizontalAlignment(SwingConstants.CENTER);
         txtDescritption.setHorizontalAlignment(SwingConstants.CENTER);

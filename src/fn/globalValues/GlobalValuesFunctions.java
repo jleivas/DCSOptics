@@ -19,6 +19,7 @@ import entities.context.SalesReportFicha;
 import entities.ficha.Despacho;
 import entities.ficha.Ficha;
 import entities.ficha.HistorialPago;
+import fn.Boton;
 import fn.GV;
 import static fn.GV.sincronizarTodo;
 import fn.OptionPane;
@@ -46,6 +47,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -666,9 +668,11 @@ public class GlobalValuesFunctions {
     public static String helpUserPassAccessDenied(){
         return "Si usted no ha modificado su contraseña, es probable que haya sido\n"
                 + "reseteada por el sistema, esto ocurre cuando:\n"
-                + "a) Un administrador actualizó sus datos en este equipo.\n"
-                + "b) Un administrador actualizó sus datos en otro equipo\n"
-                + "   y el sistema local fué sincronizado.\n\n"
+                + "a) Su usuario fue registrado en otro equipo y aún no se ha sincronizado\n"
+                + "   la base de datos local.\n"
+                + "b) Un administrador actualizó sus datos en este equipo.\n"
+                + "c) Un administrador actualizó sus datos en otro equipo\n"
+                + "   y el sistema local fué sincronizado.\n"
                 + "Pruebe con la siguiente clave: "+ getResetPass() + "\n"
                 + "Si no tiene éxito, contáctese con su proveedor de software";
     }
@@ -866,6 +870,17 @@ public class GlobalValuesFunctions {
 
     public static String getResetPass() {
         return GV.projectName()+Cmp.dateToString(new Date(), "yyyy");
+    }
+
+    public static void cerrarSistema() {
+        Boton boton = new Boton();
+        boton.mensajeInfo("Cerrando el sistema","Finalizando procesos...El sistema se cerrará.");
+        if(OptionPane.getConfirmation("Respaldar información antes de cerrar", "¿Deseas respaldar los datos?", JOptionPane.INFORMATION_MESSAGE)){
+            
+            GlobalValuesBD.backUpLocalBd();
+        }
+
+        System.exit(0);
     }
     
     

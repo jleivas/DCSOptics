@@ -87,7 +87,7 @@ public class Acceso extends javax.swing.JFrame {
                 btnHelpMouseExited(evt);
             }
         });
-        getContentPane().add(btnHelp, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 270, -1, -1));
+        getContentPane().add(btnHelp, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 310, -1, 30));
 
         btnEnter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Enter_32px.png"))); // NOI18N
         btnEnter.addMouseListener(new java.awt.event.MouseAdapter() {

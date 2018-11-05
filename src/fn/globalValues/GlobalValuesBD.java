@@ -516,7 +516,7 @@ public class GlobalValuesBD {
             if(GV.isCurrentDate(GV.getLastUpdate())){
                 GV.setLastUpdate(GV.dateSumaResta(GV.getLastUpdate(), -1, "DAYS"));
             }
-            if(sincronizar(allEntities())){
+            if(sincronizar(allEntitiesForRemoteSync())){
                 GV.setLastUpdate(new Date());
                 GV.setSyncCount(GV.getSyncCount()+1);
             }
@@ -526,7 +526,7 @@ public class GlobalValuesBD {
         } 
     }
     
-    public static List<Object> allEntities(){
+    public static List<Object> allEntitiesForRemoteSync(){
         List<Object> entities = new ArrayList<>();
         entities.add(new RegistroBaja());
         entities.add(new TipoPago());
@@ -551,10 +551,15 @@ public class GlobalValuesBD {
         return entities;
     }
     
+    public static List<Object> allEntitiesForLocalBackUp(){
+        List<Object> entities = allEntitiesForRemoteSync();
+        entities.add(new InternStock());
+        
+        return entities;
+    }
+    
     public static boolean sincronizar(List<Object> listaObjetos){
         GV.startSincronizacion();
-//        Boton boton = new Boton();
-//        boton.barraProgresoVisible();
         GV.porcentajeCalcular(listaObjetos.size(),"Preparando la sincronización");
         for (Object type : listaObjetos) {
             if(type instanceof Ficha){
@@ -661,30 +666,19 @@ public class GlobalValuesBD {
     }
     
     public static void backUpLocalBd(){
+        generarBackup(allEntitiesForLocalBackUp());
+    }
+    
+    private static void generarBackup(List<Object> listaObjetos){
         try {
+            LcBd.cerrar();
             if(GV.isOnline() && LcBd.obtener() != null){
-                LcBd.cerrar();
-                createExcel(new Armazon());
-                createExcel(new Cliente());
-                createExcel(new Convenio());
-                createExcel(new Cristal());
-                createExcel(new CuotasConvenio());
-                createExcel(new Descuento());
-                createExcel(new Despacho());
-                createExcel(new Doctor());
-                createExcel(new Equipo());
-                createExcel(new Ficha());
-                createExcel(new HistorialPago());
-                createExcel(new Institucion());
-                createExcel(new Inventario());
-                createExcel(new InternStock());
-                createExcel(new Lente());
-                createExcel(new InternMail());
-                createExcel(new Oficina());
-                createExcel(new RegistroBaja());
-                createExcel(new TipoPago());
-                createExcel(new User());
-
+                for (Object type : listaObjetos) {
+                    if(type instanceof EtiquetFicha){
+                        type = new Ficha();
+                    }
+                    createExcel(type);
+                }
                 GlobalValuesZipFiles.zipperBackup();
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {

@@ -29,7 +29,6 @@ import entities.ficha.HistorialPago;
 import fn.GV;
 import fn.Log;
 import fn.OptionPane;
-import fn.SubProcess;
 import fn.date.Cmp;
 import static fn.date.Cmp.localIsNewOrEqual;
 import fn.globalValues.GlobalValuesVariables;
@@ -413,7 +412,7 @@ public class Dao{
         return lente;
     }
 
-    public static void sincronize(Object type) {
+        public static void sincronize(Object type) {
         Log.setLog(className,Log.getReg());
         boolean esLente = (type instanceof Lente);
         if(GV.isCurrentDate(GV.LAST_UPDATE)){//validar plan de licencia
@@ -434,15 +433,23 @@ public class Dao{
                     for (Object object : lista1) {
                         GV.porcentajeSubCalcular(size1+size2);
                         sync.Sync.addLocalSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
+                        if(!GV.isOnline()){
+                            GV.stopSincronizacion();
+                        }
+                        if(GV.sincronizacionIsStopped()){
+                            return;
+                        }
                     }
                 }
                 if(size2 > 0){
                      for (Object object : lista2) {
-                        System.out.println(""+object.getClass().getName());
-                        if(esLente){
-                            System.out.println("es lente");
-                        }
                         GV.porcentajeSubCalcular(size1+size2);
+                        if(!GV.isOnline()){
+                            GV.stopSincronizacion();
+                        }
+                        if(GV.sincronizacionIsStopped()){
+                            return;
+                        }
                         sync.Sync.addRemoteSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
                     }
                 }

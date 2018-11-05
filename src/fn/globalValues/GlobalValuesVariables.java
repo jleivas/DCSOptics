@@ -30,7 +30,7 @@ public class GlobalValuesVariables {
     
     /*  Nombres de sistema  */
     private static String PROJECTNAME="Optics";
-    private static String VERSION = "v4.0.4";
+    private static String VERSION = "v4.0.5";
     private static String EQUIPO;//el nombre debe concatenarse con la fecha de instalacion
     private static int EQUIPO_ID = 1;
     private static String INVENTARIO_NAME;

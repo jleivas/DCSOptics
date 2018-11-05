@@ -23,6 +23,7 @@ import view.VFichas;
 import view.VInstituciones;
 import view.VInventarios;
 import view.VLentes;
+import view.VMessage;
 import view.VMessages;
 import view.VRegistroBajas;
 import view.VTipoPagos;
@@ -39,6 +40,7 @@ import viewMac.VFichasMac;
 import viewMac.VInstitucionesMac;
 import viewMac.VInventariosMac;
 import viewMac.VLentesMac;
+import viewMac.VMessageMac;
 import viewMac.VOficinasMac;
 import viewMac.VRegistroBajasMac;
 import viewMac.VTipoPagosMac;
@@ -227,6 +229,14 @@ public class Boton {
             }
         }else{
             accesDenied();
+        }
+    }
+    
+    public void mensajeInfo(String title, String message) {
+        if(isWin()){
+            openView(new VMessage(title, message));
+        }else{
+            openView(new VMessageMac(title, message));
         }
     }
     

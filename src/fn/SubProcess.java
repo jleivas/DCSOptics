@@ -9,6 +9,7 @@ import dao.Dao;
 import static fn.GV.fechaDiferencia;
 import static fn.globalValues.GlobalValuesFunctions.licenciaComprobarValidez;
 import fn.mail.Send;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -144,9 +145,23 @@ public class SubProcess {
     }
     
     public static void SyncAll(){
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-                GV.sincronizarTodo();
-        });
+        try {
+            Boton boton = new Boton();
+            boton.crearFicha();
+            if(OptionPane.getConfirmation("Sincronizar", "Para efectuar una sincronización debes tener una conexión rápida y estable\n"
+                    + "de esta forma evitarás pérdida importante de información.\n\n"
+                    + "¿Tu conexión cumple con los requisitos?\n"
+                    + "Presione \"SI\" para continuar.", 1)){
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.submit(() -> {
+                    GV.sincronizarTodo();
+                });
+            }else{
+                OptionPane.showMsg("Sincronización", "La sincronización ha sido cancelada", 1);
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(SubProcess.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
     }
 }

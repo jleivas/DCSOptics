@@ -489,34 +489,42 @@ public class ContentAdminMac extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSizeWindowMouseClicked
 
     private void btnMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMessageMouseClicked
-        if(GV.licenciaExpirada()){
-            GV.mensajeLicenceExpired();
-        }else{
-            if(GlobalValuesFunctions.licenciaIsEnableToSendInternMessages()){
-               boton.mensajes(); 
+        if(!syncEnabled()){
+            if(GV.licenciaExpirada()){
+                GV.mensajeLicenceExpired();
             }else{
-                GV.mensajeLicenceAccessDenied();
+                if(GlobalValuesFunctions.licenciaIsEnableToSendInternMessages()){
+                   boton.mensajes(); 
+                }else{
+                    GV.mensajeLicenceAccessDenied();
+                }
             }
         }
     }//GEN-LAST:event_btnMessageMouseClicked
 
     private void btnConfigMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConfigMouseClicked
-        if(GV.tipoUserAdmin()){
-            OptionPane.showOptionPanel(new OpanelConfig(), "Configuración");
-        }else{
-            GV.mensajeAccessDenied();
+        if(!syncEnabled()){
+            if(GV.tipoUserAdmin()){
+                OptionPane.showOptionPanel(new OpanelConfig(), "Configuración");
+            }else{
+                GV.mensajeAccessDenied();
+            }
         }
     }//GEN-LAST:event_btnConfigMouseClicked
 
     private void btnInventMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInventMouseClicked
-        OptionPane.showOptionPanel(new OpanelInventario(), "Inventario");
+        if(!syncEnabled()){
+            OptionPane.showOptionPanel(new OpanelInventario(), "Inventario");
+        }
     }//GEN-LAST:event_btnInventMouseClicked
 
     private void btnToolsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnToolsMouseClicked
-        if(GV.tipoUserAdmin()){
-            OptionPane.showOptionPanel(new OpanelTools(), OptionPane.titleTool());
-        }else{
-            GV.mensajeAccessDenied();
+        if(!syncEnabled()){
+            if(GV.tipoUserAdmin()){
+                OptionPane.showOptionPanel(new OpanelTools(), OptionPane.titleTool());
+            }else{
+                GV.mensajeAccessDenied();
+            }
         }
     }//GEN-LAST:event_btnToolsMouseClicked
 
@@ -590,34 +598,42 @@ public class ContentAdminMac extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCrearFichaMousePressed
 
     private void btnDoctoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDoctoresMouseClicked
-        try {
-            boton.doctores();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+        if(!syncEnabled()){
+            try {
+                boton.doctores();
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnDoctoresMouseClicked
 
     private void btnListarFichasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnListarFichasMouseClicked
-        try {
-            boton.fichas(GV.cboFichasFilter());
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+        if(!syncEnabled()){
+            try {
+                boton.fichas(GV.cboFichasFilter());
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnListarFichasMouseClicked
 
     private void btnClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClientesMouseClicked
-        try {
-            boton.clientes();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+        if(!syncEnabled()){
+            try {
+                boton.clientes();
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnClientesMouseClicked
 
     private void btnInstitucionesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnInstitucionesMouseClicked
-        try {
-            boton.instituciones();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+        if(!syncEnabled()){
+            try {
+                boton.instituciones();
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnInstitucionesMouseClicked
 
@@ -697,14 +713,18 @@ public class ContentAdminMac extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMinimizeWindowMouseExited
 
     private void btnUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUserMouseClicked
-        OptionPane.showOptionPanel(new OpanelUserData(), "Mis Datos");
+        if(!syncEnabled()){
+            OptionPane.showOptionPanel(new OpanelUserData(), "Mis Datos");
+        }
     }//GEN-LAST:event_btnUserMouseClicked
 
     private void btnConveniosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnConveniosMouseClicked
-        try {
-            boton.convenios();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+        if(!syncEnabled()){
+            try {
+                boton.convenios();
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(ContentAdminMac.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnConveniosMouseClicked
 
@@ -730,26 +750,29 @@ public class ContentAdminMac extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSyncronizeMouseEntered
 
     private void btnSyncronizeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSyncronizeMouseClicked
-        if(GV.licenciaExpirada()){
-            GV.mensajeLicenceExpired();
-        }else{
-            if(GV.sincronizacionIsStopped()){
-                GV.cursorWAIT();
-                SubProcess.SyncAll();
-                GV.cursorDF();
+        if(!syncEnabled()){
+            if(GV.licenciaExpirada()){
+                GV.mensajeLicenceExpired();
             }else{
-                OptionPane.showMsg("Imposible efectuar operación", "Ya se encuentra una sincronización en curso", 2);
-            }
-        }  
+                if(GV.sincronizacionIsStopped()){
+                    GV.cursorWAIT();
+                    SubProcess.SyncAll();
+                    GV.cursorDF();
+                }else{
+                    OptionPane.showMsg("Imposible efectuar operación", "Ya se encuentra una sincronización en curso", 2);
+                }
+            } 
+        }
     }//GEN-LAST:event_btnSyncronizeMouseClicked
 
     private void btnOpenFichaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnOpenFichaMouseClicked
-        if(!GV.licenciaExpirada()){
-            OptionPane.showOptionPanel(new OpanelSelectFichaToOpen(), OptionPane.titleTool());
-        }else{
-            GV.mensajeLicenceExpired();
+        if(!syncEnabled()){
+            if(!GV.licenciaExpirada()){
+                OptionPane.showOptionPanel(new OpanelSelectFichaToOpen(), OptionPane.titleTool());
+            }else{
+                GV.mensajeLicenceExpired();
+            }
         }
-        
     }//GEN-LAST:event_btnOpenFichaMouseClicked
 
     private void btnOpenFichaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnOpenFichaMouseEntered
@@ -839,13 +862,7 @@ public class ContentAdminMac extends javax.swing.JFrame {
     }
 
     private void cerrar() throws SQLException, ClassNotFoundException, InterruptedException{//cerrar con opciones en nueva implementacion
-        if(OptionPane.getConfirmation("Cerrar", "¿Desea cerrar la aplicación?", JOptionPane.INFORMATION_MESSAGE)){
-            this.setVisible(false);
-            if(OptionPane.getConfirmation("Respaldar información", "¿Deseas respaldar los datos?", JOptionPane.INFORMATION_MESSAGE))
-                GlobalValuesBD.backUpLocalBd();
-              
-            System.exit(0);
-        }
+        GlobalValuesFunctions.cerrarSistema();
     }
 
     /**
@@ -868,5 +885,16 @@ public class ContentAdminMac extends javax.swing.JFrame {
                     this.setTitle(GV.projectName()+" "+GV.version()+"     "+licencia);
                 }
         });
+    }
+    
+    private boolean syncEnabled(){
+        boolean enabled = GlobalValuesBD.sincronizacion();
+        if(enabled){
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            return true;
+        }else{
+            this.setCursor(Cursor.getDefaultCursor());
+            return false;
+        }
     }
 }

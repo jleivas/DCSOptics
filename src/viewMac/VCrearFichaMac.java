@@ -1980,18 +1980,20 @@ public class VCrearFichaMac extends javax.swing.JPanel {
     }//GEN-LAST:event_iconPhone1MouseClicked
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
-        GV.cursorWAIT(this);
-        comprobarDatosFicha();
-        if(lblMessageStatus.isVisible() && lblMessageStatus.getForeground() == rojo){
-            OptionPane.showMsg("Faltan datos", lblMessageStatus.getText(), 2);
+        if(GV.sincronizacionIsStopped()){
+            GV.cursorWAIT(this);
+            comprobarDatosFicha();
+            if(lblMessageStatus.isVisible() && lblMessageStatus.getForeground() == rojo){
+                OptionPane.showMsg("Faltan datos", lblMessageStatus.getText(), 2);
+                GV.cursorDF(this);
+                return;
+            }
+            save();
+            GV.printFicha();
+            clearData();
+            reloadPage();
             GV.cursorDF(this);
-            return;
         }
-        save();
-        GV.printFicha();
-        clearData();
-        reloadPage();
-        GV.cursorDF(this);
     }//GEN-LAST:event_btnSaveMouseClicked
 
     private void btnSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseEntered
@@ -2179,7 +2181,9 @@ public class VCrearFichaMac extends javax.swing.JPanel {
     }//GEN-LAST:event_chkPlusMaxCercaItemStateChanged
 
     private void btnSelectConveniosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSelectConveniosMouseClicked
-        OptionPane.showOptionPanel(new OpanelSelectConvenio(), OptionPane.titleConvenyChooser());
+        if(GV.sincronizacionIsStopped()){
+            OptionPane.showOptionPanel(new OpanelSelectConvenio(), OptionPane.titleConvenyChooser());
+        }
     }//GEN-LAST:event_btnSelectConveniosMouseClicked
 
     private void btnSelectConveniosMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSelectConveniosMouseEntered
