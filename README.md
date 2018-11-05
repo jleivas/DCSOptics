@@ -32,6 +32,13 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.0.5 (V-405)](https://github.com/softdirex/TestSync/search?q=V-405&type=Commits)
+ 
+ - Validaciones de errores en el proceso de sincronización [OK]
+ - Generar reportes con cantidad de lentes vendidos [PENDIENTE]
+ - Enviar reportes por mail con resumen por vendedor y cantidad de lentes vendidos [PENDIENTE]
+ - Generar excel con sistema antiguo [PENDIENTE]
+
  #### [Version 4.0.4 (V-404)](https://github.com/softdirex/TestSync/search?q=V-404&type=Commits)
  
  - Validaciones de errores en el proceso de sincronización
