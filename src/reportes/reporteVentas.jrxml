@@ -42,12 +42,16 @@
 	<field name="nombreAbono" class="java.lang.String"/>
 	<field name="totalAbonado" class="java.lang.String"/>
 	<field name="titleFilter" class="java.lang.String"/>
+	<field name="sumTotalLentes" class="java.lang.String"/>
+	<field name="totalLentes" class="java.lang.String"/>
+	<field name="cantVentas" class="java.lang.String"/>
+	<field name="sumTotalVentas" class="java.lang.String"/>
 	<group name="Group1">
 		<groupExpression><![CDATA[$F{vendedor}]]></groupExpression>
 		<groupHeader>
-			<band height="25">
+			<band height="23">
 				<textField>
-					<reportElement x="46" y="0" width="168" height="20" forecolor="#043069" uuid="84edf237-e854-43fc-9646-51b7a82f2a73">
+					<reportElement x="1" y="2" width="169" height="20" forecolor="#043069" uuid="84edf237-e854-43fc-9646-51b7a82f2a73">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0b7a2210-5bc6-4d7c-b1a7-8c3660e84624"/>
 					</reportElement>
 					<box leftPadding="3"/>
@@ -56,18 +60,36 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
 				</textField>
+				<textField>
+					<reportElement x="170" y="2" width="91" height="20" uuid="d6c9b73d-4969-43af-b33a-ec57e4737c3a">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="65cf3290-b57f-4acb-8764-bfa388a19be3"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{totalLentes}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="261" y="2" width="89" height="20" uuid="8039eae3-9e74-4543-9336-bf3f23645052">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="65cf3290-b57f-4acb-8764-bfa388a19be3"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cantVentas}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="8">
 				<line>
-					<reportElement x="46" y="0" width="469" height="1" forecolor="#043069" uuid="63997f42-278d-4064-a460-1f2ba7b2f04e"/>
+					<reportElement x="1" y="0" width="549" height="1" forecolor="#043069" uuid="63997f42-278d-4064-a460-1f2ba7b2f04e"/>
 				</line>
 			</band>
 		</groupFooter>
 	</group>
 	<title>
-		<band height="165" splitType="Stretch">
+		<band height="182" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="80" width="170" height="25" uuid="57aed2b1-4f4e-40a3-a6ad-54dae8dd4c5a">
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -101,7 +123,7 @@
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="180" y="81" width="222" height="25" forecolor="#043069" uuid="13b8353d-3dd5-4ed6-b89a-6fb936a8cee5">
+				<reportElement x="180" y="81" width="222" height="24" forecolor="#043069" uuid="13b8353d-3dd5-4ed6-b89a-6fb936a8cee5">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -114,7 +136,7 @@
 				<text><![CDATA[Resumen]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="180" y="136" width="84" height="15" forecolor="#043069" uuid="8751208a-0d44-4f0a-9fb9-7fe02cd049d2">
+				<reportElement x="180" y="165" width="84" height="15" forecolor="#043069" uuid="8751208a-0d44-4f0a-9fb9-7fe02cd049d2">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -127,7 +149,7 @@
 				<text><![CDATA[Monto total]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="180" y="106" width="84" height="15" forecolor="#043069" uuid="7c00f5d2-87e5-4dee-ab3a-1f249cf2ed3b">
+				<reportElement x="180" y="135" width="84" height="15" forecolor="#043069" uuid="7c00f5d2-87e5-4dee-ab3a-1f249cf2ed3b">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -140,7 +162,7 @@
 				<text><![CDATA[Abonado]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="180" y="121" width="84" height="15" forecolor="#043069" uuid="2b6be613-db7a-452d-acf3-490de22aec60">
+				<reportElement x="180" y="150" width="84" height="15" forecolor="#043069" uuid="2b6be613-db7a-452d-acf3-490de22aec60">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -177,7 +199,7 @@
 				<textFieldExpression><![CDATA[$F{userFullName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="264" y="136" width="138" height="15" uuid="7117f021-9d42-4f83-842f-dae584c676de"/>
+				<reportElement x="264" y="165" width="138" height="15" uuid="7117f021-9d42-4f83-842f-dae584c676de"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.25"/>
 				</box>
@@ -187,7 +209,7 @@
 				<textFieldExpression><![CDATA[$F{montoTotal}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="264" y="106" width="138" height="15" uuid="5ef4619d-fc93-4060-80e1-0127de0baa9f"/>
+				<reportElement x="264" y="135" width="138" height="15" uuid="5ef4619d-fc93-4060-80e1-0127de0baa9f"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.25"/>
 				</box>
@@ -195,7 +217,7 @@
 				<textFieldExpression><![CDATA[$F{totalAbono}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="264" y="121" width="138" height="15" uuid="334ca5e7-a020-4511-8e48-87aeff5fc51a"/>
+				<reportElement x="264" y="150" width="138" height="15" uuid="334ca5e7-a020-4511-8e48-87aeff5fc51a"/>
 				<box rightPadding="3">
 					<pen lineWidth="0.25"/>
 				</box>
@@ -209,12 +231,58 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{titleFilter}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="180" y="120" width="84" height="15" forecolor="#043069" uuid="b427ea36-1142-42e7-91ec-956da20cad92">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box leftPadding="3">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lentes vendidos]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="264" y="120" width="138" height="15" forecolor="#043069" uuid="9171c013-df16-46a3-a748-c030f10e7ff5"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sumTotalLentes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="264" y="105" width="138" height="15" forecolor="#043069" uuid="6f3da337-c6cb-4616-84ff-237a8ec4ab70"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sumTotalVentas}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="180" y="105" width="84" height="15" forecolor="#043069" uuid="04e1e0c4-5328-448f-9af3-6da966c617d2">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box leftPadding="3">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Registros]]></text>
+			</staticText>
 		</band>
 	</title>
 	<columnHeader>
-		<band height="21">
+		<band height="22">
 			<staticText>
-				<reportElement x="46" y="0" width="169" height="20" forecolor="#043069" uuid="e732583a-ff1b-4aaf-a034-50cb264e7e0e">
+				<reportElement x="1" y="0" width="169" height="20" forecolor="#043069" uuid="e732583a-ff1b-4aaf-a034-50cb264e7e0e">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0b7a2210-5bc6-4d7c-b1a7-8c3660e84624"/>
 				</reportElement>
 				<box>
@@ -226,7 +294,7 @@
 				<text><![CDATA[Vendedor]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="215" y="0" width="100" height="20" forecolor="#043069" uuid="5ca8feef-78c1-47b4-ad47-58d675d41116">
+				<reportElement x="261" y="0" width="89" height="20" forecolor="#043069" uuid="5ca8feef-78c1-47b4-ad47-58d675d41116">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2e6099c3-159f-4cca-b1ab-f04499a6fcbb"/>
 				</reportElement>
 				<box>
@@ -235,10 +303,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Total ventas]]></text>
+				<text><![CDATA[Total registros]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="315" y="0" width="100" height="20" forecolor="#043069" uuid="c8331a8c-1bfd-4463-b60e-6c9e2da80b9b">
+				<reportElement x="350" y="0" width="100" height="20" forecolor="#043069" uuid="c8331a8c-1bfd-4463-b60e-6c9e2da80b9b">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3d31b058-89ab-40c0-849b-4dfff729f343"/>
 				</reportElement>
 				<box>
@@ -250,7 +318,7 @@
 				<text><![CDATA[Tipo abono]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="415" y="0" width="100" height="20" forecolor="#043069" uuid="e69901d8-b96f-4c99-a9ff-c0ae5a1eec9a">
+				<reportElement x="450" y="0" width="100" height="20" forecolor="#043069" uuid="e69901d8-b96f-4c99-a9ff-c0ae5a1eec9a">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="383a5553-e3e4-4716-ba8b-598d7cb75c25"/>
 				</reportElement>
 				<box>
@@ -261,12 +329,24 @@
 				</textElement>
 				<text><![CDATA[Total abonado]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="170" y="0" width="91" height="20" forecolor="#043069" uuid="233a7985-3a44-499a-972a-7c9d4d00214c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2e6099c3-159f-4cca-b1ab-f04499a6fcbb"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lentes entregados]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="25">
+		<band height="24">
 			<textField>
-				<reportElement x="215" y="0" width="100" height="20" uuid="f7c23655-2a1c-4263-afba-68aa8608d023">
+				<reportElement x="261" y="0" width="89" height="20" uuid="f7c23655-2a1c-4263-afba-68aa8608d023">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2e6099c3-159f-4cca-b1ab-f04499a6fcbb"/>
 				</reportElement>
 				<box rightPadding="3"/>
@@ -276,7 +356,7 @@
 				<textFieldExpression><![CDATA[$F{totalVentas}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="315" y="0" width="100" height="20" uuid="5d98b29a-6ffc-4187-99c8-1f99fe8817f7">
+				<reportElement x="350" y="0" width="100" height="20" uuid="5d98b29a-6ffc-4187-99c8-1f99fe8817f7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3d31b058-89ab-40c0-849b-4dfff729f343"/>
 				</reportElement>
 				<box rightPadding="3"/>
@@ -286,7 +366,7 @@
 				<textFieldExpression><![CDATA[$F{nombreAbono}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="415" y="0" width="100" height="20" uuid="7bb8870c-56fb-45e0-9d99-12875b3980d0">
+				<reportElement x="450" y="0" width="100" height="20" uuid="7bb8870c-56fb-45e0-9d99-12875b3980d0">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="383a5553-e3e4-4716-ba8b-598d7cb75c25"/>
 				</reportElement>
 				<box rightPadding="3"/>

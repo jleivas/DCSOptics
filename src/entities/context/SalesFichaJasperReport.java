@@ -7,6 +7,7 @@ package entities.context;
 
 import entities.ficha.Ficha;
 import fn.GV;
+import static fn.GV.getStr;
 import fn.globalValues.GlobalValuesFunctions;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,8 +25,9 @@ public class SalesFichaJasperReport {
     private String dir;
     private String companyContacts;
     private String titleFilter;
-    private String NO_DETAIL = "Sin abonos";
     
+    private int sumaTotalLentes = 0;
+    private int sumaTotalVentas = 0;
     private int montoTotal;
     private int montoTotalAbonado;
     private int montoTotalPendiente;
@@ -61,7 +63,9 @@ public class SalesFichaJasperReport {
     
     public class Vendedor{
         String fullName;
-        int totalVentas;
+        int totalVentas = 0;
+        int cantVentas = 0;
+        int totalLentes = 0;//Cantidad de lentes vendidos
         List<DetalleVentas> detalle = new ArrayList<>();
         
         public Vendedor(){};
@@ -76,6 +80,14 @@ public class SalesFichaJasperReport {
         
         public int getTotalVentas(){
             return totalVentas;
+        }
+        
+        public int getCantVentas(){
+            return cantVentas;
+        }
+        
+        public int getTotalLentes(){
+            return totalLentes;
         }
         
         public void setTotalVentas(int totalVentas){
@@ -126,9 +138,17 @@ public class SalesFichaJasperReport {
     public String getTitleFilter() {
         return titleFilter;
     }
+    
+    public int getSumaTotalVentas(){
+        return sumaTotalVentas;
+    }
 
     public int getMontoTotal() {
         return montoTotal;
+    }
+    
+    public int getSumTotalLentes(){
+        return sumaTotalLentes;
     }
 
     public int getMontoTotalAbonado() {
@@ -193,6 +213,11 @@ public class SalesFichaJasperReport {
     private boolean addIfExist(Ficha ficha) {
         for (Vendedor vendedor : vendedores) {
             if(vendedor.getFullName().equals(ficha.getUser().getNombre())){
+                int sumLentes = obtenerTotalLentes(ficha);
+                vendedor.totalLentes = vendedor.totalLentes + sumLentes;
+                vendedor.cantVentas++;
+                sumaTotalVentas++;
+                sumaTotalLentes = sumaTotalLentes + sumLentes;
                 int nuevoMonto = ficha.getValorTotal()-ficha.getDescuento();
                 vendedor.setTotalVentas(vendedor.getTotalVentas()+nuevoMonto);
                 String[][] abonos = (String[][])GlobalValuesFunctions.listarAbonos(ficha.getCod());
@@ -210,8 +235,20 @@ public class SalesFichaJasperReport {
         Vendedor vendedor = new Vendedor();
         vendedor.setFullName(ficha.getUser().getNombre());
         vendedor.setTotalVentas(ficha.getValorTotal()-ficha.getDescuento());
-        
+        int sumLentes = obtenerTotalLentes(ficha);
+        sumaTotalLentes = sumaTotalLentes + sumLentes;
+        vendedor.totalLentes = sumLentes;
+        vendedor.cantVentas++;
+        sumaTotalVentas++;
         String[][] abonos = (String[][])GlobalValuesFunctions.listarAbonos(ficha.getCod());
+        if(abonos == null){
+            abonos = new String[1][3];
+            abonos[0][0] = "";
+            
+            abonos[0][1] = "Sin abonos";
+            
+            abonos[0][2] = "";
+        }
         if(abonos != null){
             for (int i = 0; i < abonos.length; i++) {
                 DetalleVentas detalle = new DetalleVentas();
@@ -225,18 +262,22 @@ public class SalesFichaJasperReport {
             }
             vendedores.add(vendedor);
         }
-//        else
-//        {
-//            //Aunque no tenga abonos se debe agregar una fila por vendedor
-//            DetalleVentas detalle = new DetalleVentas();
-//            detalle.setDetalle(NO_DETAIL);
-//            detalle.setMonto(0);
-//            vendedor.addDetalle(detalle);
-//            FILAS++;
-//        }
-//        vendedores.add(vendedor);
     }
     
+    private int obtenerTotalLentes(Ficha ficha){
+        int totalLentes = 0;
+        if(ficha.getLejos()!=null){
+            if(!getStr(ficha.getLejos().getMarca()).isEmpty()){
+                totalLentes++;
+            }
+        }
+        if(ficha.getCerca()!=null){
+            if(!getStr(ficha.getCerca().getMarca()).isEmpty()){
+                totalLentes++;
+            }
+        }
+        return totalLentes;
+    }
     
     private List<DetalleVentas> updateDetails(List<DetalleVentas> detalles, String[][] abonos) {
         if(abonos == null){
@@ -244,8 +285,12 @@ public class SalesFichaJasperReport {
         }
         for (int i = 0; i < abonos.length; i++) {
             boolean exist = false;
+            int indexToRemove = -1;
             //recorremos todos los detalles
             for (int j = 0; j < detalles.size(); j++) {
+                if(detalles.get(j).getMonto() == 0){
+                    indexToRemove = j;
+                }
                 if(detalles.get(j).getDetalle().equals(abonos[i][1])){
                     int montoAbono = GV.strToNumber(abonos[i][0]);
                     setMontoTotalAbonado(getMontoTotalAbonado() + montoAbono);
@@ -254,6 +299,10 @@ public class SalesFichaJasperReport {
                     //tipo de abono encontrado
                     exist = true;
                 }
+            }
+            if(indexToRemove >= 0){
+                detalles.remove(indexToRemove);
+                FILAS--;
             }
             //si no encontro el tipo de abono, se agrega a la lista
             if(!exist){
@@ -288,7 +337,7 @@ public class SalesFichaJasperReport {
                 added = true;
             }
         }
-        if(!added){
+        if(!added && montoAbono > 0){
             DetalleVentas newDetail = new DetalleVentas();
             newDetail.setDetalle(name);
             newDetail.setMonto(montoAbono);

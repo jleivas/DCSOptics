@@ -873,6 +873,7 @@ public class GlobalValuesFunctions {
     }
 
     public static void cerrarSistema() {
+        OptionPane.closeInfoPanel();
         Boton boton = new Boton();
         boton.mensajeInfo("Cerrando el sistema","Finalizando procesos...El sistema se cerrará.");
         if(OptionPane.getConfirmation("Respaldar información antes de cerrar", "¿Deseas respaldar los datos?", JOptionPane.INFORMATION_MESSAGE)){

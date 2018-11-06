@@ -7,6 +7,7 @@ package reportes;
 
 import entities.context.SalesFichaJasperReport;
 import fn.GV;
+import static fn.GV.getStr;
 import fn.OptionPane;
 import java.util.List;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -20,12 +21,14 @@ import net.sf.jasperreports.engine.JRField;
 public class SalesFichaRecursoDatos  implements JRDataSource{
     private SalesFichaJasperReport sf;
     private int currentIndex = -1;
-    public static int columns = 4;
+    public static int columns = 6;
     
     public static int indexVendedor = 0;
-    public static int indexTotalVentas = 1;
-    public static int indexNombreAbono = 2;
-    public static int indexTotalAbonado = 3;
+    public static int indexSumaLentes = 1;
+    public static int indexCantVentas = 2;
+    public static int indexTotalVentas = 3;
+    public static int indexNombreAbono = 4;
+    public static int indexTotalAbonado = 5;
     
     private String[][] resumen;
 
@@ -60,6 +63,12 @@ public class SalesFichaRecursoDatos  implements JRDataSource{
             if("userFullName".equals(jrf.getName())){
                 valor = GV.user().getNombre();
             }
+            if("sumTotalLentes".equals(jrf.getName())){
+                valor = ""+sf.getSumTotalLentes();
+            }
+            if("sumTotalVentas".equals(jrf.getName())){
+                valor = ""+sf.getSumaTotalVentas();
+            }
             if("montoTotal".equals(jrf.getName())){
                 valor = GV.strToPrice(sf.getMontoTotal());
             }
@@ -71,6 +80,12 @@ public class SalesFichaRecursoDatos  implements JRDataSource{
             }
             if("vendedor".equals(jrf.getName())){
                 valor = resumen[currentIndex][indexVendedor];
+            }
+            if("totalLentes".equals(jrf.getName())){
+                valor = getStr(resumen[currentIndex][indexSumaLentes]);
+            }
+            if("cantVentas".equals(jrf.getName())){
+                valor = getStr(resumen[currentIndex][indexCantVentas]);
             }
             if("totalVentas".equals(jrf.getName())){
                 String precio = GV.strToPrice(GV.strToNumber(resumen[currentIndex][indexTotalVentas]));
@@ -99,6 +114,9 @@ public class SalesFichaRecursoDatos  implements JRDataSource{
         int header = 0;
         for (SalesFichaJasperReport.Vendedor vendedor : sf.getVendedores()) {
             resumen[i][indexVendedor]=vendedor.getFullName();
+            resumen[i][indexSumaLentes]=""+vendedor.getTotalLentes();
+            resumen[i][indexCantVentas]= (vendedor.getCantVentas() > 1) ?   vendedor.getCantVentas() + " fichas":
+                                                                            vendedor.getCantVentas() + " ficha";
             resumen[i][indexTotalVentas]=""+vendedor.getTotalVentas();
             header = i;
             for (SalesFichaJasperReport.DetalleVentas detalle : vendedor.getDetalle()) {
