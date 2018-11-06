@@ -32,26 +32,27 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
- #### [Version 4.0.5 (V-405)](https://github.com/softdirex/TestSync/search?q=V-405&type=Commits)
+ #### [Version 4.0.5 (V405)](https://github.com/softdirex/DCSOptics/search?q=V405&type=Commits)
  
  - Validaciones de errores en el proceso de sincronización [OK]
- - Generar reportes con cantidad de lentes vendidos [PENDIENTE]
- - Enviar reportes por mail con resumen por vendedor y cantidad de lentes vendidos [PENDIENTE]
- - Generar excel con sistema antiguo [PENDIENTE]
+ - [Ver ventas propias del usuario en UI (V405-004)](https://github.com/softdirex/DCSOptics/search?q=V405-004&type=Commits)
+ - [Generar excel con sistema antiguo (V405-003)](https://github.com/softdirex/DCSOptics/search?q=V405-003&type=Commits)
+ - [Enviar reportes por mail con resumen por vendedor y cantidad de lentes vendidos (V405-002)](https://github.com/softdirex/DCSOptics/search?q=V405-002&type=Commits)
+ - [Generar reportes con cantidad de lentes vendidos (V405-001)](https://github.com/softdirex/DCSOptics/search?q=V405-001&type=Commits)
 
- #### [Version 4.0.4 (V-404)](https://github.com/softdirex/TestSync/search?q=V-404&type=Commits)
+ #### [Version 4.0.4 (V-404)](https://github.com/softdirex/DCSOptics/search?q=V-404&type=Commits)
  
  - Validaciones de errores en el proceso de sincronización
  - Funcionalidad para sincronizar todo en caso de falta de registros
 
- #### [Version 4.0.3 (V-403)](https://github.com/softdirex/TestSync/search?q=V-403&type=Commits)
+ #### [Version 4.0.3 (V-403)](https://github.com/softdirex/DCSOptics/search?q=V-403&type=Commits)
  
  - Validaciones de acceso mas amigable
  - Autocompletado con menor consumo de recursos
  - Previsualizar garantia despues de ser generada y corregir formato de hora
  - Ajuste de filtrado de registros de fichas
 
- #### [Version 4.0.2 (V-402)](https://github.com/softdirex/TestSync/search?q=V-402&type=Commits)
+ #### [Version 4.0.2 (V-402)](https://github.com/softdirex/DCSOptics/search?q=V-402&type=Commits)
  
  - Refactoring del código para guardar fichas
  - Validación de sistema operativo para mostrar interfaz relacionada
