@@ -97,10 +97,11 @@ public class VFichas extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         btnReloadFilter = new javax.swing.JLabel();
         btnReportSales = new javax.swing.JLabel();
-        btnExportExcel = new javax.swing.JLabel();
+        btnExportFichas = new javax.swing.JLabel();
         btnExportConvenio = new javax.swing.JLabel();
         btnDespacharTodo = new javax.swing.JLabel();
         btnSalesReport = new javax.swing.JLabel();
+        btnExportExcel = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -224,17 +225,17 @@ public class VFichas extends javax.swing.JPanel {
             }
         });
 
-        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Report_Card_50px.png"))); // NOI18N
-        btnExportExcel.setToolTipText("Exportar fichas");
-        btnExportExcel.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnExportFichas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Report_Card_50px.png"))); // NOI18N
+        btnExportFichas.setToolTipText("Exportar fichas");
+        btnExportFichas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnExportExcelMouseClicked(evt);
+                btnExportFichasMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnExportExcelMouseEntered(evt);
+                btnExportFichasMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnExportExcelMouseExited(evt);
+                btnExportFichasMouseExited(evt);
             }
         });
 
@@ -280,6 +281,20 @@ public class VFichas extends javax.swing.JPanel {
             }
         });
 
+        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_XLS_50px.png"))); // NOI18N
+        btnExportExcel.setToolTipText("Generar Excel");
+        btnExportExcel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnExportExcelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnExportExcelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnExportExcelMouseExited(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -301,7 +316,9 @@ public class VFichas extends javax.swing.JPanel {
                         .addComponent(btnSalesReport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnExportExcel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnExportFichas)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnExportConvenio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -346,10 +363,11 @@ public class VFichas extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnExportExcel)
+                            .addComponent(btnExportFichas)
                             .addComponent(btnExportConvenio)
                             .addComponent(btnSalesReport)
-                            .addComponent(btnReportSales)))
+                            .addComponent(btnReportSales)
+                            .addComponent(btnExportExcel)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDespacharTodo)))
@@ -541,7 +559,7 @@ public class VFichas extends javax.swing.JPanel {
         btnReportSales.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnReportSales.getIcon().toString()))));
     }//GEN-LAST:event_btnReportSalesMouseExited
 
-    private void btnExportExcelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseClicked
+    private void btnExportFichasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportFichasMouseClicked
         if(GV.licenciaExpirada()){
             GV.mensajeLicenceExpired();
         }else{
@@ -553,15 +571,15 @@ public class VFichas extends javax.swing.JPanel {
                 mensajeOperacionCanceladaPorTablaVacia();
             } 
         }
-    }//GEN-LAST:event_btnExportExcelMouseClicked
+    }//GEN-LAST:event_btnExportFichasMouseClicked
 
-    private void btnExportExcelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseEntered
-        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnExportExcel.getIcon().toString()))));
-    }//GEN-LAST:event_btnExportExcelMouseEntered
+    private void btnExportFichasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportFichasMouseEntered
+        btnExportFichas.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnExportFichas.getIcon().toString()))));
+    }//GEN-LAST:event_btnExportFichasMouseEntered
 
-    private void btnExportExcelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseExited
-        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnExportExcel.getIcon().toString()))));
-    }//GEN-LAST:event_btnExportExcelMouseExited
+    private void btnExportFichasMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportFichasMouseExited
+        btnExportFichas.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnExportFichas.getIcon().toString()))));
+    }//GEN-LAST:event_btnExportFichasMouseExited
 
     private void btnExportConvenioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportConvenioMouseClicked
         if(GV.licenciaExpirada()){
@@ -663,6 +681,20 @@ public class VFichas extends javax.swing.JPanel {
         btnSalesReport.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnSalesReport.getIcon().toString()))));
     }//GEN-LAST:event_btnSalesReportMouseExited
 
+    private void btnExportExcelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseClicked
+        GV.cursorWAIT(this);
+        GV.excelExportFichas(GV.getFichas());
+        GV.cursorDF(this);
+    }//GEN-LAST:event_btnExportExcelMouseClicked
+
+    private void btnExportExcelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseEntered
+        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnExportExcel.getIcon().toString()))));
+    }//GEN-LAST:event_btnExportExcelMouseEntered
+
+    private void btnExportExcelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseExited
+        btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnExportExcel.getIcon().toString()))));
+    }//GEN-LAST:event_btnExportExcelMouseExited
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAbrir;
@@ -670,6 +702,7 @@ public class VFichas extends javax.swing.JPanel {
     private javax.swing.JLabel btnEliminar;
     private javax.swing.JLabel btnExportConvenio;
     private javax.swing.JLabel btnExportExcel;
+    private javax.swing.JLabel btnExportFichas;
     private javax.swing.JLabel btnReloadFilter;
     private javax.swing.JLabel btnReportSales;
     private javax.swing.JLabel btnRestaurar;

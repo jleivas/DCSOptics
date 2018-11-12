@@ -75,7 +75,9 @@
                           <Component id="btnSalesReport" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnExportExcel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Component id="btnExportFichas" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnExportConvenio" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="cboMostrar" min="-2" pref="188" max="-2" attributes="0"/>
@@ -131,10 +133,11 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="btnExportExcel" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnExportFichas" min="-2" max="-2" attributes="0"/>
                               <Component id="btnExportConvenio" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="btnSalesReport" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="btnReportSales" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnExportExcel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
@@ -354,7 +357,7 @@
             <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnReportSalesMouseExited"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="btnExportExcel">
+        <Component class="javax.swing.JLabel" name="btnExportFichas">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/icons/icons8_Report_Card_50px.png"/>
@@ -362,9 +365,9 @@
             <Property name="toolTipText" type="java.lang.String" value="Exportar fichas"/>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportExcelMouseClicked"/>
-            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportExcelMouseEntered"/>
-            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportExcelMouseExited"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportFichasMouseClicked"/>
+            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportFichasMouseEntered"/>
+            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportFichasMouseExited"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="btnExportConvenio">
@@ -404,6 +407,19 @@
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnSalesReportMouseClicked"/>
             <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnSalesReportMouseEntered"/>
             <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnSalesReportMouseExited"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="btnExportExcel">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/icons/icons8_XLS_50px.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Generar Excel"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportExcelMouseClicked"/>
+            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportExcelMouseEntered"/>
+            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnExportExcelMouseExited"/>
           </Events>
         </Component>
       </SubComponents>
