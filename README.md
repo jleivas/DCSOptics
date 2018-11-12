@@ -33,9 +33,9 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.0.5 (V405)](https://github.com/softdirex/DCSOptics/search?q=V405&type=Commits)
- 
- - [Ver ventas propias del usuario en UI (V405-004)](https://github.com/softdirex/DCSOptics/search?q=V405-004&type=Commits)
- - [Generar excel con sistema antiguo (V405-003)](https://github.com/softdirex/DCSOptics/search?q=V405-003&type=Commits)
+ - [Ver ventas propias del usuario en UI (V405-004)](https://github.com/softdirex/DCSOptics/search?q=V405-005&type=Commits)
+ - [Generar excel con sistema antiguo (V405-004)](https://github.com/softdirex/DCSOptics/search?q=V405-004&type=Commits)
+ - [Optimizar la generacion de fichas(V405-003)](https://github.com/softdirex/DCSOptics/search?q=V405-003&type=Commits)
  - [Enviar reportes por mail con resumen por vendedor y cantidad de lentes vendidos (V405-002)](https://github.com/softdirex/DCSOptics/search?q=V405-002&type=Commits)
  - [Generar reportes con cantidad de lentes vendidos (V405-001)](https://github.com/softdirex/DCSOptics/search?q=V405-001&type=Commits)
  - [Validaciones de errores en el proceso de sincronización (V-405)](https://github.com/softdirex/DCSOptics/search?q=V-405&type=Commits)
