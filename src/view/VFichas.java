@@ -655,9 +655,13 @@ public class VFichas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSalesReportMouseExited
 
     private void btnExportExcelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseClicked
-        GV.cursorWAIT(this);
-        GV.excelExportFichas(GV.getFichas());
-        GV.cursorDF(this);
+        if(GV.tipoUserAdmin()){
+            GV.cursorWAIT(this);
+            GV.excelExportFichas(GV.getFichas());
+            GV.cursorDF(this);
+        }else{
+            GV.mensajeAccessDenied();
+        }
     }//GEN-LAST:event_btnExportExcelMouseClicked
 
     private void btnExportExcelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseEntered
