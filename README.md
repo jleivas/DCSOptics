@@ -21,7 +21,7 @@ sistema en softdirex.cl, Optics es la cuarta versión y se encuentra en desarrol
 - Base de datos local embebida, no requiere software adicional a diferencia de las versiones anteriores
 
 ## Instalación
-Puedes descargar el sistema y ver máss información en el [sitio web de Softdirex](http://optidata.softdirex.cl)
+Puedes descargar el sistema y ver más información en el [sitio web de Softdirex](http://optidata.softdirex.cl)
 
 Requisitos previos:
 - Tener instalado [java 1.8 o superior](https://www.java.com/es/download/)
