@@ -9,6 +9,7 @@ import bd.LcBd;
 import dao.Dao;
 import entities.Convenio;
 import entities.Equipo;
+import entities.context.SalesFichaJasperReport;
 import entities.context.SalesReportFicha;
 import fn.GV;
 import static fn.GV.dateToString;
@@ -87,7 +88,7 @@ public class GlobalValuesVariables {
     private static String ID_PARAM_IS_FICHA_LIST = "LISTAR_FICHAS/";
     private static int CBO_FICHA_FILTER=0;
     private static String SQL_LOW_STOCK="lowStock";
-    private static SalesReportFicha SALESREPORT = new SalesReportFicha();
+    private static SalesFichaJasperReport SALESREPORT;
     private static Convenio CONVENIO_SELECTED = null;
     private static String CUOTAS_FECHA_PAGO_PENDIENTE = "01-01-2001";
     private static String FECHA_DEFAULT = "01-01-2001";
@@ -444,11 +445,11 @@ public class GlobalValuesVariables {
         return SQL_LOW_STOCK;
     }
     
-    public static SalesReportFicha getSalesReportFicha(){
+    public static SalesFichaJasperReport getSalesReportFicha(){
         return SALESREPORT;
     }
     
-    public static void setSalesReportFicha(SalesReportFicha report){
+    public static void setSalesReportFicha(SalesFichaJasperReport report){
         SALESREPORT = report;
     }
 
