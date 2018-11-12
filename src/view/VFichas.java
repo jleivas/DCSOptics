@@ -9,7 +9,6 @@ import dao.Dao;
 import entities.Cliente;
 import entities.Convenio;
 import entities.User;
-import entities.context.SalesFichaJasperReport;
 import entities.ficha.Ficha;
 import fn.Boton;
 import fn.GV;
@@ -29,6 +28,7 @@ import view.opanel.OpanelSelectClient;
 import view.opanel.OpanelSelectConvenyFilter;
 import view.opanel.OpanelSelectDate;
 import view.opanel.OpanelSelectUser;
+import view.opanel.OpanelSelectUserAndDate;
 
 /**
  *
@@ -42,7 +42,8 @@ public class VFichas extends javax.swing.JPanel {
     private static int BY_DATE=1;
     public static int BY_CLIENT=2;
     private static int BY_USER=3;
-    private static int BY_CONVENY=4;
+    private static int BY_USER_DATE=4;
+    private static int BY_CONVENY=5;
     private static int COLUMNAS_TABLA = 7;
     TableRowSorter trs;
     DefaultTableModel modelo = new DefaultTableModel() {
@@ -58,7 +59,7 @@ public class VFichas extends javax.swing.JPanel {
         if(!ContentAdmin.lblTitle.getText().toLowerCase().contains("ficha")){
             ContentAdmin.lblTitle.setText("Fichas");
         }
-        initComponents();       
+        initComponents();
         modelo.addColumn("Folio");
         modelo.addColumn("Fecha");
         modelo.addColumn("Rut cliente");
@@ -186,7 +187,7 @@ public class VFichas extends javax.swing.JPanel {
         });
 
         cboFilterOptions.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
-        cboFilterOptions.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Por Día", "Por Fechas", "Por Cliente", "Por Vendedor", "Por Convenios" }));
+        cboFilterOptions.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Por Día", "Por Fechas", "Por Cliente", "Por Vendedor", "Por Vendedor y Fecha", "Por Convenios" }));
         cboFilterOptions.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cboFilterOptionsItemStateChanged(evt);
@@ -642,21 +643,7 @@ public class VFichas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDespacharTodoMouseExited
 
     private void btnSalesReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalesReportMouseClicked
-        if(GV.licenciaExpirada()){
-            GV.mensajeLicenceExpired();
-        }else{
-            if(GV.tipoUserAdmin()){
-                if(GV.getFichas().size()>0){
-                    cWT();
-                    GV.printSalesReport(GV.getFichas(), ContentAdmin.lblTitle.getText());
-                    cDF();
-                }else{
-                    mensajeOperacionCanceladaPorTablaVacia();
-                }
-            }else{
-                GV.mensajeAccessDenied();
-            }
-        }
+        verReporte();
     }//GEN-LAST:event_btnSalesReportMouseClicked
 
     private void btnSalesReportMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSalesReportMouseEntered
@@ -769,6 +756,30 @@ public class VFichas extends javax.swing.JPanel {
                 try {
                     User us = (User)load.get(null, GV.strToNumber(GV.userIdSelected()), new User());
                     ContentAdmin.lblTitle.setText("Registros por Vendedor: "+us.getNombre());
+                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                    Logger.getLogger(VFichas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        if(filter==BY_USER_DATE){
+            if(isFiltering){
+                OptionPane.showOptionPanel(new OpanelSelectUserAndDate(), OptionPane.titleUserChooser());
+                isFiltering = false;
+                openDialog = false;
+            }else{
+                GV.listarFichasByUserAndDate(GV.userIdSelected(),GV.dateFrom(),GV.dateTo());
+                try {
+                    User us = (User)load.get(null, GV.strToNumber(GV.userIdSelected()), new User());
+                    ContentAdmin.lblTitle.setText("Registros de "+us.getNombre()+"");
+                    String fecha1 = GV.dateToString(GV.dateFrom(), "dd/mm/yyyy");
+                    String fecha2 = GV.dateToString(GV.dateTo(), "dd/mm/yyyy");
+                    String tempTitle = " entre los días "+fecha1+" y "+fecha2;
+                    if(fecha1.equals(fecha2)){
+                        tempTitle = " del día: "+fecha1;
+                    }
+
+                    tempTitle = (tempTitle.contains("date-error"))?tempTitle.replaceAll("date-error", ".").replaceAll("y", "."):tempTitle;
+                    ContentAdmin.lblTitle.setText(ContentAdmin.lblTitle.getText() + tempTitle);
                 } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                     Logger.getLogger(VFichas.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -896,5 +907,32 @@ public class VFichas extends javax.swing.JPanel {
 
     private void mensajeOperacionCanceladaPorTablaVacia() {
         OptionPane.showMsg("No hay datos disponibles", "La operación no se puede realizar porque no existen datos en la tabla", 2);
+    }
+    
+    private void verReporte(){
+        if(GV.licenciaExpirada()){
+            GV.mensajeLicenceExpired();
+        }else{
+            if(GV.tipoUserAdmin()){
+                if(GV.getFichas().size()>0){
+                    cWT();
+                    GV.printSalesReport(GV.getFichas(), ContentAdmin.lblTitle.getText());
+                    cDF();
+                }else{
+                    mensajeOperacionCanceladaPorTablaVacia();
+                }
+            }else{
+                int filter = cboFilterOptions.getSelectedIndex();
+                if(filter == BY_USER_DATE){
+                    if(GV.userIdSelected().equals(""+GV.user().getId())){
+                        cWT();
+                        GV.printSalesReport(GV.getFichas(), ContentAdmin.lblTitle.getText());
+                        cDF();
+                        return;
+                    }
+                }
+                GV.mensajeAccessDenied();
+            }
+        }
     }
 }

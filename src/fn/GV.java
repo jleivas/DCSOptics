@@ -940,6 +940,10 @@ public class GV extends GlobalValuesCursor{
         GlobalValuesBD.listarFichasByUser(idUser);
     }
     
+    public static void listarFichasByUserAndDate(String idUser,Date d1,Date d2) {
+        GlobalValuesBD.listarFichasByUserAndDate(idUser,d1,d2);
+    }
+    
     public static void listarFichasByConveny(String idCnv) {
         GlobalValuesBD.listarFichasByConveny(idCnv);
     }

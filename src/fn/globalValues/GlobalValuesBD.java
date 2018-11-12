@@ -774,40 +774,20 @@ public class GlobalValuesBD {
     }
 
     public static void listarFichasByDate(Date date1, Date date2) {
-//        Dao load = new Dao();
-//        if(date1==null && date2==null){
-//            date1=new Date();
-//            OptionPane.showMsg("Datos vacíos","Las fechas ingresadas están vacías,\n"
-//                    + "Se tomará como parámetro la fecha actual.", 2);
-//        }
-//        date1=(date1==null)?date2:date1;
-//        date2=(date2==null)?date1:date2;
-//        if(Cmp.localIsNewOrEqual(date1, date2)){
-//            Date aux = date2;
-//            date2=date1;
-//            date1=aux;
-//        }
-//        String d1 = (!GV.dateToString(date1, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(date1, "yyyy-mm-dd"):"";
-//        String d2 = (!GV.dateToString(date2, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(date2, "yyyy-mm-dd"):"";
-//        String idParam = GV.convertFichaIdParamToDateList(d1+"/"+d2);
-//        LISTA_FICHAS = load.listar(idParam, new Ficha());
         LISTA_FICHAS = listarAllFichas(date1, date2, null, null,null, null);
     }
     
     public static void listarFichasByClient(String rut) {
-//        Dao load = new Dao();
-//        String idParam = GV.convertFichaIdParamToClient(rut);
-//        LISTA_FICHAS = load.listar(idParam, new Ficha());
         LISTA_FICHAS = listarAllFichas(null, null, null, rut,null, null);
     }
     
     public static void listarFichasByUser(String user) {
-//        Dao load = new Dao();
-//        String idParam = GV.convertFichaIdParamToUSer(user);
-//        LISTA_FICHAS = load.listar(idParam, new Ficha());
         LISTA_FICHAS = listarAllFichas(null, null, user, null,null, null);
     }
     
+    public static void listarFichasByUserAndDate(String user, Date date1, Date date2) {
+        LISTA_FICHAS = listarAllFichas(date1, date2, user, null,null, null);
+    }
     
     public static void listarFichasByConveny(String idCnv) {
         LISTA_FICHAS = listarAllFichas(null, null, null, null,idCnv, null);

@@ -521,6 +521,9 @@ public class GlobalValuesFunctions {
         }
         String d1 = (!GV.dateToString(dateTo, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateTo, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
         String d2 = (!GV.dateToString(dateFrom, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateFrom, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
+        if(idUser != null){
+            return "where (f.usuario_us_id = "+idUser+") and (f.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') ORDER BY f.fch_fecha DESC";
+        }
         return "where f.fch_fecha BETWEEN '"+d1+"' and '"+d2+"' ORDER BY f.fch_fecha DESC";
     }
     
