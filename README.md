@@ -33,7 +33,8 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.0.5 (V405)](https://github.com/softdirex/DCSOptics/search?q=V405&type=Commits)
- - [Ver ventas propias del usuario en UI (V405-004)](https://github.com/softdirex/DCSOptics/search?q=V405-005&type=Commits)
+ - [Corrección de registro de abonos en CRUD Fichas UI (V405-006)](https://github.com/softdirex/DCSOptics/search?q=V405-006&type=Commits)
+ - [Ver ventas propias del usuario en UI (V405-005)](https://github.com/softdirex/DCSOptics/search?q=V405-005&type=Commits)
  - [Generar excel con sistema antiguo (V405-004)](https://github.com/softdirex/DCSOptics/search?q=V405-004&type=Commits)
  - [Optimizar la generacion de fichas(V405-003)](https://github.com/softdirex/DCSOptics/search?q=V405-003&type=Commits)
  - [Enviar reportes por mail con resumen por vendedor y cantidad de lentes vendidos (V405-002)](https://github.com/softdirex/DCSOptics/search?q=V405-002&type=Commits)
