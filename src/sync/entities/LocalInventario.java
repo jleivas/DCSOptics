@@ -119,25 +119,49 @@ public class LocalInventario {
                 );
             }
             if(!sincronizar){
-                lista.add(new Lente(
-                    idLente,
-                    datos.getString("len_color"),
-                    datos.getString("len_tipo"),
-                    datos.getString("len_marca"),
-                    datos.getString("len_material"),
-                    datos.getInt("len_flex"),
-                    datos.getInt("len_clasificacion"),
-                    datos.getString("len_descripcion"),
-                    datos.getInt("len_precio_ref"),
-                    datos.getInt("len_precio_act"),
-                    stock,
-                    datos.getInt("len_stock_min"),
-                    datos.getInt("inventario_inv_id"),
-                    datos.getInt("len_estado"),
-                    lastUpdate,
-                    lastHour
-                    )
-                );
+                if(idParam.equals("st")){
+                    if(stock > 0){
+                        lista.add(new Lente(
+                            idLente,
+                            datos.getString("len_color"),
+                            datos.getString("len_tipo"),
+                            datos.getString("len_marca"),
+                            datos.getString("len_material"),
+                            datos.getInt("len_flex"),
+                            datos.getInt("len_clasificacion"),
+                            datos.getString("len_descripcion"),
+                            datos.getInt("len_precio_ref"),
+                            datos.getInt("len_precio_act"),
+                            stock,
+                            datos.getInt("len_stock_min"),
+                            datos.getInt("inventario_inv_id"),
+                            datos.getInt("len_estado"),
+                            lastUpdate,
+                            lastHour
+                            )
+                        );
+                    }
+                }else{
+                    lista.add(new Lente(
+                        idLente,
+                        datos.getString("len_color"),
+                        datos.getString("len_tipo"),
+                        datos.getString("len_marca"),
+                        datos.getString("len_material"),
+                        datos.getInt("len_flex"),
+                        datos.getInt("len_clasificacion"),
+                        datos.getString("len_descripcion"),
+                        datos.getInt("len_precio_ref"),
+                        datos.getInt("len_precio_act"),
+                        stock,
+                        datos.getInt("len_stock_min"),
+                        datos.getInt("inventario_inv_id"),
+                        datos.getInt("len_estado"),
+                        lastUpdate,
+                        lastHour
+                        )
+                    );
+                }
             }   
         }
         LcBd.cerrar();

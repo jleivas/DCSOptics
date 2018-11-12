@@ -23,6 +23,7 @@ import entities.abstractclasses.SyncClass;
 import entities.abstractclasses.SyncFichaClass;
 import entities.abstractclasses.SyncIntId;
 import entities.abstractclasses.SyncIntIdValidaName;
+import entities.ficha.Armazon;
 import entities.ficha.EtiquetFicha;
 import entities.ficha.Ficha;
 import entities.ficha.HistorialPago;
@@ -583,24 +584,43 @@ public class Dao{
         
     }
 
-    public void createFicha(Ficha ficha, HistorialPago hp) {
-//        if(ficha.getCerca() != null){
-//            if(!GV.getFicha().getCerca().getMarca().isEmpty()){
-//                decreaseStock(ficha.getCerca().getMarca(), 1);
-//            }
-//        }
-//        if(ficha.getLejos() != null){
-//            if(!GV.getFicha().getLejos().getMarca().isEmpty()){
-//                decreaseStock(ficha.getLejos().getMarca(), 1);
-//            }
-//        }
+    public boolean createFicha(Ficha ficha, HistorialPago hp) {
         setLastUpdates(hp);
         setLastUpdates(ficha.getCliente());
         setLastUpdates(ficha.getDoctor());
         setLastUpdates(ficha.getCerca());
         setLastUpdates(ficha.getLejos());
         setLastUpdates(ficha);
-        GV.LOCAL_SYNC.saveFicha(ficha, hp);
+        
+        int maxIdArmazon = GV.LOCAL_SYNC.getMaxId(new Armazon());
+        ficha.getLejos().setCod(maxIdArmazon + "-" + GV.getIdEquipo());
+        ficha.getCerca().setCod((maxIdArmazon + 1) + "-" + GV.getIdEquipo());
+        
+        if(ficha.getCliente() != null){
+            if(!GV.getStr(ficha.getCliente().getCod()).isEmpty()){
+                GV.LOCAL_SYNC.add(ficha.getCliente());
+            }  
+        }
+        if(GV.LOCAL_SYNC.add(ficha.getCerca())){
+            String idLente = ficha.getCerca().getMarca();
+            if(!idLente.isEmpty()){
+                decreaseStock(idLente, 1);
+            }
+        }
+        if(GV.LOCAL_SYNC.add(ficha.getLejos())){
+            String idLente = ficha.getLejos().getMarca();
+            if(!idLente.isEmpty()){
+                decreaseStock(idLente, 1);
+            }
+        }  
+        GV.LOCAL_SYNC.add(ficha);
+        if(hp != null){
+            if(hp.getAbono() > 0){
+                hp.setCod(getCurrentCod(hp));
+                GV.LOCAL_SYNC.add(hp);
+            }
+        }
+        return true;
     }
     
     private void setLastUpdates(SyncClass object){

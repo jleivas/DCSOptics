@@ -14,6 +14,7 @@ import entities.Equipo;
 import entities.TipoPago;
 import entities.User;
 import entities.abstractclasses.SyncIntId;
+import entities.abstractclasses.SyncIntIdValidaName;
 import entities.abstractclasses.SyncStringId;
 import entities.context.SalesReportFicha;
 import entities.ficha.Despacho;
@@ -389,7 +390,23 @@ public class GlobalValuesFunctions {
         return srf;
     }
     
+    public static Object searchByNameInList(String name , List<Object> list, Object classType) {
+        if(GV.getStr(name).isEmpty()){
+            return null;
+        }
+        if(classType instanceof SyncIntIdValidaName){
+            Optional<Object> objectFound = list.stream()
+            .filter(p -> ((SyncIntIdValidaName)p).getNombre().equals(name))
+            .findFirst();
+            return objectFound.isPresent() ? objectFound.get() : null;
+        }
+        return null;
+    }
+    
     public static Object searchByIdInList(String code , List<Object> list, Object classType) {
+        if(GV.getStr(code).isEmpty()){
+            return null;
+        }
         if(classType instanceof SyncIntId){
             Optional<Object> objectFound = list.stream()
             .filter(p -> ((SyncIntId)p).getId() == GV.strToNumber(code))
@@ -1177,4 +1194,23 @@ public class GlobalValuesFunctions {
             }
         }
     }
+    
+    /**
+     * Retorna la cantidad de veces que se encuentra repetido el caracter 
+     * dentro de la cadena
+     * @param cadena
+     * @param caracter
+     * @return 
+     */
+    public static int contarCaracteres(String cadena, char caracter) {
+        int posicion, contador = 0;
+        //se busca la primera vez que aparece
+        posicion = cadena.indexOf(caracter);
+        while (posicion != -1) { //mientras se encuentre el caracter
+            contador++;           //se cuenta
+            //se sigue buscando a partir de la posición siguiente a la encontrada
+            posicion = cadena.indexOf(caracter, posicion + 1);
+        }
+        return contador;
+   }
 }

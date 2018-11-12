@@ -34,21 +34,27 @@ public class FichaDataSource implements JRDataSource{
         String c1 = (ficha.getLejos().getCapa()==1)?"SI":"NO";
         String p1 = (ficha.getLejos().getPlusMax()==1)?"SI":"NO";
         String dpLejos = ""+ficha.getLejos().getDp();
+        String marcaLejos = "";
         if(ficha.getLejos().getMarca().isEmpty() && ficha.getLejos().getCristal().isEmpty()){
             e1 = "";
             c1 = "";
             p1 = "";
             dpLejos = "";
+        }else{
+            marcaLejos = (ficha.getLejos().getMarca().contains("[")) ? ficha.getLejos().getMarca().substring(0, ficha.getLejos().getMarca().lastIndexOf("[")) : ficha.getLejos().getMarca();
         }
         String e2 = (ficha.getCerca().getEndurecido()==1)?"SI":"NO";
         String c2 = (ficha.getCerca().getCapa()==1)?"SI":"NO";
         String p2 = (ficha.getCerca().getPlusMax()==1)?"SI":"NO";
         String dpCerca = ""+ficha.getCerca().getDp();
+        String marcaCerca = "";
         if(ficha.getCerca().getMarca().isEmpty() && ficha.getCerca().getCristal().isEmpty()){
             e2 = "";
             c2 = "";
             p2 = "";
             dpCerca = "";
+        }else{
+            marcaCerca = (ficha.getCerca().getMarca().contains("[")) ? ficha.getCerca().getMarca().substring(0, ficha.getCerca().getMarca().lastIndexOf("[")) : ficha.getCerca().getMarca();
         }
         int precioLente1 = ficha.getLejos().getPrecioMarca();
         int precioLente2 = ficha.getCerca().getPrecioMarca();
@@ -68,10 +74,10 @@ public class FichaDataSource implements JRDataSource{
                 ficha.getCliente().getDireccion(), ficha.getCliente().getComuna(), 
                 total, 
                 abonos, saldo,
-                ficha.getLejos().getMarca(), ficha.getLejos().getCristal(), ficha.getLejos().getOdEsf(), 
+                marcaLejos, ficha.getLejos().getCristal(), ficha.getLejos().getOdEsf(), 
                 ficha.getLejos().getOdCil(), ficha.getLejos().getOdA(), ficha.getLejos().getOiEsf(), 
                 ficha.getLejos().getOiCil(), ficha.getLejos().getOiA(), dpLejos, e1, c1, p1,
-                ficha.getCerca().getMarca(),
+                marcaCerca,
                 ficha.getCerca().getCristal(), ficha.getCerca().getAdd(), ficha.getCerca().getOdEsf(),
                 ficha.getCerca().getOdCil(), ficha.getCerca().getOdA(), ficha.getCerca().getOiEsf(), 
                 ficha.getCerca().getOiCil(), ficha.getCerca().getOiA(), dpCerca, e2, c2, p2,

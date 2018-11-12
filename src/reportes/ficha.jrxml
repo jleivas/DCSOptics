@@ -100,7 +100,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="16" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Receta de lentes]]></text>
+					<text><![CDATA[Orden de trabajo]]></text>
 				</staticText>
 			</frame>
 		</band>

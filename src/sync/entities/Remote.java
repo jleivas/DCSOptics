@@ -457,7 +457,7 @@ public class Remote implements InterfaceSync{
                 OptionPane.showMsg("Error inseperado en la operación", "El objeto no se pudo insertar.\n\n"+className+" no soporta el tipo de registro enviado.", 3);
                 return false;
             }
-        }catch( ClassNotFoundException | SQLException | NullPointerException ex){
+        }catch(ClassNotFoundException | SQLException | NullPointerException ex){
             Logger.getLogger(Local.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -1019,7 +1019,7 @@ public class Remote implements InterfaceSync{
                 }
                 RmBd.cerrar();
             }
-        } catch (NullPointerException | ClassNotFoundException | SQLException ex) {
+        } catch (NullPointerException |ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Local.class.getName()).log(Level.SEVERE, null, ex);
             return -1000;
         }
@@ -4196,65 +4196,5 @@ public class Remote implements InterfaceSync{
             Logger.getLogger(Remote.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
-    }
-
-    public void saveFicha(Ficha ficha, HistorialPago hp) {
-        boolean founded = false;
-        int maxIdArmazon = getMaxId(new Armazon());
-        ficha.getLejos().setCod(maxIdArmazon + "-" + GV.getIdEquipo());
-        ficha.getCerca().setCod((maxIdArmazon + 1) + "-" + GV.getIdEquipo());
-        
-        try {
-        if(ficha.getCliente() != null){
-            if(!GV.getStr(ficha.getCliente().getCod()).isEmpty()){
-                PreparedStatement consulta = RmBd.obtener().prepareStatement("SELECT * FROM cliente WHERE cli_rut='" + ficha.getCliente().getCod() + "'");
-                ResultSet datos = consulta.executeQuery();
-                while (datos.next()) {
-                    RmBd.cerrar();
-                    update(ficha.getCliente());
-                    founded = true;
-                    break;
-                }
-                if(!founded){
-                    RmBd.cerrar();
-                    add(ficha.getCliente());
-                }
-            }  
-        }
-        founded = false;
-        if(ficha.getDoctor() != null){
-            if(!GV.getStr(ficha.getDoctor().getCod()).isEmpty()){
-                PreparedStatement consulta = RmBd.obtener().prepareStatement("SELECT * FROM doctor WHERE doc_rut='" + ficha.getDoctor().getCod() + "'");
-                ResultSet datos = consulta.executeQuery();
-                while (datos.next()) {
-                    RmBd.cerrar();
-                    update(ficha.getDoctor());
-                    founded = true;
-                    break;
-                }
-                if(!founded){
-                    RmBd.cerrar();
-                    add(ficha.getDoctor());
-                }
-            }
-        }
-        add(ficha.getCerca());
-        add(ficha.getLejos());
-        if(ficha.getDespacho() != null){
-            if(!GV.getStr(ficha.getDespacho().getCod()).isEmpty()){
-                add(ficha.getDespacho());
-            }
-        }
-            
-        add(ficha);
-        if(hp != null){
-            if(hp.getAbono() > 0){
-                add(ficha);
-            }
-        }
-    } catch (ClassNotFoundException | SQLException ex) {
-        Logger.getLogger(Local.class.getName()).log(Level.SEVERE, null, ex);
-        GV.mensajeExcepcion(ex.getMessage(),3);
-    }
     }
 }

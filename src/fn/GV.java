@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -443,6 +444,10 @@ public class GV extends GlobalValuesCursor{
      */
     public static Object buscarPorIdEnLista(String code,List<Object> list,Object classType){
         return GlobalValuesFunctions.searchByIdInList(code, list, classType);
+    }
+    
+    public static Object buscarPorNombreEnLista(String code,List<Object> list,Object classType){
+        return GlobalValuesFunctions.searchByNameInList(code, list, classType);
     }
     
     public static void spinnerNumberDisable(JSpinner spinnerNumber,int currentValue){
@@ -1209,6 +1214,6 @@ public class GV extends GlobalValuesCursor{
     }
 
     public static void mensajeExcepcion(String error, int status) {
-        OptionPane.showMsg("Error critico", "Ocurrió un error inesperado:\n"+error, status);
+        JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado:\n"+error, "Error critico", JOptionPane.ERROR_MESSAGE);
     }
 }
