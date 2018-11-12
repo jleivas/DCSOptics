@@ -162,12 +162,12 @@ public class VFichaMac extends javax.swing.JPanel {
         txtTotal = new javax.swing.JTextField();
         jLabel42 = new javax.swing.JLabel();
         txtAbonos = new javax.swing.JTextField();
+        btnAbonar = new javax.swing.JLabel();
         btnPrint = new javax.swing.JLabel();
         lblMessageStatus = new javax.swing.JLabel();
         jPanel12 = new javax.swing.JPanel();
         txtFolio = new javax.swing.JLabel();
         iconClock3 = new javax.swing.JLabel();
-        btnAbonar = new javax.swing.JLabel();
         btnHistorialPagos = new javax.swing.JLabel();
         btnGarantia = new javax.swing.JLabel();
         btnDespachar = new javax.swing.JLabel();
@@ -1117,6 +1117,21 @@ public class VFichaMac extends javax.swing.JPanel {
         });
         jPanel7.add(txtAbonos, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 117, -1));
 
+        btnAbonar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Paper_Money_50px.png"))); // NOI18N
+        btnAbonar.setToolTipText("Abonar");
+        btnAbonar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnAbonarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnAbonarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnAbonarMouseExited(evt);
+            }
+        });
+        jPanel7.add(btnAbonar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 100, -1, 40));
+
         btnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Print_50px.png"))); // NOI18N
         btnPrint.setToolTipText("Imprimir");
         btnPrint.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1149,20 +1164,6 @@ public class VFichaMac extends javax.swing.JPanel {
             }
         });
         jPanel12.add(iconClock3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, -1, 40));
-
-        btnAbonar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Paper_Money_50px.png"))); // NOI18N
-        btnAbonar.setToolTipText("Abonar");
-        btnAbonar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnAbonarMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAbonarMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnAbonarMouseExited(evt);
-            }
-        });
 
         btnHistorialPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Stack_of_Money_50px.png"))); // NOI18N
         btnHistorialPagos.setToolTipText("Ver el historial de pagos");
@@ -1215,11 +1216,9 @@ public class VFichaMac extends javax.swing.JPanel {
                 .addComponent(btnDespachar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGarantia)
-                .addGap(18, 18, 18)
+                .addGap(86, 86, 86)
                 .addComponent(btnHistorialPagos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAbonar)
-                .addGap(18, 18, 18)
                 .addComponent(btnPrint)
                 .addGap(83, 83, 83))
             .addGroup(layout.createSequentialGroup()
@@ -1279,7 +1278,6 @@ public class VFichaMac extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnPrint)
-                    .addComponent(btnAbonar)
                     .addComponent(btnHistorialPagos)
                     .addComponent(btnGarantia)
                     .addComponent(btnDespachar))
@@ -1588,43 +1586,7 @@ public class VFichaMac extends javax.swing.JPanel {
     }//GEN-LAST:event_txtAbonosPropertyChange
 
     private void btnAbonarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbonarMouseClicked
-        try {
-            GV.cursorWAIT(this);
-            txtAbono.commitEdit();
-            int saldo = GV.strToNumber(txtSaldo.getText());
-            int abono = (int)txtAbono.getValue();
-            int newSaldo = (saldo-abono);
-            if(newSaldo>=0 && abono > 0){
-                if(cboTipoPago.getSelectedIndex()==0){
-                    OptionPane.showMsg("Operación cancelada", "Para registrar un abono debe ingresar un tipo de pago correcto.",2);
-                    msgRejected("No ha seleccionado un tipo de pago.");
-                    GV.cursorDF(this);
-                    return;
-                }
-                HistorialPago hp = new HistorialPago(null, new Date(), abono, cboTipoPago.getSelectedIndex(), GV.getOpenFicha().getCod(), 1, null, 0);
-                GV.getOpenFicha().setSaldo(newSaldo);
-                if(newSaldo == 0 && (GV.getOpenFicha().getEstado() == GV.estadoFichaPending())){
-                    GV.getOpenFicha().setEstado(GV.estadoFichaPaid());
-                }
-                load.update(GV.getOpenFicha());
-                load.add(hp);
-                OptionPane.showMsg("Abono registrado", "Se ha registrado un nuevo abono",1);
-                boton.ficha();
-                GV.cursorDF(this);
-                msgRejectedClear();
-                return;
-            }
-            if(newSaldo < 0){
-                msgRejected("El abono ingresado excede el saldo.");
-            }
-            OptionPane.showMsg("Operación cancelada", "Para registrar un abono debe ingresar un valor correcto.",2);
-            GV.cursorDF(this);
-        } catch (ParseException | InstantiationException | IllegalAccessException | SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(VFichaMac.class.getName()).log(Level.SEVERE, null, ex);
-            OptionPane.showMsg("Error de sistema", "Ha ocurrido un error interno,\n"
-                    + "Póngase en contacto con ssu proveedor de software para dar solucion a este problema\n"
-                    + "Detalle: Error en VFicha()>btnAbonar()", 3);
-        }
+        guardarAbono();
     }//GEN-LAST:event_btnAbonarMouseClicked
 
     private void btnAbonarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbonarMouseEntered
@@ -1997,4 +1959,61 @@ public class VFichaMac extends javax.swing.JPanel {
         if(GV.getOpenFicha().getValorTotal() == 0)status = "en garantía";
         return status;
     }
+    
+    
+    private void guardarAbono(){
+        if(OptionPane.getConfirmation("Confirmar datos", "¿Estas seguro que deseas registrar un nuevo abono?", 1)){
+            try {
+                GV.cursorWAIT(this);
+                int saldo = GV.strToNumber(txtSaldo.getText());
+                try {
+                    txtAbono.commitEdit();
+                } catch (ParseException ex) {
+                    Logger.getLogger(VFichaMac.class.getName()).log(Level.SEVERE, null, ex);
+                    GV.mensajeExcepcion("El saldo ingresado es incorrecto:\n"+ex.getMessage(), 2);
+                    GV.cursorDF(this);
+                    return;
+                }
+                int abono = (int)txtAbono.getValue();
+                int newSaldo = (saldo-abono);
+                if(newSaldo>=0 && abono > 0){
+                    String medioPago = (cboTipoPago.getSelectedIndex() == 0)? "":cboTipoPago.getSelectedItem().toString();
+                    TipoPago tp = null;
+                    if(!medioPago.isEmpty()){
+                        tp = (TipoPago)load.get(medioPago, 0, new TipoPago());
+                    }
+                    if(tp == null){
+                        OptionPane.showMsg("Operación cancelada", "Para registrar un abono debe ingresar un tipo de pago correcto.",2);
+                        msgRejected("No ha seleccionado un medio de pago.");
+                        GV.cursorDF(this);
+                        return;
+                    }
+                    
+                    HistorialPago hp = new HistorialPago(null, new Date(), abono, tp.getId(), GV.getOpenFicha().getCod(), 1, null, 0);
+                    GV.getOpenFicha().setSaldo(newSaldo);
+                    if(newSaldo == 0 && (GV.getOpenFicha().getEstado() == GV.estadoFichaPending())){
+                        GV.getOpenFicha().setEstado(GV.estadoFichaPaid());
+                    }
+                    load.update(GV.getOpenFicha());
+                    load.add(hp);
+                    OptionPane.showMsg("Abono registrado", "Se ha registrado un nuevo abono",1);
+                    boton.ficha();
+                    GV.cursorDF(this);
+                    msgRejectedClear();
+                    return;
+                }
+                if(newSaldo < 0){
+                    msgRejected("El abono ingresado excede el saldo.");
+                }
+                OptionPane.showMsg("Operación cancelada", "Para registrar un abono debe ingresar un valor correcto.",2);
+                GV.cursorDF(this);
+            } catch (InstantiationException | IllegalAccessException | SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(VFichaMac.class.getName()).log(Level.SEVERE, null, ex);
+                OptionPane.showMsg("Error de sistema", "Ha ocurrido un error interno,\n"
+                        + "Póngase en contacto con ssu proveedor de software para dar solucion a este problema\n"
+                        + "Detalle: Error en VFicha()>btnAbonar()", 3);
+            }
+        }
+    }
+
 }
