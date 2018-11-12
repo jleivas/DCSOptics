@@ -5,6 +5,7 @@
  */
 package fn.mail;
 
+import entities.context.SalesFichaJasperReport;
 import entities.context.SalesReportFicha;
 import entities.ficha.Ficha;
 import fn.GV;
@@ -210,14 +211,14 @@ public class Send {
         }
     }
     
-    public void sendReportSalesMail(SalesReportFicha salesReport,String mail, String title){
+    public void sendReportSalesMail(SalesFichaJasperReport salesReport,String mail, String title){
         if(GV.isOnline() && GlobalValuesFunctions.licenciaIsEnableToSendMails()){
             width = 25;
             height = 50;
             color1 =  color_turquesa;
             
             sendMail("Reporte de ventas desde "+GV.equipo()+" ["+GV.companyName()+"]",
-                    mail, "Reporte de ventas", salesReport.toHtml(title),
+                    mail, "Reporte de ventas", salesReport.generateHtml(title),
                     "Usuario: "+GV.user().getUsername(), GV.companyName(), "https://www.softdirex.cl/imgOptics/report/logo.png", 
                     "https://www.softdirex.cl/imgOptics/report/user.png", 
                     "https://www.softdirex.cl/imgOptics/report/company.png");

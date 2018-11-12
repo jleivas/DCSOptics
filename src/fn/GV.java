@@ -12,6 +12,7 @@ import entities.Convenio;
 import entities.Descuento;
 import entities.Oficina;
 import entities.User;
+import entities.context.SalesFichaJasperReport;
 import entities.context.SalesReportFicha;
 import entities.ficha.Ficha;
 import fn.globalValues.GlobalValuesBD;
@@ -313,7 +314,7 @@ public class GV extends GlobalValuesCursor{
      * Envia un reporte de ventas por correo
      * @param report 
      */
-    public static void mailSendSalesReport(SalesReportFicha report){
+    public static void mailSendSalesReport(SalesFichaJasperReport report){
         setSalesReportFicha(report);
         OptionPane.showOptionPanel(new OpanelSelectAdminToSendMail(), OptionPane.titleUserChooser());
     }
@@ -544,7 +545,7 @@ public class GV extends GlobalValuesCursor{
     }
     /**************************END FUNTIONS**********************************/
     /*****************************BEGIN VARIABLES DEL SISTEMA***************************************/
-    public static SalesReportFicha getSalesReportFicha(){
+    public static SalesFichaJasperReport getSalesReportFicha(){
         return GlobalValuesVariables.getSalesReportFicha();
     }
     
@@ -590,7 +591,7 @@ public class GV extends GlobalValuesCursor{
         return GV.strToDate(GlobalValuesVariables.cuotasFechaPagoPendienteDefault());
     }
     
-    public static void setSalesReportFicha(SalesReportFicha report){
+    public static void setSalesReportFicha(SalesFichaJasperReport report){
         GlobalValuesVariables.setSalesReportFicha(report);
     }
     

@@ -155,7 +155,14 @@ public class OpanelSelectAdminToSendMail extends javax.swing.JPanel {
                     GV.cursorDF(this);
                     return;
                 }
-                GlobalValuesFunctions.sendReportSalesMail(GV.getSalesReportFicha(), user.getEmail(),GV.getContentAdminTitle());
+                try{
+                    GlobalValuesFunctions.sendReportSalesMail(GV.getSalesReportFicha(), user.getEmail(),GV.getContentAdminTitle());
+                }catch(Exception e){
+                    GV.cursorDF(this);
+                    GV.mensajeExcepcion(e.getMessage(), 3);
+                    return;
+                }
+                
                 OptionPane.showMsg("Reporte enviado", "Se ha enviado el reporte satisfactoriamente", 1);
                 OptionPane.closeOptionPanel();
                 GV.cursorDF(this);

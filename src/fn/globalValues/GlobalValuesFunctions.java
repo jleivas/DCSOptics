@@ -16,6 +16,7 @@ import entities.User;
 import entities.abstractclasses.SyncIntId;
 import entities.abstractclasses.SyncIntIdValidaName;
 import entities.abstractclasses.SyncStringId;
+import entities.context.SalesFichaJasperReport;
 import entities.context.SalesReportFicha;
 import entities.ficha.Despacho;
 import entities.ficha.Ficha;
@@ -523,7 +524,7 @@ public class GlobalValuesFunctions {
         return "where f.fch_fecha BETWEEN '"+d1+"' and '"+d2+"' ORDER BY f.fch_fecha DESC";
     }
     
-    public static void sendReportSalesMail(SalesReportFicha report, String email, String title){
+    public static void sendReportSalesMail(SalesFichaJasperReport report, String email, String title){
         Send mail = new Send();
         mail.sendReportSalesMail(report, email, title);
     }
@@ -899,6 +900,25 @@ public class GlobalValuesFunctions {
         }
 
         System.exit(0);
+    }
+
+    public static void enviarReporteVentas() {
+        if(GlobalValuesFunctions.licenciaIsEnableToSendMails()){
+            if(!GV.licenciaExpirada()){
+                if(GV.getFichas().size() > 0){
+                    SalesFichaJasperReport reportSales = new SalesFichaJasperReport(GV.getFichas(), ContentAdmin.lblTitle.getText(), GV.companyName(), 
+                            GV.getOficinaWeb(), GV.getOficinaAddress(),
+                            GV.getOficinaPhone1());
+                    GV.mailSendSalesReport(reportSales);
+                }else{
+                    OptionPane.showMsg("No hay datos disponibles", "La operación no se puede realizar porque no existen datos en la tabla", 2);
+                }
+            }else{
+                GV.mensajeLicenceExpired();
+            }
+        }else{
+            GV.mensajeLicenceAccessDenied();
+        }
     }
     
     

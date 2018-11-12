@@ -9,7 +9,7 @@ import dao.Dao;
 import entities.Cliente;
 import entities.Convenio;
 import entities.User;
-import entities.context.SalesReportFicha;
+import entities.context.SalesFichaJasperReport;
 import entities.ficha.Ficha;
 import fn.Boton;
 import fn.GV;
@@ -38,7 +38,6 @@ public class VFichas extends javax.swing.JPanel {
     Boton boton = new Boton();
     Dao load= new Dao();
     public static boolean isFiltering = false;
-    private static SalesReportFicha reportSales = new SalesReportFicha();
     private static int BY_DAY =0;
     private static int BY_DATE=1;
     public static int BY_CLIENT=2;
@@ -533,22 +532,9 @@ public class VFichas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnReloadFilterMouseExited
 
     private void btnReportSalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReportSalesMouseClicked
-        if(GlobalValuesFunctions.licenciaIsEnableToSendMails()){
-            if(!GV.licenciaExpirada()){
-                if(GV.getFichas().size() > 0){
-                    cWT();
-                    reportSales = new SalesReportFicha(GV.getFichas());
-                    GV.mailSendSalesReport(reportSales);
-                    cDF();
-                }else{
-                    mensajeOperacionCanceladaPorTablaVacia();
-                }
-            }else{
-                GV.mensajeLicenceExpired();
-            }
-        }else{
-            GV.mensajeLicenceAccessDenied();
-        }
+        cWT();
+        GlobalValuesFunctions.enviarReporteVentas();
+        cDF();
     }//GEN-LAST:event_btnReportSalesMouseClicked
 
     private void btnReportSalesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReportSalesMouseEntered
