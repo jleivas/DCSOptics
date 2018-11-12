@@ -12,6 +12,7 @@ import fn.Boton;
 import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.logging.Level;
@@ -23,6 +24,7 @@ import java.util.logging.Logger;
  */
 public class OpanelSelectUserAndDate extends javax.swing.JPanel {
     Boton boton = new Boton();
+    String userSelect = "";
     /**
      * Creates new form OpanelSelectDate
      */
@@ -89,6 +91,12 @@ public class OpanelSelectUserAndDate extends javax.swing.JPanel {
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnLoadMousePressed(evt);
+            }
+        });
+
+        txtNombreUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtNombreUsuarioKeyPressed(evt);
             }
         });
 
@@ -256,15 +264,27 @@ public class OpanelSelectUserAndDate extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSyncronize19MouseClicked
 
+    private void txtNombreUsuarioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreUsuarioKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+            txtNombreUsuario.setText("");
+        }
+    }//GEN-LAST:event_txtNombreUsuarioKeyPressed
+
     private void autocompletar() throws SQLException, ClassNotFoundException {
         Dao load = new Dao();
+        String user = "";
         TextAutoCompleter textAutoCompleter2 = new TextAutoCompleter(txtNombreUsuario);
         for (Object temp : load.listar("-2", new User())) {
             if(((User)temp).getTipo() != 7){
-                textAutoCompleter2.addItem(((User)temp).getNombre()+" <"+((User)temp).getId()+">");
+                user = ((User)temp).getNombre()+" <"+((User)temp).getId()+">";
+                if(GV.user().getId() == ((User)temp).getId()){
+                    userSelect = user;
+                }
+                textAutoCompleter2.addItem(user);
                 textAutoCompleter2.setMode(0);
             }
         }
+        txtNombreUsuario.setText(userSelect);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
