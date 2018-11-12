@@ -22,10 +22,10 @@ import entities.ficha.HistorialPago;
 import fn.Boton;
 import fn.GV;
 import fn.Icons;
-import fn.Log;
 import fn.OptionPane;
 import fn.ValidaRut;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -46,19 +46,20 @@ public class VCrearFicha extends javax.swing.JPanel {
     private static String strCnvName;
     private static Color rojo = Color.red;
     private static Color negro = Color.black;
-    private static TipoPago stTipoPago = new TipoPago();
-    private static Cristal stCristalLejos = new Cristal();
-    private static Cristal stCristalCerca = new Cristal();
-    private static Lente stLenteLejos = new Lente();
-    private static Lente stLenteCerca = new Lente();
-    private static Armazon stArmazonLejos = new Armazon();
-    private static Armazon stArmazonCerca = new Armazon();
-    private static Doctor stDoctor = new Doctor();
-    private static Cliente stCliente = new Cliente();
-    private static Institucion stInstitucion = new Institucion();
+    private static TipoPago stTipoPago = null;
+    private static Cristal stCristalLejos = null;
+    private static Cristal stCristalCerca = null;
+    private static Lente stLenteLejos = null;
+    private static Lente stLenteCerca = null;
+    private static Doctor stDoctor = null;
+    private static Cliente stCliente = null;
+    private static Institucion stInstitucion = null;
     private static Descuento stDescuento = null;
-    private static Inventario stInventario = new Inventario();
+    private static Inventario stInventario = null;
     private static Convenio stConvenio = null;
+    private static Ficha FICHA = null;
+    private static int tpCerca = 0;
+    private static int tpLejos = 1;
     
     private static List<Object> listInstituciones = new ArrayList<>();
     private static List<Object> listClientes = new ArrayList<>();
@@ -71,31 +72,12 @@ public class VCrearFicha extends javax.swing.JPanel {
     /**
      * Creates new form VNuevaFicha
      */
-    public VCrearFicha() throws SQLException, ClassNotFoundException {
-        
+    public VCrearFicha() {
         initComponents();
-        stInventario = new Inventario();
-        try {
-            stInventario = (Inventario)load.get(GV.inventarioName(), 0, new Inventario());
-        } catch (InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if(stInventario == null){
-            stInventario = new Inventario();
-            OptionPane.showMsg("Debe seleccionar un inventario local", "El inventario asignado a este equipo no existe\n"
-                    + "o fué modificado, asigne un inventario local a este equipo para\n"
-                    + "solucionar este problema", 2);
-        }
-        loadStaticObjectList();
-        convenioObtenerSeleccionado();
-        
-        validateDataTemp();
-        load();
-        
-        comprobarDatosFicha();
+        loadStaticObjects();
+        cboDescuento.setVisible(false);
         GV.cursorDF();
         GV.cursorDF(this);
-       // JFormattedTextField.COMMIT_OR_REVERT. Esta es la opción por defecto y la más útil. Si el texto introducido es incorrecto, se vuelve automáticamente al último valor bueno conocido. Si el texto no es válido, se muestra el último valor bueno conocido.<>
     }
     
     
@@ -271,10 +253,10 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
         txtFecha.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 txtFechaInputMethodTextChanged(evt);
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         txtFecha.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -360,6 +342,11 @@ public class VCrearFicha extends javax.swing.JPanel {
         txtDoctor.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtDoctorFocusLost(evt);
+            }
+        });
+        txtDoctor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDoctorActionPerformed(evt);
             }
         });
         txtDoctor.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -738,6 +725,9 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
         txtArmazonLejos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtArmazonLejosKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtArmazonLejosKeyTyped(evt);
             }
@@ -865,6 +855,9 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
         txtCristalLejos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCristalLejosKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtCristalLejosKeyTyped(evt);
             }
@@ -1005,6 +998,9 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
         txtArmazonCerca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtArmazonCercaKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtArmazonCercaKeyTyped(evt);
             }
@@ -1151,6 +1147,9 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
         txtCristalCerca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCristalCercaKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtCristalCercaKeyTyped(evt);
             }
@@ -1536,7 +1535,6 @@ public class VCrearFicha extends javax.swing.JPanel {
 
     private void txtTotalPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtTotalPropertyChange
         txtTotal.setHorizontalAlignment(4);
-        calcularSaldo();
     }//GEN-LAST:event_txtTotalPropertyChange
 
     private void txtTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalActionPerformed
@@ -1556,7 +1554,7 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSaldoActionPerformed
 
     private void cboDescuentoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboDescuentoItemStateChanged
-        calcularSaldo();
+        cmpPrecios();
     }//GEN-LAST:event_cboDescuentoItemStateChanged
 
     private void chkDescuentoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_chkDescuentoKeyTyped
@@ -1564,10 +1562,7 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_chkDescuentoKeyTyped
 
     private void chkDescuentoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_chkDescuentoKeyPressed
-        if(chkDescuento.isSelected())
-            cboDescuento.setVisible(true);
-        else
-            cboDescuento.setVisible(false);
+        
     }//GEN-LAST:event_chkDescuentoKeyPressed
 
     private void chkDescuentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDescuentoActionPerformed
@@ -1575,20 +1570,24 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_chkDescuentoActionPerformed
 
     private void chkDescuentoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkDescuentoMouseClicked
-
-        calcularSaldo();
-        if(chkDescuento.isSelected()){
+        if(chkDescuento.isSelected() && listDescuentos.size() > 0){
             cboDescuento.setVisible(true);
             lblDescuento.setVisible(true);
             txtDescuento.setVisible(true);
-        }
-        if(!chkDescuento.isSelected()){
+        }else{
             cboDescuento.setSelectedIndex(0);
             cboDescuento.setVisible(false);
             lblDescuento.setVisible(false);
             txtDescuento.setVisible(false);
-
+            if(listDescuentos.isEmpty()){
+                chkDescuento.setSelected(false);
+                cboDescuento.setVisible(true);
+                lblDescuento.setVisible(true);
+                txtDescuento.setVisible(true);
+                OptionPane.showMsg("No se puede añadir descuento", "No existen descuentos registrados, debe ingresarlos en \"Configuracion\" opción \"Descuentos\"", 2);
+            }
         }
+        cmpPrecios();
     }//GEN-LAST:event_chkDescuentoMouseClicked
 
     private void chkDescuentoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_chkDescuentoFocusLost
@@ -1600,23 +1599,11 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_chkDescuentoFocusGained
 
     private void cboTipoPagoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboTipoPagoItemStateChanged
-
-        String nombre = (String) cboTipoPago.getSelectedItem();
-        if(nombre == null || nombre.isEmpty())
-            return;
-        try {
-            if(!nombre.trim().toLowerCase().equals("seleccione")){
-                stTipoPago = (TipoPago)load.get(nombre,0,new TipoPago());
-            }else{
-                stTipoPago = null;
-            }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            OptionPane.showMsg("Error inesperado", "Error en ItemStateChanged: "+ex,JOptionPane.ERROR_MESSAGE);
-        }
+        cmpTipoPago();
     }//GEN-LAST:event_cboTipoPagoItemStateChanged
 
     private void txtAbonoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_txtAbonoStateChanged
-        calcularSaldo();
+        cmpPrecios();
     }//GEN-LAST:event_txtAbonoStateChanged
 
     private void txtCristalCercaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCristalCercaKeyTyped
@@ -1628,18 +1615,8 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCristalCercaKeyTyped
 
     private void txtCristalCercaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCristalCercaFocusLost
-
-        try {
-            stCristalCerca = (Cristal)load.get(txtCristalCerca.getText(),0,new Cristal());
-            if(stCristalCerca != null){
-                txtCristalCerca.setForeground(negro);
-            }else{
-                txtCristalCerca.setForeground(rojo);
-            }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        comprobarDatosFicha();
+        cmpCristalCerca();
+        cmpPrecios();
     }//GEN-LAST:event_txtCristalCercaFocusLost
 
     private void txtAddCercaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAddCercaKeyTyped
@@ -1711,14 +1688,8 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtArmazonCercaKeyTyped
 
     private void txtArmazonCercaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArmazonCercaFocusLost
-   
-        stLenteCerca = (Lente)GV.buscarPorIdEnLista(txtArmazonCerca.getText(),listLentes,new Lente());
-        if(stLenteCerca != null){
-            txtArmazonCerca.setForeground(negro);
-        }else{
-            txtArmazonCerca.setForeground(rojo);
-        }
-        comprobarDatosFicha();
+        cmpLenteCerca();
+        cmpPrecios();
     }//GEN-LAST:event_txtArmazonCercaFocusLost
 
     private void txtCristalLejosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCristalLejosKeyTyped
@@ -1730,18 +1701,8 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCristalLejosKeyTyped
 
     private void txtCristalLejosFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCristalLejosFocusLost
-
-        try {
-            stCristalLejos = (Cristal)load.get(txtCristalLejos.getText(),0,new Cristal());
-            if(stCristalLejos != null){
-                txtCristalLejos.setForeground(negro);
-            }else{
-                txtCristalLejos.setForeground(rojo);
-            }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        comprobarDatosFicha();
+        cmpCristalLejos();
+        cmpPrecios();
     }//GEN-LAST:event_txtCristalLejosFocusLost
 
     private void txtOILejosAKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtOILejosAKeyTyped
@@ -1805,28 +1766,15 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtArmazonLejosActionPerformed
 
     private void txtArmazonLejosFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArmazonLejosFocusLost
-        stLenteLejos = (Lente)GV.buscarPorIdEnLista(txtArmazonLejos.getText(),listLentes,new Lente());
-        if(stLenteLejos != null){
-            txtArmazonLejos.setForeground(negro);
-        }else{
-            txtArmazonLejos.setForeground(rojo);
-        }
-        comprobarDatosFicha(); 
+        cmpLenteLejos();
+        cmpPrecios();
     }//GEN-LAST:event_txtArmazonLejosFocusLost
 
     private void txtDoctorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDoctorFocusLost
-        validaEspecialista();
-        comprobarDatosFicha();
+        cmpEspecialista();
+        cmpHoraEntrega();
     }//GEN-LAST:event_txtDoctorFocusLost
 
-    private String getIdFromString(String arg){
-        arg = GV.getStr(arg);
-        if(arg.contains("<") && !arg.endsWith("<")){
-            arg=arg.substring(arg.indexOf("<")+1).replaceAll(">", "");
-            return arg;
-        }
-        return "0";
-    }
      
     private void txtEntregaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEntregaKeyTyped
         int largo = 45;
@@ -1950,7 +1898,7 @@ public class VCrearFicha extends javax.swing.JPanel {
 
     private void txtRutClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtRutClienteFocusLost
         txtRutClienteValidator();
-        comprobarDatosFicha();
+        cmpRut();
     }//GEN-LAST:event_txtRutClienteFocusLost
 
     private void txtInstitucionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInstitucionKeyTyped
@@ -1966,8 +1914,7 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtInstitucionActionPerformed
 
     private void txtInstitucionFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtInstitucionFocusLost
-        validaInstitucion();
-        comprobarDatosFicha();
+        cmpInstitucion();
     }//GEN-LAST:event_txtInstitucionFocusLost
 
     private void iconAddressMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iconAddressMouseClicked
@@ -1983,20 +1930,7 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_iconPhone1MouseClicked
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
-        if(GV.sincronizacionIsStopped()){
-            GV.cursorWAIT(this);
-            comprobarDatosFicha();
-            if(lblMessageStatus.isVisible() && lblMessageStatus.getForeground() == rojo){
-                OptionPane.showMsg("Faltan datos", lblMessageStatus.getText(), 2);
-                GV.cursorDF(this);
-                return;
-            }
-            save();
-            GV.printFicha();
-            clearData();
-            reloadPage();
-            GV.cursorDF(this);
-        }
+        botonGuardar();
     }//GEN-LAST:event_btnSaveMouseClicked
 
     private void btnSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseEntered
@@ -2012,8 +1946,7 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtDoctorKeyTyped
 
     private void txtFechaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFechaFocusLost
-        txtFechaCheck();
-        comprobarDatosFicha();
+        
     }//GEN-LAST:event_txtFechaFocusLost
 
     private void txtFechaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFechaKeyTyped
@@ -2026,7 +1959,6 @@ public class VCrearFicha extends javax.swing.JPanel {
         }else{
             txtRutClienteValidator();
         }
-        comprobarDatosFicha();
     }//GEN-LAST:event_chkExtranjeroItemStateChanged
 
     private void txtFechaInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtFechaInputMethodTextChanged
@@ -2042,145 +1974,140 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_txtFechaKeyPressed
 
     private void txtEntregaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtEntregaFocusLost
-        comprobarDatosFicha();
+        cmpLugarEntrega();
+        cmpFechaEntrega();
     }//GEN-LAST:event_txtEntregaFocusLost
 
     private void txtHora1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHora1FocusLost
-        comprobarDatosFicha();
+        
     }//GEN-LAST:event_txtHora1FocusLost
 
     private void txtMinuto1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMinuto1FocusLost
-        comprobarDatosFicha();
+        
     }//GEN-LAST:event_txtMinuto1FocusLost
 
     private void txtHora2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHora2FocusLost
-        comprobarDatosFicha();
+        
     }//GEN-LAST:event_txtHora2FocusLost
 
     private void txtMinuto2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMinuto2FocusLost
-        comprobarDatosFicha();
+        
     }//GEN-LAST:event_txtMinuto2FocusLost
 
     private void txtNombreClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNombreClienteFocusLost
-        comprobarDatosFicha();
+        cmpNombre();
     }//GEN-LAST:event_txtNombreClienteFocusLost
 
     private void txtTelefonoCliente1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTelefonoCliente1FocusLost
-        comprobarDatosFicha();
+        cmpContactos();
     }//GEN-LAST:event_txtTelefonoCliente1FocusLost
 
     private void txtTelefonoCliente2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTelefonoCliente2FocusLost
-        comprobarDatosFicha();
+        cmpContactos();
     }//GEN-LAST:event_txtTelefonoCliente2FocusLost
 
     private void txtDireccionClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtDireccionClienteFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtDireccionClienteFocusLost
 
     private void txtComunaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtComunaFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtComunaFocusLost
 
     private void txtCiudadFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCiudadFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtCiudadFocusLost
 
     private void txtMailClienteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMailClienteFocusLost
-        String mail = txtMailCliente.getText();
-        if(!mail.isEmpty() && GV.mailValidate(mail).isEmpty()){
-            txtMailCliente.setForeground(rojo);
-        }else{
-            txtMailCliente.setForeground(negro);
-        }
-        comprobarDatosFicha();
+        cmpContactos();
     }//GEN-LAST:event_txtMailClienteFocusLost
 
     private void cboSexoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboSexoItemStateChanged
-//        comprobarDatosFicha();
+        cmpCamposCliente();
     }//GEN-LAST:event_cboSexoItemStateChanged
 
     private void txtNacimientoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNacimientoFocusLost
-        comprobarDatosFicha();
+        
     }//GEN-LAST:event_txtNacimientoFocusLost
 
     private void txtArmazonLejosFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArmazonLejosFocusGained
-//        comprobarDatosFicha();
+
     }//GEN-LAST:event_txtArmazonLejosFocusGained
 
     private void txtODLejosESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODLejosESFFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtODLejosESFFocusLost
 
     private void txtODLejosCILFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODLejosCILFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtODLejosCILFocusLost
 
     private void txtODLejosAFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODLejosAFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtODLejosAFocusLost
 
     private void txtOILejosESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOILejosESFFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtOILejosESFFocusLost
 
     private void txtOILejosCILFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOILejosCILFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtOILejosCILFocusLost
 
     private void txtOILejosAFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOILejosAFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtOILejosAFocusLost
 
     private void chkEndurecidoLejosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkEndurecidoLejosItemStateChanged
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_chkEndurecidoLejosItemStateChanged
 
     private void chkCapaLejosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkCapaLejosItemStateChanged
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_chkCapaLejosItemStateChanged
 
     private void chkPlusMaxLejosItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkPlusMaxLejosItemStateChanged
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_chkPlusMaxLejosItemStateChanged
 
     private void txtAddCercaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtAddCercaFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtAddCercaFocusLost
 
     private void txtODCercaESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODCercaESFFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtODCercaESFFocusLost
 
     private void txtODCercaCILFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODCercaCILFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtODCercaCILFocusLost
 
     private void txtODCercaAFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtODCercaAFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtODCercaAFocusLost
 
     private void txtOICercaESFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOICercaESFFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtOICercaESFFocusLost
 
     private void txtOICercaCILFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOICercaCILFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtOICercaCILFocusLost
 
     private void txtOICercaAFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOICercaAFocusLost
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_txtOICercaAFocusLost
 
     private void chkEndurecidoCercaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkEndurecidoCercaItemStateChanged
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_chkEndurecidoCercaItemStateChanged
 
     private void chkCapaCercaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkCapaCercaItemStateChanged
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_chkCapaCercaItemStateChanged
 
     private void chkPlusMaxCercaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkPlusMaxCercaItemStateChanged
-        comprobarDatosFicha();
+        cmpFormulario();
     }//GEN-LAST:event_chkPlusMaxCercaItemStateChanged
 
     private void btnSelectConveniosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSelectConveniosMouseClicked
@@ -2208,6 +2135,36 @@ public class VCrearFicha extends javax.swing.JPanel {
     private void btnClearConvenioMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnClearConvenioMouseExited
         btnClearConvenio.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnClearConvenio.getIcon().toString()))));
     }//GEN-LAST:event_btnClearConvenioMouseExited
+
+    private void txtArmazonLejosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtArmazonLejosKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+            txtArmazonLejos.setText("");
+        }
+    }//GEN-LAST:event_txtArmazonLejosKeyPressed
+
+    private void txtCristalLejosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCristalLejosKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+            txtCristalLejos.setText("");
+            stCristalLejos=null;
+        }
+    }//GEN-LAST:event_txtCristalLejosKeyPressed
+
+    private void txtArmazonCercaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtArmazonCercaKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+            txtArmazonCerca.setText("");
+        }
+    }//GEN-LAST:event_txtArmazonCercaKeyPressed
+
+    private void txtCristalCercaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCristalCercaKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+            txtCristalCerca.setText("");
+            stCristalCerca=null;
+        }
+    }//GEN-LAST:event_txtCristalCercaKeyPressed
+
+    private void txtDoctorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDoctorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDoctorActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2354,7 +2311,386 @@ public class VCrearFicha extends javax.swing.JPanel {
             cboTipoPago.addItem(((TipoPago)temp).getNombre());
         }
     }
+    
+//    private void cargarFicha() {
+//        //no llamar, se debe usar para cargar una ficha a editar
+//        txtCnvName.setText(strCnvName);
+//        stArmazonCerca = GV.getFicha().getCerca();
+//        stArmazonLejos = GV.getFicha().getLejos();
+//        Armazon cerca = stArmazonCerca;
+//        Armazon lejos = stArmazonLejos;
+//        Cliente cliente = stCliente;
+//        txtAbono.setValue(0);
+//        String addCerca = (cerca != null)? cerca.getAdd():"";
+//        txtAddCerca.setText(addCerca);
+//        
+//        String marcaCerca = (cerca!= null)? cerca.getMarca():"";
+//        txtArmazonCerca.setText(marcaCerca);
+//        String marcaLejos = (lejos!= null)? lejos.getMarca():"";
+//        txtArmazonLejos.setText(marcaLejos);
+//        String cristalCerca = (cerca!=null)? cerca.getCristal():"";
+//        txtCristalCerca.setText(cristalCerca);
+//        String cristalLejos = (lejos!=null)? lejos.getCristal():"";
+//        txtCristalLejos.setText(cristalLejos);
+//        int dpCerca = (cerca!=null)? cerca.getDp():0;
+//        txtDPCerca.setValue(dpCerca);
+//        int dpLejos = (lejos!=null)? lejos.getDp():0;
+//        txtDPLejos.setValue(dpLejos);
+//        GV.getFicha().setDescuento(0);
+//        txtDescuento.setText("0");
+//        txtFecha.setDate(ficha.getFechaEntrega());
+//        txtEntrega.setText(ficha.getLugarEntrega());
+//        String hora = ((!ficha.getHoraEntrega().isEmpty())&&((""+GV.strToNumber(ficha.getHoraEntrega())).length() == 8)) ? ficha.getHoraEntrega().replaceAll(" ", "").trim():"";
+//        String number = ""+GV.strToNumber(hora);
+//        int h1 = (number.length() == 8) ? GV.strToNumber(number.substring(0,2)):0;
+//        int m1 = (number.length() == 8) ? GV.strToNumber(number.substring(2,4)):0;
+//        int h2 = (number.length() == 8) ? GV.strToNumber(number.substring(4,6)):0;
+//        int m2 = (number.length() == 8) ? GV.strToNumber(number.substring(6,8)):0;
+//        txtHora1.setValue(h1);
+//        txtMinuto1.setValue(m1);
+//        txtHora2.setValue(h2);
+//        txtMinuto2.setValue(m2);
+//        String docName = (stDoctor!=null)?stDoctor.getNombre()+" <"+stDoctor.getCod()+">":"";
+//        docName = (docName.equals(" <null>")) ? "":docName;
+//        txtDoctor.setText(docName);
+//        stInstitucion = ficha.getInstitucion();
+//        String inst =  (stInstitucion!=null && !stInstitucion.getCod().isEmpty())? stInstitucion.getNombre()+"<"+stInstitucion.getCod()+">":"";
+//        txtInstitucion.setText(inst);
+//        
+//        
+//        String odCEsf = (cerca!=null)? cerca.getOdEsf():"";
+//        txtODCercaESF.setText(odCEsf);
+//        String odCA = (cerca!=null)?cerca.getOdA():"";
+//        txtODCercaA.setText(odCA);
+//        String odCCil = (cerca!=null)?cerca.getOdCil():"";
+//        txtODCercaCIL.setText(odCCil);
+//        String odLEsf = (lejos!=null)? lejos.getOdEsf():""; 
+//        txtODLejosESF.setText(odLEsf);
+//        String odLA = (lejos!=null)?lejos.getOdA():"";
+//        txtODLejosA.setText(odLA);
+//        String odLCil = (lejos!=null)?lejos.getOdCil():"";
+//        txtODLejosCIL.setText(odLCil);
+//        String oiCEsf = (cerca!=null)? cerca.getOiEsf():"";
+//        String oiCA = (cerca!=null)? cerca.getOiA():"";
+//        String oiCCil = (cerca!=null)? cerca.getOiCil():"";
+//        txtOICercaESF.setText(oiCEsf);
+//        txtOICercaA.setText(oiCA);
+//        txtOICercaCIL.setText(oiCCil);
+//        String oiLEsf = (lejos!=null)? lejos.getOiEsf():"";
+//        String oiLA = (lejos!=null)? lejos.getOiA():"";
+//        String oiLCil = (lejos!=null)? lejos.getOiCil():"";
+//        txtOILejosESF.setText(oiLEsf);
+//        txtOILejosA.setText(oiLA);
+//        txtOILejosCIL.setText(oiLCil);
+//        String obs = (ficha!=null)?ficha.getObservacion():"";
+//        boolean capCerca = (ficha.getCerca() != null && ficha.getCerca().getCapa()==1)? true:false;
+//        chkCapaCerca.setSelected(capCerca);
+//        boolean capLejos = (ficha.getLejos() != null && ficha.getLejos().getCapa()==1)? true:false;
+//        chkCapaLejos.setSelected(capLejos);
+//        boolean endCerca = (ficha.getCerca() != null && ficha.getCerca().getEndurecido()==1)? true:false;
+//        chkEndurecidoCerca.setSelected(endCerca);
+//        boolean endLejos = (ficha.getLejos() != null && ficha.getLejos().getEndurecido()==1)? true:false;
+//        chkEndurecidoLejos.setSelected(endLejos);
+//        boolean pmCerca = (ficha.getCerca() != null && ficha.getCerca().getPlusMax()==1)? true:false;
+//        chkPlusMaxCerca.setSelected(pmCerca);
+//        boolean pmLejos = (ficha.getLejos() != null && ficha.getLejos().getPlusMax()==1)? true:false;
+//        chkPlusMaxLejos.setSelected(pmLejos);
+//        
+//        txtObs.setText(obs);
+//        
+//        
+//        String rut = (cliente!=null)?cliente.getCod():"";
+//        String nombre = (cliente != null)? cliente.getNombre():"";
+//        txtNombreCliente.setText(nombre);
+//        String t1 = (cliente!=null)?cliente.getTelefono1():"";
+//        txtTelefonoCliente1.setText(t1);
+//        String t2 = (cliente!=null)?cliente.getTelefono2():"";
+//        txtTelefonoCliente2.setText(t2);
+//        String mail = (cliente!=null)? cliente.getEmail():"";
+//        txtMailCliente.setText(mail);
+//        String ciudad = (cliente!= null)? cliente.getCiudad():"";
+//        txtCiudad.setText(ciudad);
+//        String comuna = (cliente!= null)? cliente.getComuna():"";
+//        txtComuna.setText(comuna);
+//        int sexo = (cliente != null)? cliente.getSexo():0;
+//        cboSexo.setSelectedIndex(sexo);
+//        String direccion = (cliente != null)? cliente.getDireccion():"";
+//        txtDireccionCliente.setText(direccion);
+//        Date nac = (cliente!=null)? cliente.getNacimiento():null;
+//        txtNacimiento.setDate(nac);
+//        txtRutCliente.setText(rut);
+//        cargarCbos();
+//    }
 
+    private void errorLargo(int largo) {
+        OptionPane.showMsg( "Datos mal ingresados", "Error de ingreso de datos, \n"
+                    + "los datos ingresados deben tener un maximo de "+largo+" caracteres.", JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void resetTxtCliente() {
+        txtInstitucion.setText("");
+        chkExtranjero.setSelected(false);
+        txtNombreCliente.setText("");
+        txtTelefonoCliente1.setText("");
+        txtTelefonoCliente2.setText("");
+        txtMailCliente.setText("");
+        txtDireccionCliente.setText("");
+        txtComuna.setText("");
+        txtCiudad.setText("");
+        cboSexo.setSelectedIndex(0);
+        txtNacimiento.setDate(null);
+    }
+
+    
+    
+    private void msgWarning(String message){
+        message = GV.getStr(message);
+        if(message.isEmpty()){
+            lblMessageStatus.setText("");
+            lblMessageStatus.setVisible(false);
+        }else{
+            lblMessageStatus.setText(message);
+            lblMessageStatus.setForeground(negro);
+            lblMessageStatus.setVisible(true);
+        }
+    }
+    
+    private void msgRejectedClear(){
+        msgRejected(null);
+    }
+    
+    private String getDescuentoName(String arg){
+        arg = GV.getStr(arg);
+        if(arg.contains("(") && !arg.startsWith("(")){
+            arg=arg.substring(0,arg.indexOf("(")-1);
+        }
+        return arg.trim();
+    }
+
+
+    private void txtFechaCheck() {
+        if(!GV.getStr(txtFecha.getDateFormatString().replaceAll("[0-9-]", "")).isEmpty()){
+            txtFecha.setDate(null);
+        }
+    }
+
+    /**********************BEGIN ASIGNACION DE DATOS***************************/
+    private void asigAllDatas() {
+        FICHA = new Ficha();
+        FICHA.setCod(load.getCurrentCod(new Ficha()));
+        FICHA.setCerca(asigArmazon(tpCerca,FICHA.getCod()));
+        FICHA.setLejos(asigArmazon(tpLejos,FICHA.getCod()));
+        FICHA.setCliente(asigCliente());
+        FICHA.setConvenio(stConvenio);
+        FICHA.setDescuento(GV.strToNumber(txtDescuento.getText()));
+        FICHA.setDespacho(null);
+        FICHA.setDoctor(stDoctor);
+        FICHA.setFecha(new Date());
+        FICHA.setFechaEntrega(txtFecha.getDate());
+        FICHA.setHoraEntrega(asigHora());
+        FICHA.setInstitucion(stInstitucion);
+        FICHA.setLugarEntrega(GV.getFilterString(txtEntrega.getText()));
+        FICHA.setObservacion(GV.getFilterString(txtObs.getText()));
+        FICHA.setSaldo(GV.strToNumber(txtSaldo.getText()));
+        FICHA.setUser(GV.user());
+        FICHA.setValorTotal(GV.strToNumber(txtTotal.getText()));
+        int estado = (FICHA.getSaldo() == 0)? 2:1;//2=pagado,1=pendiente
+        FICHA.setEstado(estado);
+    }
+    
+    private Armazon asigArmazon(int tipo,String idFicha){
+        Armazon armazon = new Armazon();
+        Cristal cristal;
+        Lente lente;
+        int capa;
+        int en;
+        int pm;
+        int dp;
+        int precioCristal = 0;
+        int precioLente = 0;
+        String add = "";
+        String nombreCristal = "";
+        String nombreMarca = "";
+        String ODA;
+        String ODCIL;
+        String ODESF;
+        String OIA;
+        String OICIL;
+        String OIESF;
+        if(tipo == tpCerca){
+            capa = (chkCapaCerca.isSelected())? 1:0;
+            en = (chkEndurecidoCerca.isSelected())? 1:0;
+            pm = (chkPlusMaxCerca.isSelected())? 1:0;
+            add = GV.getFilterString(txtAddCerca.getText());
+            cristal = stCristalCerca;
+            lente = stLenteCerca;
+            dp = (int)txtDPCerca.getValue();
+            ODA = GV.getFilterString(txtODCercaA.getText());
+            ODCIL = GV.getFilterString(txtODCercaCIL.getText());
+            ODESF = GV.getFilterString(txtODCercaESF.getText());
+            OIA = GV.getFilterString(txtOICercaA.getText());
+            OICIL = GV.getFilterString(txtOICercaCIL.getText());
+            OIESF = GV.getFilterString(txtOICercaESF.getText());
+        }else{
+            capa = (chkCapaLejos.isSelected())? 1:0;
+            en = (chkEndurecidoLejos.isSelected())? 1:0;
+            pm = (chkPlusMaxLejos.isSelected())? 1:0;
+            cristal = stCristalLejos;
+            lente = stLenteLejos;
+            dp = (int)txtDPLejos.getValue();
+            ODA = GV.getFilterString(txtODLejosA.getText());
+            ODCIL = GV.getFilterString(txtODLejosCIL.getText());
+            ODESF = GV.getFilterString(txtODLejosESF.getText());
+            OIA = GV.getFilterString(txtOILejosA.getText());
+            OICIL = GV.getFilterString(txtOILejosCIL.getText());
+            OIESF = GV.getFilterString(txtOILejosESF.getText());
+        }
+        if(cristal != null){
+            precioCristal = (stConvenio==null)?
+                    cristal.getPrecio():
+                    cristal.getPrecio() + ((cristal.getPrecio() * stConvenio.getPorcentajeAdicion())/100);
+            nombreCristal = cristal.getNombre();
+        }
+        if(lente != null){
+            precioLente = (stConvenio==null)?
+                    lente.getPrecioAct():
+                    lente.getPrecioAct() + ((lente.getPrecioAct() * stConvenio.getPorcentajeAdicion())/100);
+            nombreMarca = lente.getCod();
+        }
+        armazon.setIdFicha(idFicha);
+        armazon.setPrecioCristal(precioCristal);
+        armazon.setCristal(nombreCristal);
+        armazon.setMarca(nombreMarca);
+        armazon.setPrecioMarca(precioLente);
+        armazon.setCapa(capa);
+        armazon.setAdd(add);
+        armazon.setDp(dp);
+        armazon.setEndurecido(en);
+        armazon.setEstado(1);
+        armazon.setPlusMax(pm);
+        armazon.setOdA(ODA);
+        armazon.setOdCil(ODCIL);
+        armazon.setOdEsf(ODESF);
+        armazon.setOiA(OIA);
+        armazon.setOiCil(OICIL);
+        armazon.setOiEsf(OIESF);
+        armazon.setTipo(tipo);
+        
+        return armazon;
+    }
+    
+    private Cliente asigCliente(){
+        Cliente cliente = new Cliente();
+        cliente.setCiudad(GV.getFilterString(txtCiudad.getText()));
+        cliente.setCod(GV.getFilterString(txtRutCliente.getText()));
+        cliente.setComuna(GV.getFilterString(txtComuna.getText()));
+        cliente.setDireccion(GV.getFilterString(txtDireccionCliente.getText()));
+        cliente.setEmail(GV.getFilterString(txtMailCliente.getText()));
+        cliente.setEstado(1);
+        cliente.setNacimiento(txtNacimiento.getDate());
+        cliente.setNombre(GV.getFilterString(txtNombreCliente.getText()));
+        cliente.setSexo(cboSexo.getSelectedIndex());
+        cliente.setTelefono1(GV.getFilterString(txtTelefonoCliente1.getText()));
+        cliente.setTelefono2(GV.getFilterString(txtTelefonoCliente2.getText()));
+        return cliente;
+    }
+    
+    private String asigHora(){
+        commitSpinner();
+        int h1 = (int)txtHora1.getValue();
+        String hr1 = (h1 < 10)? "0"+h1:""+h1;
+        int h2 = (int)txtHora2.getValue();
+        String hr2 = (h2 < 10)? "0"+h2:""+h2;
+        int m1 = (int)txtMinuto1.getValue();
+        String mn1 = (m1 < 10)? "0"+m1:""+m1;
+        int m2 = (int)txtMinuto2.getValue();
+        String mn2 = (m2 < 10)? "0"+m2:""+m2;
+        return hr1+":"+mn1+"-"+hr2+":"+mn2;
+    }
+    /**********************END ASIGNACION DE DATOS*****************************/
+    /********************INICIO ETAPA 1: PROCESOS DE CARGA*********************/
+    private void reloadPage() {
+        try {
+            boton.crearFicha();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            OptionPane.showMsg("Error al recargar ventana", ex+"\n\n"+ex.getMessage()+"\n\n"+ex.getLocalizedMessage(), 3);
+        }
+    }
+
+    private void loadStaticObjects() {
+        clearData();
+        stInventario = new Inventario();
+        try {
+            stInventario = (Inventario)load.get(GV.inventarioName(), 0, new Inventario());
+        } catch (InstantiationException | IllegalAccessException | SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(stInventario == null){
+            stInventario = new Inventario();
+        }
+        listTipoPagos = load.listar("0", new TipoPago());
+        listInstituciones = load.listar("0", new Institucion());
+        listClientes = load.listar("0", new Cliente());
+        listDoctores = load.listar("0", new Doctor());
+        listCristales = load.listar("0", new Cristal());
+        listDescuentos = load.listar("0", new Descuento());
+        GV.setInventarioSeleccionado(stInventario.getId());
+        listLentes = load.listar("st", new Lente());
+        GV.setInventarioSeleccionado(0);
+        convenioObtenerSeleccionado();
+        autocompletar();
+        cargarCbos();
+    }
+    
+    private void clearData() {
+        stCliente=null;
+        stCristalCerca= null;
+        stCristalLejos=null;
+        stDescuento=null;
+        stDoctor= null;
+        stInstitucion= null;
+        stLenteCerca= null;
+        stLenteLejos= null;
+        stTipoPago = null;
+        GV.clearFicha();
+    }
+    
+    private void convenioLimpiarSeleccionado(){
+        convenioAssign(null);
+    }
+    
+    private void convenioAssign(Convenio selected){
+        GV.setConvenio(selected);
+        convenioObtenerSeleccionado();
+    }
+    
+    private void convenioObtenerSeleccionado() {
+        try {
+            stConvenio = (Convenio)load.get(null, (GV.getConvenio() != null)?GV.getConvenio().getId():0, new Convenio());
+            GV.setConvenio(stConvenio);
+            if(stConvenio == null){
+                btnClearConvenio.setVisible(false);
+                ContentAdmin.lblTitle.setText("Nueva receta oftalmológica");
+                strCnvName = "";
+                txtCnvName.setText(strCnvName);
+                txtCnvName.setVisible(false);
+            }else{
+                btnClearConvenio.setVisible(true);
+                ContentAdmin.lblTitle.setText("Nueva receta oftalmológica con convenio: "+stConvenio.getNombre());
+                strCnvName = "Convenio: "+stConvenio.getNombre();
+                txtCnvName.setText(strCnvName);
+                txtCnvName.setVisible(true);
+            }
+            cmpFormulario();
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            stConvenio = null;
+            GV.setConvenio(null);
+            OptionPane.showMsg("Error inesperado", "Ocurrió un problema al cargar el convenio seleccionado", 3);
+        }
+    }
+    
     private void autocompletar() {
         TextAutoCompleter textAutoCompleter = new TextAutoCompleter(txtInstitucion);
         textAutoCompleter.setMode(0);
@@ -2382,7 +2718,6 @@ public class VCrearFicha extends javax.swing.JPanel {
             textAutoCompleter5.setMode(0);
         }
         
-        
         TextAutoCompleter textAutoCompleter6 = new TextAutoCompleter(txtArmazonCerca);
         TextAutoCompleter textAutoCompleter7 = new TextAutoCompleter(txtArmazonLejos);
         
@@ -2394,369 +2729,9 @@ public class VCrearFicha extends javax.swing.JPanel {
         }
         
     }
-
-    private void calcularSaldo() {
-        int total =  GV.roundPrice(GV.strToNumber(txtTotal.getText()));
-        int abono = (int)txtAbono.getValue();
-        int descuento = obtenerDescuento();
-        GV.getFicha().setDescuento(descuento);
-        int saldo = (total-descuento-abono);
-        txtSaldo.setText(GV.strToPrice(saldo));
-    }
-
-    private void cargarDatos() {
-        //Limpiar todo menos doctor y datos de entrega
-        resetTxtCliente();
-        txtCnvName.setText(strCnvName);
-        Ficha ficha = GV.getFicha();
-        stArmazonCerca = GV.getFicha().getCerca();
-        stArmazonLejos = GV.getFicha().getLejos();
-        Armazon cerca = stArmazonCerca;
-        Armazon lejos = stArmazonLejos;
-        Cliente cliente = stCliente;
-        txtAbono.setValue(0);
-        String addCerca = (cerca != null)? cerca.getAdd():"";
-        txtAddCerca.setText(addCerca);
-        
-        String marcaCerca = (cerca!= null)? cerca.getMarca():"";
-        txtArmazonCerca.setText(marcaCerca);
-        String marcaLejos = (lejos!= null)? lejos.getMarca():"";
-        txtArmazonLejos.setText(marcaLejos);
-        String cristalCerca = (cerca!=null)? cerca.getCristal():"";
-        txtCristalCerca.setText(cristalCerca);
-        String cristalLejos = (lejos!=null)? lejos.getCristal():"";
-        txtCristalLejos.setText(cristalLejos);
-        int dpCerca = (cerca!=null)? cerca.getDp():0;
-        txtDPCerca.setValue(dpCerca);
-        int dpLejos = (lejos!=null)? lejos.getDp():0;
-        txtDPLejos.setValue(dpLejos);
-        GV.getFicha().setDescuento(0);
-        txtDescuento.setText("0");
-        txtFecha.setDate(ficha.getFechaEntrega());
-        txtEntrega.setText(ficha.getLugarEntrega());
-        String hora = ((!ficha.getHoraEntrega().isEmpty())&&((""+GV.strToNumber(ficha.getHoraEntrega())).length() == 8)) ? ficha.getHoraEntrega().replaceAll(" ", "").trim():"";
-        String number = ""+GV.strToNumber(hora);
-        int h1 = (number.length() == 8) ? GV.strToNumber(number.substring(0,2)):0;
-        int m1 = (number.length() == 8) ? GV.strToNumber(number.substring(2,4)):0;
-        int h2 = (number.length() == 8) ? GV.strToNumber(number.substring(4,6)):0;
-        int m2 = (number.length() == 8) ? GV.strToNumber(number.substring(6,8)):0;
-        txtHora1.setValue(h1);
-        txtMinuto1.setValue(m1);
-        txtHora2.setValue(h2);
-        txtMinuto2.setValue(m2);
-        String docName = (stDoctor!=null)?stDoctor.getNombre()+" <"+stDoctor.getCod()+">":"";
-        docName = (docName.equals(" <null>")) ? "":docName;
-        txtDoctor.setText(docName);
-        stInstitucion = ficha.getInstitucion();
-        String inst =  (stInstitucion!=null && !stInstitucion.getCod().isEmpty())? stInstitucion.getNombre()+"<"+stInstitucion.getCod()+">":"";
-        txtInstitucion.setText(inst);
-        
-        
-        String odCEsf = (cerca!=null)? cerca.getOdEsf():"";
-        txtODCercaESF.setText(odCEsf);
-        String odCA = (cerca!=null)?cerca.getOdA():"";
-        txtODCercaA.setText(odCA);
-        String odCCil = (cerca!=null)?cerca.getOdCil():"";
-        txtODCercaCIL.setText(odCCil);
-        String odLEsf = (lejos!=null)? lejos.getOdEsf():""; 
-        txtODLejosESF.setText(odLEsf);
-        String odLA = (lejos!=null)?lejos.getOdA():"";
-        txtODLejosA.setText(odLA);
-        String odLCil = (lejos!=null)?lejos.getOdCil():"";
-        txtODLejosCIL.setText(odLCil);
-        String oiCEsf = (cerca!=null)? cerca.getOiEsf():"";
-        String oiCA = (cerca!=null)? cerca.getOiA():"";
-        String oiCCil = (cerca!=null)? cerca.getOiCil():"";
-        txtOICercaESF.setText(oiCEsf);
-        txtOICercaA.setText(oiCA);
-        txtOICercaCIL.setText(oiCCil);
-        String oiLEsf = (lejos!=null)? lejos.getOiEsf():"";
-        String oiLA = (lejos!=null)? lejos.getOiA():"";
-        String oiLCil = (lejos!=null)? lejos.getOiCil():"";
-        txtOILejosESF.setText(oiLEsf);
-        txtOILejosA.setText(oiLA);
-        txtOILejosCIL.setText(oiLCil);
-        String obs = (ficha!=null)?ficha.getObservacion():"";
-        boolean capCerca = (ficha.getCerca() != null && ficha.getCerca().getCapa()==1)? true:false;
-        chkCapaCerca.setSelected(capCerca);
-        boolean capLejos = (ficha.getLejos() != null && ficha.getLejos().getCapa()==1)? true:false;
-        chkCapaLejos.setSelected(capLejos);
-        boolean endCerca = (ficha.getCerca() != null && ficha.getCerca().getEndurecido()==1)? true:false;
-        chkEndurecidoCerca.setSelected(endCerca);
-        boolean endLejos = (ficha.getLejos() != null && ficha.getLejos().getEndurecido()==1)? true:false;
-        chkEndurecidoLejos.setSelected(endLejos);
-        boolean pmCerca = (ficha.getCerca() != null && ficha.getCerca().getPlusMax()==1)? true:false;
-        chkPlusMaxCerca.setSelected(pmCerca);
-        boolean pmLejos = (ficha.getLejos() != null && ficha.getLejos().getPlusMax()==1)? true:false;
-        chkPlusMaxLejos.setSelected(pmLejos);
-        
-        txtObs.setText(obs);
-        
-        
-        String rut = (cliente!=null)?cliente.getCod():"";
-        String nombre = (cliente != null)? cliente.getNombre():"";
-        txtNombreCliente.setText(nombre);
-        String t1 = (cliente!=null)?cliente.getTelefono1():"";
-        txtTelefonoCliente1.setText(t1);
-        String t2 = (cliente!=null)?cliente.getTelefono2():"";
-        txtTelefonoCliente2.setText(t2);
-        String mail = (cliente!=null)? cliente.getEmail():"";
-        txtMailCliente.setText(mail);
-        String ciudad = (cliente!= null)? cliente.getCiudad():"";
-        txtCiudad.setText(ciudad);
-        String comuna = (cliente!= null)? cliente.getComuna():"";
-        txtComuna.setText(comuna);
-        int sexo = (cliente != null)? cliente.getSexo():0;
-        cboSexo.setSelectedIndex(sexo);
-        String direccion = (cliente != null)? cliente.getDireccion():"";
-        txtDireccionCliente.setText(direccion);
-        Date nac = (cliente!=null)? cliente.getNacimiento():null;
-        txtNacimiento.setDate(nac);
-        txtRutCliente.setText(rut);
-        cargarCbos();
-    }
-
-    private void calcularTotal() {
-        int cristales = 0;
-        if(stCristalLejos != null){
-            cristales = cristales+stCristalLejos.getPrecio();
-        }
-        if(stCristalCerca != null){
-            cristales = cristales+stCristalCerca.getPrecio();
-        }
-        int lentes = 0;
-        if(stLenteCerca != null){
-            lentes = lentes + stLenteCerca.getPrecioAct();
-        }
-        if(stLenteLejos != null){
-            lentes = lentes + stLenteLejos.getPrecioAct();
-        }
-        int total = GV.roundPrice((cristales+lentes));
-        int precio = (stConvenio==null)?total:total + ((total * stConvenio.getPorcentajeAdicion())/100);
-        txtTotal.setText(GV.strToPrice(GV.roundPrice(precio)));
-        calcularSaldo();
-    }
-
-    /**
-     * Compara si las hora1 es menor que la hora 2
-     * @param hora1
-     * @param min1
-     * @param hora2
-     * @param min2
-     * @return devuelve true si la hora 1 es menor que la hora 2
-     */
-    private boolean compararHoras(int hora1, int min1, int hora2, int min2) {
-        String h1 = "";
-        String m1 = "";
-        if(hora1 < 10)
-            h1 = "0";
-        if(min1 < 10)
-            m1 = "0";
-        String h2 = "";
-        String m2 = "";
-        if(hora2 < 10)
-            h2 = "0";
-        if(min2 < 10)
-            m2 = "0";
-        String hh1 = h1+hora1+m1+min1;
-        String hh2 = h2+hora2+m2+min2;
-        
-        int t1 = Integer.parseInt(hh1);
-        int t2 = Integer.parseInt(hh2);
-        
-        if(t1 < t2)
-            return true;
-        return false;
-    }
-
-    private void save() {
-        prepareFicha();
-        
-    }
+    /***********************FIN ETAPA 1: PROCESOS DE CARGA*********************/
+    /********************INICIO ETAPA 2: VALIDACIONES**************************/
     
-
-    private void errorLargo(int largo) {
-        OptionPane.showMsg( "Datos mal ingresados", "Error de ingreso de datos, \n"
-                    + "los datos ingresados deben tener un maximo de "+largo+" caracteres.", JOptionPane.WARNING_MESSAGE);
-    }
-
-    private void load() {
-        txtSaldo.setText("$ 0");
-        txtSaldo.setEditable(false);
-        txtDescuento.setEditable(false);
-        lblDescuento.setVisible(false);
-        txtDescuento.setVisible(false);
-        lblMessageStatus.setVisible(false);
-        
-        cboDescuento.setVisible(false);
-        chkCapaCerca.setSelected(false);
-        chkCapaLejos.setSelected(false);
-        chkDescuento.setSelected(false);
-        chkEndurecidoCerca.setSelected(false);
-        chkEndurecidoLejos.setSelected(false);
-        chkPlusMaxCerca.setSelected(false);
-        chkPlusMaxLejos.setSelected(false);
-        cboDescuento.setVisible(false);
-        cargarDatos();
-        cargarCbos();
-        autocompletar();
-        calcularSaldo();
-        
-    }
-
-    private void resetTxtCliente() {
-        txtNombreCliente.setText("");
-        txtTelefonoCliente1.setText("");
-        txtTelefonoCliente2.setText("");
-        txtMailCliente.setText("");
-        txtDireccionCliente.setText("");
-        txtComuna.setText("");
-        txtCiudad.setText("");
-        cboSexo.setSelectedIndex(0);
-        txtNacimiento.setDate(null);
-    }
-
-    /**
-     * muestra un mensaje en el panel, si el mensaje es vacío o nulo no aparece
-     * @param message 
-     */
-    private void msgRejected(String message) {
-        message = GV.getStr(message);
-        if(message.isEmpty()){
-            lblMessageStatus.setText("");
-            lblMessageStatus.setVisible(false);
-        }else{
-            lblMessageStatus.setText(message);
-            lblMessageStatus.setForeground(rojo);
-            lblMessageStatus.setVisible(true);
-        }
-    }
-    
-    private void msgWarning(String message){
-        message = GV.getStr(message);
-        if(message.isEmpty()){
-            lblMessageStatus.setText("");
-            lblMessageStatus.setVisible(false);
-        }else{
-            lblMessageStatus.setText(message);
-            lblMessageStatus.setForeground(negro);
-            lblMessageStatus.setVisible(true);
-        }
-    }
-    
-    private void msgRejectedClear(){
-        msgRejected(null);
-    }
-    
-    private boolean validaFicha(){
-        return !lblMessageStatus.isVisible();
-    }
-    
-    private void comprobarDatosFicha(){
-        calcularTotal();
-        msgRejectedClear();
-        validaTipoPago();
-        validaSaldo();
-        validaCristales();
-        validaStockDeLentesIguales();
-        validaTotalMayorACero();
-        validaFechaNacimiento();
-        validaMail();
-        validaCliente();
-        validaInstitucion();
-        validaRut();
-        validaEspecialista();
-        validaHora();
-        validaLugarEntrega();
-        validaFechaEntrega();
-        asigAllDatas();
-    }
-    
-    private void commitSpinner() {
-        try {
-            txtHora1.commitEdit();
-            txtHora2.commitEdit();
-            txtMinuto1.commitEdit();
-            txtMinuto2.commitEdit();
-            txtAbono.commitEdit();
-        } catch (ParseException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private boolean validaStockDeLentesIguales(){
-        String lenName1 = txtArmazonLejos.getText();
-        String lenName2 = txtArmazonCerca.getText();
-        if(lenName1.length() > 2 && lenName1.toLowerCase().equals(lenName2.toLowerCase())){
-            Lente temp;
-            try {
-                temp = ((Lente)load.get(lenName2, 0, new Lente())!=null)? (Lente)load.get(lenName2, 0, new Lente()):new Lente();
-                if(temp.getStock()==0){
-                    msgRejected("Debe seleccionar un lente diferente, no hay stock disponible.");
-                    return false;
-                }
-            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return true;
-    }
-    
-    private boolean validaHora() {
-        commitSpinner();
-        int hora1 = GV.strToNumber(txtHora1.getValue().toString());
-        int hora2 = GV.strToNumber(txtHora2.getValue().toString());
-        String hora = "";
-        if(hora1 > 7 && hora1 < 23){
-            if(hora2 >= hora1 && hora2 < 23){
-                GV.setHourToFicha(txtHora1,txtMinuto1,txtHora2,txtMinuto2);
-                return true;
-            }
-        }
-        msgRejected("Debe ingresar una hora de entrega válida");
-        return false;
-    }
-
-    private boolean validaCliente() {
-        String nombre  = GV.getStr(txtNombreCliente.getText());
-        String tel1 = GV.getStr(txtTelefonoCliente1.getText());
-        String tel2 = GV.getStr(txtTelefonoCliente2.getText());
-        String mail = GV.mailValidate(txtMailCliente.getText());
-        if(!GV.getStr(txtRutCliente.getText()).isEmpty() || 
-                txtRutCliente.getForeground() == negro){
-            if(!nombre.isEmpty() && nombre.length() > 3){
-                if((!tel1.isEmpty() && tel1.length() >=  8) ||
-                        (!tel2.isEmpty() && tel2.length() >= 8) ||
-                        !mail.isEmpty()){
-                    String institucionNombre = GV.getStr(txtInstitucion.getText());
-                    if(!GV.getStr(institucionNombre).isEmpty()){
-                        try {
-                            stInstitucion = (Institucion)load.get(institucionNombre, 0, new Institucion());
-                        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    if(stCliente == null){
-                        stCliente = new Cliente();
-                    }
-                    stCliente.setCod(txtRutCliente.getText());
-                    stCliente.setCiudad(txtCiudad.getText());
-                    stCliente.setComuna(txtComuna.getText());
-                    stCliente.setDireccion(txtDireccionCliente.getText());
-                    stCliente.setEstado(1);
-                    stCliente.setNombre(nombre);
-                    stCliente.setSexo(cboSexo.getSelectedIndex());
-                    stCliente.setTelefono1(tel1);
-                    stCliente.setTelefono2(tel2);
-                    GV.getFicha().setCliente(stCliente);
-                    return true;
-                }
-            }
-        }
-        msgRejected("Faltan datos obligatorios del cliente (Rut o Dni, nombre, teléfonos o email válidos y fecha de nacimiento).");
-        return false;
-    }
-
     private void txtRutClienteValidator() {
         String rutCliente = txtRutCliente.getText();
         if(ValidaRut.validarRut(rutCliente)){
@@ -2777,451 +2752,449 @@ public class VCrearFicha extends javax.swing.JPanel {
             txtCiudad.setText(stCliente.getCiudad());
             cboSexo.setSelectedIndex(stCliente.getSexo());
             txtNacimiento.setDate(stCliente.getNacimiento());
+        }else{
+            txtNombreCliente.setText("");
+            txtTelefonoCliente1.setText("");
+            txtTelefonoCliente2.setText("");
+            txtMailCliente.setText("");
+            txtDireccionCliente.setText("");
+            txtComuna.setText("");
+            txtCiudad.setText("");
+            cboSexo.setSelectedIndex(0);
+            txtNacimiento.setDate(null);
         }
     }
-
-    private boolean validaFechaNacimiento() {
+    
+    private String getIdFromString(String arg){
+        arg = GV.getStr(arg);
+        if(arg.contains("<") && !arg.endsWith("<")){
+            arg=arg.substring(arg.indexOf("<")+1).replaceAll(">", "");
+            return arg;
+        }
+        return "0";
+    }
+    /***********************FIN ETAPA 2: VALIDACIONES**************************/
+    
+    private boolean cmpFormulario(){
+        msgRejectedClear();
+        if(!cmpFechaEntrega())return false;
+        if(!cmpLugarEntrega())return false;
+        if(!cmpHoraEntrega())return false;
+        if(!cmpEspecialista())return false;
+        if(!cmpInstitucion())return false;
+        if(!cmpRut())return false;
+        if(!cmpNombre())return false;
+        if(!cmpContactos())return false;
+        if(!cmpCamposCliente())return false;
+        if(!cmpNacimiento())return false;
+        if(!cmpLenteLejos())return false;
+        if(!cmpLenteCerca())return false;
+        if(!cmpLentesIguales())return false;
+        if(!cmpCristalLejos())return false;
+        if(!cmpCristalCerca())return false;
+        if(!cmpPrecios())return false;
+        if(!cmpTipoPago())return false;
+        return true;
+    }
+    
+    private boolean cmpFechaEntrega(){
+        Date date = txtFecha.getDate();
+        if(date == null){
+            msgRejected("Debe ingresar una fecha de entrega");
+            return false;
+        }
+        if(!GV.fechaActualOFutura(date)){
+            msgRejected("Debe ingresar una fecha de entrega actual o futura");
+            return false;
+        }
+        return true;
+    }
+    
+    private boolean cmpLugarEntrega(){
+        String place = GV.getFilterString(txtEntrega.getText());
+        if(place.isEmpty()){
+            msgRejected("Debe ingresar un lugar de entrega, no incluir caracteres especiales.");
+            return false;
+        }
+        return true;
+    }
+    
+    private boolean cmpHoraEntrega(){
+        commitSpinner();
+        int hora1 = GV.strToNumber(txtHora1.getValue().toString());
+        int hora2 = GV.strToNumber(txtHora2.getValue().toString());
+        int min1 = GV.strToNumber(txtMinuto1.getValue().toString());
+        String m1 = ""+min1;
+        if(min1 < 10){
+            m1 = "0"+min1;
+        }
+        int min2 = GV.strToNumber(txtMinuto2.getValue().toString());
+        String m2 = ""+min2;
+        if(min2 < 10){
+            m2 = "0"+min2;
+        }
+        int h1 = GV.strToNumber(hora1+m1);
+        int h2 = GV.strToNumber(hora2+m2);
+        if(h1 >= 700 && h1 < 2300){
+            if(h2 >= h1 && h2 <=2300){
+                return true;
+            }
+        }
+        msgRejected("La hora de entrega debe estar ordenada de menor a mayor en rangos desde 07:00 hasta 23:00 hrs.");
+        return false;
+    }
+    
+    private boolean cmpEspecialista(){
+        String rut = GV.getFilterString(txtDoctor.getText());
+        if(rut.isEmpty()){
+            txtDoctor.setForeground(negro);
+            return true;
+        }else{
+            stDoctor = ((Doctor)GV.buscarPorIdEnLista(getIdFromString(rut), listDoctores, new Doctor()));
+            if(stDoctor == null){
+                txtDoctor.setForeground(rojo);
+                msgRejected("El especialista no se encuentra registrado en el sistema.");
+                return false;
+            }
+        }
+        txtDoctor.setForeground(negro);
+        return true;
+    }
+    
+    private boolean cmpInstitucion(){
+        String ins = GV.getFilterString(txtInstitucion.getText());
+        stInstitucion = null;
+        if(ins.isEmpty()){
+            txtInstitucion.setForeground(negro);
+            return true;
+        }else{
+            stInstitucion = ((Institucion)GV.buscarPorIdEnLista((getIdFromString(ins)), listInstituciones, new Institucion()));
+            if(stInstitucion == null){
+                txtInstitucion.setForeground(rojo);
+                msgRejected("Debe ingresar una institución registrada en el sistema.");
+                return false;
+            }
+        }
+        txtInstitucion.setForeground(negro);
+        return true;
+    }
+    
+    private boolean cmpRut(){
+        if(GV.getFilterString(txtRutCliente.getText()).isEmpty()){
+            msgRejected("Debe ingresar el rut del cliente");
+            return false;
+        }else{
+            if(txtRutCliente.getForeground() == rojo && !chkExtranjero.isSelected()){
+                msgRejected("Debe ingresar un rut válido o marcar registro como extrangero");
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private boolean cmpNombre(){
+        if(GV.getFilterString(txtNombreCliente.getText()).isEmpty()){
+            msgRejected("Debe ingresar el nombre del cliente");
+            return false;
+        }
+        if(GV.getFilterString(txtNombreCliente.getText()).length() < 3){
+            msgRejected("Nombre de cliente no debe contener menos de tres caracteres ni caracteres especiales");
+            return false;
+        }
+        return true;
+    }
+    
+    private boolean cmpContactos(){
+        String tel1 = GV.getStr(txtTelefonoCliente1.getText());
+        String tel2 = GV.getStr(txtTelefonoCliente2.getText());
+        String mail = GV.mailValidate(txtMailCliente.getText());
+        if(tel1.isEmpty() && tel2.isEmpty() && mail.isEmpty()){
+            msgRejected("Faltan datos obligatorios de contacto: teléfonos o email válidos");
+            return false;
+        }
+        if(!mail.isEmpty() && GV.mailValidate(mail).isEmpty()){
+            txtMailCliente.setForeground(rojo);
+            msgRejected("El email ingresado no es válido");
+            return false;
+        }
+        txtMailCliente.setForeground(negro);
+        return true;
+    }
+    
+    private boolean cmpNacimiento(){
         int year = GV.strToNumber(GV.dateToString(txtNacimiento.getDate(), "yyyy"));
         int currentYear = GV.strToNumber(GV.dateToString(new Date(), "yyyy"));
         int dif = currentYear - year;
         if(dif >= 4 && dif < 100){
-            if(stCliente != null){
-                stCliente.setNacimiento(txtNacimiento.getDate());
-            }
             return true;
         }
         msgRejected("Debe ingresar una fecha de nacimiento válida.");
         return false;
     }
-
-    private boolean validaTotalMayorACero() {
-        int total = GV.strToNumber(txtTotal.getText());
-        if(total > 0){
-            setArmazones();
-            return true;
-        }
-        msgRejected("Debe ingresar receta de lente.");
-        return false;
-    }
- 
-    private boolean validaTipoPago() {
-        commitSpinner();
-        stTipoPago = null;
-        int abono = (int)txtAbono.getValue();
-        if(abono > 0){
-            if(cboTipoPago.getSelectedIndex() == 0){
-                msgRejected("Debe ingresar un tipo de pago válido.");
-                return false;
-            }else{
-                try {
-                    stTipoPago = (TipoPago)load.get(cboTipoPago.getSelectedItem().toString(), 0, new TipoPago());
-                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                    Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if(stTipoPago == null){
-                    msgRejected("Debe ingresar un tipo de pago válido.");
-                    return false;
-                }
-            }
+    
+    private boolean cmpCamposCliente(){
+        String dir = GV.getFilterString(txtDireccionCliente.getText());
+        txtDireccionCliente.setText(dir);
+        String comuna = GV.getFilterString(txtComuna.getText());
+        txtComuna.setText(comuna);
+        String ciudad = GV.getFilterString(txtCiudad.getText());
+        txtCiudad.setText(ciudad);
+        if(dir.isEmpty() || comuna.isEmpty() || ciudad.isEmpty() || cboSexo.getSelectedIndex() == 0){
+            msgWarning("Falta completar información del cliente");
         }
         return true;
     }
-
-    private boolean validaRut() {
-        if(GV.getStr(txtRutCliente.getText()).isEmpty()){
-            msgRejected("Debe ingresar un rut válido o marcar como registro extrangero");
-            return false;
-        }else{
-            if(txtRutCliente.getForeground() == rojo && !chkExtranjero.isSelected()){
-                msgRejected("Debe ingresar un rut válido o marcar como registro extrangero");
+    
+    private boolean cmpLenteLejos(){
+        String lenName1 = txtArmazonLejos.getText();
+        
+        if(lenName1.length() > 1){
+            stLenteLejos = ((Lente)GV.buscarPorIdEnLista(lenName1, listLentes, new Lente()));
+            txtArmazonLejos.setForeground(negro);
+            if(stLenteLejos == null){
+                txtArmazonLejos.setForeground(rojo);
+                msgRejected("Lejos: Debe ingresar un lente existente");
                 return false;
             }
         }
         return true;
     }
     
-    private int obtenerDescuento(){
-        String nombre = "";
-        stDescuento = null;
-        int dscto = 0;
-        int total = GV.strToNumber(txtTotal.getText());
-        if(chkDescuento.isSelected() && total > 0){
-            nombre = getDescuentoName(cboDescuento.getSelectedItem().toString());
-            try {
-                stDescuento = (Descuento)load.get(nombre,0, new Descuento());
-            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                Log.setLog("Error:", ex.getMessage());
+    private boolean cmpLenteCerca(){
+        String lenName2 = txtArmazonCerca.getText();
+        
+        if(lenName2.length() > 1){
+            stLenteCerca = ((Lente)GV.buscarPorIdEnLista(lenName2, listLentes, new Lente()));
+            txtArmazonCerca.setForeground(negro);
+            if(stLenteCerca == null){
+                txtArmazonCerca.setForeground(rojo);
+                msgRejected("Cerca: Debe ingresar un lente existente");
+                return false;
             }
+        }
+        return true;
+    }
+    
+    private boolean cmpLentesIguales(){
+        if(stLenteLejos != null && stLenteCerca != null){
+            if(stLenteLejos.getCod().equals(stLenteCerca.getCod())){
+                if(stLenteLejos.getStock()<=1){
+                    msgRejected("Debe seleccionar un lente diferente, no hay stock disponible.");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    private boolean cmpCristalLejos(){
+        if(!GV.getStr(txtArmazonLejos.getText()).isEmpty()){
+            if(GV.getStr(txtCristalLejos.getText()).isEmpty()){
+                msgWarning("Lejos: Falta ingresar un cristal");
+                return true;
+            }else{
+                stCristalLejos = ((Cristal)GV.buscarPorIdEnLista(txtCristalLejos.getText(), listCristales, new Cristal()));
+                txtCristalLejos.setForeground(negro);
+                if(stCristalLejos==null){
+                    txtCristalLejos.setForeground(rojo);
+                    msgRejected("Lejos: Debe ingresar un cristal existente");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    private boolean cmpCristalCerca(){
+        if(!GV.getStr(txtArmazonCerca.getText()).isEmpty()){
+            if(GV.getStr(txtCristalCerca.getText()).isEmpty()){
+                msgWarning("Cerca: Falta ingresar un cristal");
+                return true;
+            }else{
+                stCristalCerca = ((Cristal)GV.buscarPorIdEnLista(txtCristalCerca.getText(), listCristales, new Cristal()));
+                txtCristalCerca.setForeground(negro);
+                if(stCristalCerca==null){
+                    txtCristalCerca.setForeground(rojo);
+                    msgRejected("Lejos: Debe ingresar un cristal existente");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    private boolean cmpPrecios(){
+        int cristales = 0;
+        if(stCristalLejos != null){
+            cristales = cristales+stCristalLejos.getPrecio();
+        }
+        if(stCristalCerca != null){
+            cristales = cristales+stCristalCerca.getPrecio();
+        }
+        int lentes = 0;
+        if(stLenteCerca != null){
+            lentes = lentes + stLenteCerca.getPrecioAct();
+        }
+        if(stLenteLejos != null){
+            lentes = lentes + stLenteLejos.getPrecioAct();
+        }
+        int total = GV.roundPrice((cristales+lentes));
+        total = (stConvenio==null)?total:total + ((total * stConvenio.getPorcentajeAdicion())/100);
+        
+        int abono = (int)txtAbono.getValue();
+        
+        int dscto = 0;
+        if(chkDescuento.isSelected() && total > 0){
+             stDescuento = ((Descuento)GV.buscarPorNombreEnLista(
+                        getDescuentoName(cboDescuento.getSelectedItem().toString())
+                        , listDescuentos, new Descuento()));
             if(stDescuento != null){
                 dscto = GV.obtenerDescuentoFicha(stDescuento,total);
-                txtDescuento.setText(GV.strToPrice(dscto));
-                return dscto;
             }
         }
-        return dscto;
-    }
-    
-    private String getDescuentoName(String arg){
-        arg = GV.getStr(arg);
-        if(arg.contains("(") && !arg.startsWith("(")){
-            arg=arg.substring(0,arg.indexOf("(")-1);
-        }
-        return arg.trim();
-    }
-    
-    private boolean validaFechaEntrega(){
-        if(txtFecha.getDate() == null){
-            msgRejected("Debe ingresar datos de entrega");
-            return false;
-        }else{
-            GV.getFicha().setFecha(new Date());
-            GV.getFicha().setUser(GV.user());
-            GV.getFicha().setObservacion(GV.getStr(txtObs.getText()));
-            GV.getFicha().setFechaEntrega(txtFecha.getDate());
-            return true;
-        }
-    }
-
-    private boolean validaLugarEntrega() {
-        int largo = txtEntrega.getText().length();
-        if(largo > 4 && largo < 45){
-            GV.getFicha().setLugarEntrega(GV.getStr(txtEntrega.getText()));
-            return true;
-        }
-        msgRejected("Debe ingresar datos de entrega");
-        return false;
-    }
-
-    private boolean validaEspecialista() {
-        stDoctor = null;
-        GV.getFicha().setDoctor(null);
-        String rut = GV.getStr(txtDoctor.getText());
-        if(rut.isEmpty()){
-            txtDoctor.setForeground(negro);
-            return true;
-        }else{
-            try {
-                stDoctor = (Doctor)load.get(getIdFromString(rut), 0, new Doctor());
-                if(stDoctor == null){
-                    txtDoctor.setForeground(rojo);
-                    msgRejected("El especialista no se encuentra registrado en el sistema.");
-                    return false;
-                }
-            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        txtDoctor.setForeground(negro);
-        GV.getFicha().setDoctor(stDoctor);
-        return true;
-    }
-
-    private void txtFechaCheck() {
-        if(!GV.getStr(txtFecha.getDateFormatString().replaceAll("[0-9-]", "")).isEmpty()){
-            txtFecha.setDate(null);
-        }
-    }
-
-    private boolean validaMail() {
-        String mail = GV.mailValidate(txtMailCliente.getText());
-        if(!GV.getStr(txtMailCliente.getText()).isEmpty() && 
-                mail.isEmpty()){
-            msgRejected("Debe ingresar un email válido");
+        int saldo = (total-dscto-abono);
+        txtTotal.setText(GV.strToPrice(GV.roundPrice(total)));
+        txtSaldo.setText(GV.strToPrice(saldo));
+        txtDescuento.setText(GV.strToPrice(dscto));
+        if(dscto > total){
+            msgRejected("El descuento aplicado debe ser menor que el valor total");
             return false;
         }
-        if(stCliente != null){
-            stCliente.setEmail(mail);
+        if(abono > (total - dscto)){
+            msgRejected("El abono ingresado debe ser menor o igual que el saldo");
+            return false;
+        }
+        if(abono < 0){
+            msgRejected("El abono ingresado es incorrecto");
+            return false;
         }
         return true;
     }
-
-    private void setArmazones() {
-        stArmazonLejos = new Armazon();
-        int capa = (chkCapaLejos.isSelected()) ? 1 : 0;
-        stArmazonLejos.setCapa(capa);
-        stArmazonLejos.setCristal(txtCristalLejos.getText());
-        
-    }
-
-    private boolean validaCristales() {
-        Color c1 = txtCristalCerca.getForeground();
-        Color c2 = txtCristalLejos.getForeground();
-        if(!GV.getStr(txtArmazonCerca.getText()).isEmpty()){
-            if(GV.getStr(txtCristalCerca.getText()).isEmpty() || c1 == rojo){
-                msgWarning("Falta ingresar un cristal...");
+    
+        private boolean cmpTipoPago(){
+        if(GV.strToNumber(txtAbono.getValue().toString()) != 0){
+            if(cboTipoPago.getSelectedIndex() == 0){
+                msgRejected("Debe registrar el medio de pago en el abono");
                 return false;
             }else{
-                stArmazonCerca.setCristal(stCristalCerca.getNombre());
-                GV.getFicha().setCerca(stArmazonCerca);
-            }
-        }
-        if(!GV.getStr(txtArmazonLejos.getText()).isEmpty()){
-            if(GV.getStr(txtCristalLejos.getText()).isEmpty() || c2 == rojo){
-                msgWarning("Falta ingresar un cristal...");
-                return false;
-            }else{
-                stArmazonLejos.setCristal(stCristalLejos.getNombre());
-                GV.getFicha().setLejos(stArmazonLejos);
-            }
-        }
-        return true;
-    }
-
-    private void asigAllDatas() {
-//        try {
-            int tpCerca = 0;
-            int tpLejos = 1;
-            int capa1 = (chkCapaCerca.isSelected())? 1:0;
-            int capa2 = (chkCapaLejos.isSelected())? 1:0;
-            int en1 = (chkEndurecidoCerca.isSelected())? 1:0;
-            int en2 = (chkEndurecidoLejos.isSelected())? 1:0;
-            int pm1 = (chkPlusMaxCerca.isSelected())? 1:0;
-            int pm2 = (chkPlusMaxLejos.isSelected())? 1:0;
-            
-//            stCristalCerca = (Cristal)load.get(txtCristalCerca.getText(), 0, new Cristal());
-//            stCristalLejos = (Cristal)load.get(txtCristalLejos.getText(), 0, new Cristal());
-//            stLenteCerca = (Lente)GV.buscarPorIdEnLista(txtArmazonCerca.getText(), listLentes, new Lente());
-//            stLenteLejos = (Lente)GV.buscarPorIdEnLista(txtArmazonLejos.getText(), listLentes, new Lente());
-            
-            stArmazonCerca = (stArmazonCerca==null)?new Armazon():stArmazonCerca;
-            stArmazonCerca.setAdd(txtAddCerca.getText());
-            stArmazonCerca.setCapa(capa1);
-            stArmazonCerca.setCristal(txtCristalCerca.getText());
-            int precioCristalCerca=0;
-            if(stCristalCerca != null){
-            precioCristalCerca = (stConvenio==null)?stCristalCerca.getPrecio():stCristalCerca.getPrecio() + ((stCristalCerca.getPrecio() * stConvenio.getPorcentajeAdicion())/100);
-            }
-            stArmazonCerca.setPrecioCristal(precioCristalCerca);
-            stArmazonCerca.setDp((int)txtDPCerca.getValue());
-            stArmazonCerca.setEndurecido(en1);
-            stArmazonCerca.setEstado(1);
-            stArmazonCerca.setMarca(txtArmazonCerca.getText());
-            int precioMarcaCerca=0;
-            if(stLenteCerca != null){
-                precioMarcaCerca = (stConvenio==null)?stLenteCerca.getPrecioAct():stLenteCerca.getPrecioAct() + ((stLenteCerca.getPrecioAct() * stConvenio.getPorcentajeAdicion())/100);
-            }
-            stArmazonCerca.setPrecioMarca(precioMarcaCerca);
-            stArmazonCerca.setOdA(txtODCercaA.getText());
-            stArmazonCerca.setOdCil(txtODCercaCIL.getText());
-            stArmazonCerca.setOdEsf(txtODCercaESF.getText());
-            stArmazonCerca.setOiA(txtOICercaA.getText());
-            stArmazonCerca.setOiCil(txtOICercaCIL.getText());
-            stArmazonCerca.setOiEsf(txtOICercaESF.getText());
-            stArmazonCerca.setPlusMax(pm1);
-            stArmazonCerca.setTipo(tpCerca);
-            
-            
-            stArmazonLejos = (stArmazonLejos == null)?new Armazon():stArmazonLejos;
-            stArmazonLejos.setCapa(capa2);
-            stArmazonLejos.setCristal(txtCristalLejos.getText());
-            int precioCristalLejos =0;
-            if(stCristalLejos != null){
-                precioCristalLejos = (stConvenio==null)?stCristalLejos.getPrecio():stCristalLejos.getPrecio() + ((stCristalLejos.getPrecio() * stConvenio.getPorcentajeAdicion())/100);
-            }
-            stArmazonLejos.setPrecioCristal(precioCristalLejos);
-            stArmazonLejos.setDp((int)txtDPLejos.getValue());
-            stArmazonLejos.setEndurecido(en2);
-            stArmazonLejos.setEstado(1);
-            stArmazonLejos.setMarca(txtArmazonLejos.getText());
-            int precioMarcaLejos = 0;
-            if(stLenteLejos != null){
-                precioMarcaLejos = (stConvenio==null)?stLenteLejos.getPrecioAct():stLenteLejos.getPrecioAct() + ((stLenteLejos.getPrecioAct() * stConvenio.getPorcentajeAdicion())/100);
-            }
-            stArmazonLejos.setPrecioMarca(precioMarcaLejos);
-            stArmazonLejos.setOdA(txtODLejosA.getText());
-            stArmazonLejos.setOdCil(txtODLejosCIL.getText());
-            stArmazonLejos.setOdEsf(txtODLejosESF.getText());
-            stArmazonLejos.setOiA(txtOILejosA.getText());
-            stArmazonLejos.setOiCil(txtOILejosCIL.getText());
-            stArmazonLejos.setOiEsf(txtOILejosESF.getText());
-            stArmazonLejos.setPlusMax(pm2);
-            stArmazonLejos.setTipo(tpLejos);
-            
-            GV.getFicha().setLejos(stArmazonLejos);
-            GV.getFicha().setCerca(stArmazonCerca);
-            
-            GV.getFicha().setObservacion(txtObs.getText());
-            GV.getFicha().setDescuento(GV.strToNumber(txtDescuento.getText()));
-            GV.getFicha().setValorTotal(GV.strToNumber(txtTotal.getText()));
-            GV.getFicha().setSaldo(GV.strToNumber(txtSaldo.getText()));
-//        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-//            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }
-
-    private boolean validaInstitucion() {
-        String ins = GV.getStr(txtInstitucion.getText());
-        stInstitucion = null;
-        GV.getFicha().setInstitucion(null);
-        if(ins.isEmpty()){
-            txtInstitucion.setForeground(negro);
-            return true;
-        }else{
-            try {
-                stInstitucion = (Institucion)load.get((getIdFromString(ins)), 0, new Institucion());
-                if(stInstitucion == null){
-                    txtInstitucion.setForeground(rojo);
-                    msgRejected("Debe ingresar una institución registrada en el sistema.");
+                String nombre = (String) cboTipoPago.getSelectedItem();
+                stTipoPago = ((TipoPago)GV.buscarPorNombreEnLista(nombre, listTipoPagos , new TipoPago()));
+                if(stTipoPago == null){
+                    msgRejected("Debe registrar el medio de pago en el abono");
                     return false;
                 }
-            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+        }else{
+            if(GV.strToNumber(txtTotal.getText()) != 0){
+                msgWarning("No se ha registrado un abono");
             }
         }
-        GV.getFicha().setInstitucion(stInstitucion);
-        txtInstitucion.setForeground(negro);
         return true;
     }
-
-    private void prepareFicha() {
-        calcularSaldo();
-        
-//         validacion de estados de ficha
-        int estado = (GV.getFicha().getSaldo() == 0)? 2:1;//2=pagado,1=pendiente
-        commitSpinner();
+    
+    /**
+     * muestra un mensaje en el panel, si el mensaje es vacío o nulo no aparece
+     * @param message 
+     */
+    private void msgRejected(String message) {
+        message = GV.getStr(message);
+        if(message.isEmpty()){
+            lblMessageStatus.setText("");
+            lblMessageStatus.setVisible(false);
+        }else{
+            lblMessageStatus.setText(message);
+            lblMessageStatus.setForeground(rojo);
+            lblMessageStatus.setVisible(true);
+        }
+    }
+    
+    private boolean commitSpinner() {
+        boolean value = true;
+        try {
+            txtHora1.commitEdit();
+            txtHora2.commitEdit();
+        } catch (ParseException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            GV.mensajeExcepcion("La hora ingresada es incorrecta\n"+ex.getMessage(), 2);
+            value = false;
+        }
+        try {
+            txtMinuto1.commitEdit();
+            txtMinuto2.commitEdit();
+        } catch (ParseException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            GV.mensajeExcepcion("Los minutos ingresados son incorrectos\n"+ex.getMessage(), 2);
+            value = false;
+        }
+        try {
+            txtAbono.commitEdit();
+        } catch (ParseException ex) {
+            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
+            GV.mensajeExcepcion("El abono ingresado es incorrecto\n"+ex.getMessage(), 2);
+            value = false;
+        }
+        return value;
+    }
+    
+    private void botonGuardar(){
+        String warningsText = "";
+        if(!commitSpinner()){
+            return;
+        }
+        if(GV.sincronizacionIsStopped()){//No guardará los datos si hay una sincronización activa
+            GV.cursorWAIT(this);
+            if(!cmpFormulario()){
+                warningsText = (GV.getStr(lblMessageStatus.getText()).isEmpty())?"":lblMessageStatus.getText();
+                OptionPane.showMsg("Falta corregir alguna información", warningsText, 2);
+                GV.cursorDF(this);
+                return;
+            }
+            warningsText = (GV.getStr(lblMessageStatus.getText()).isEmpty())?"":"Observación:"+lblMessageStatus.getText();
+            String confirmText = "Registrar los datos\n" + ((warningsText.isEmpty())? "\n":warningsText+"\n")
+                + "¿Estas seguro que los datos son correctos?";
+            if(OptionPane.getConfirmation("Confirmar registro", confirmText, 1)){
+                GV.cursorWAIT(this);
+                asigAllDatas();
+                if(save(FICHA)){
+                    GV.printFicha(FICHA);
+                    GV.cursorDF(this);
+                    reloadPage();
+                }
+                GV.cursorDF(this);
+            }else{
+                GV.cursorDF(this);
+                OptionPane.showMsg("Operación cancelada", "Los datos aún no se han guardado", 1);
+            } 
+        }
+    }
+    
+    private boolean save(Ficha ficha){
         int abono = (int) txtAbono.getValue();
-        
-        int saldo = GV.strToNumber(txtSaldo.getText());
-        
         HistorialPago hp = null;
         try {
-            if(load.get(load.getCurrentCod(GV.getFicha()), 0, GV.getFicha()) != null){
+            if(load.get(ficha.getCod(), 0, new Ficha()) != null){
                 OptionPane.showMsg("No se puede crear registro", "Existe un conflicto con el identificador generado\n"
                         + "Debe ponerse en contacto con su proveedor.\n\n"
-                        + "Identificador defectuoso:"+load.getCurrentCod(GV.getFicha()), 3);
-                return;
+                        + "Identificador defectuoso:"+ficha.getCod(), 3);
+                return false;
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             OptionPane.showMsg("No se puede crear registro", "No se pudo validar el identificador generado\n"
                         + "Debe ponerse en contacto con su proveedor.\n\n"
-                        + "Identificador defectuoso:"+load.getCurrentCod(GV.getFicha())+"\n"
+                        + "Identificador defectuoso:"+ficha.getCod()+"\n"
                         + "Error: "+ex.getMessage(), 3);
-            return;
+            return false;
         }
-        GV.getFicha().setCod(load.getCurrentCod(GV.getFicha()));
-        /*
-            No se aplica valor total desde el txtTotal porque debe rescatarse el total
-            sin el descuento incluido
-        */
-        //int valorTotal = GV.strToNumber(txtTotal.getText());
-        //GV.getFicha().setValorTotal(valorTotal);
-        GV.getFicha().setSaldo(saldo);
-        GV.getFicha().setEstado(estado);
         
-        if(GV.getFicha().getCerca() != null || !GV.getFicha().getCerca().getMarca().isEmpty()){
-            GV.getFicha().getCerca().setIdFicha(GV.getFicha().getCod());
-        }
-        if(GV.getFicha().getLejos() != null || !GV.getFicha().getLejos().getMarca().isEmpty()){
-            GV.getFicha().getLejos().setIdFicha(GV.getFicha().getCod());
-        }
         if(abono > 0){
-            hp = new HistorialPago(null, new Date(), abono, stTipoPago.getId(), GV.getFicha().getCod(),1, null, 0);
-        }
-        if(stConvenio != null){
-            GV.getFicha().setConvenio(stConvenio);
-        }
-        load.createFicha(GV.getFicha(),hp);
-    }
-
-    private void reloadPage() {
-        try {
-            boton.crearFicha();
-        } catch (SQLException | ClassNotFoundException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-            OptionPane.showMsg("Error al recargar ventana", ex+"\n\n"+ex.getMessage()+"\n\n"+ex.getLocalizedMessage(), 3);
-        }
-    }
-
-    /**
-     * reinicia todas las clases estaticas previemente cargadas
-     */
-    private void clearData() {
-        stArmazonCerca=new Armazon();
-        stArmazonLejos=new Armazon();
-        stCliente=new Cliente();
-        stCristalCerca= new Cristal();
-        stCristalLejos=new Cristal();
-        stDescuento=new Descuento();
-        stDoctor= new Doctor();
-        stInstitucion= new Institucion();
-        stLenteCerca= new Lente();
-        stLenteLejos= new Lente();
-        stTipoPago = new TipoPago();
-        GV.clearFicha();
-    }
-
-    private void validateDataTemp() {
-        if(GV.getFicha().getFecha() != null){
-            if(!OptionPane.getConfirmation("Restaurar archivos temporales", "Existen datos temporales, ¿Desea recuperarlos?", 2)){
-                clearData();
-            }
-        }
-    }
-
-    private void convenioLimpiarSeleccionado(){
-        convenioAssign(null);
-    }
-    
-    private void convenioAssign(Convenio selected){
-        GV.setConvenio(selected);
-        convenioObtenerSeleccionado();
-    }
-    
-    private void convenioObtenerSeleccionado() {
-        try {
-            stConvenio = (Convenio)load.get(null, (GV.getConvenio() != null)?GV.getConvenio().getId():0, new Convenio());
-            GV.setConvenio(stConvenio);
-            if(stConvenio == null){
-                btnClearConvenio.setVisible(false);
-                ContentAdmin.lblTitle.setText("Nueva receta oftalmológica");
-                strCnvName = "";
+            if(stTipoPago == null){
+                msgRejected("Debe registrar el medio de pago en el abono");
+                return false;
             }else{
-                btnClearConvenio.setVisible(true);
-                ContentAdmin.lblTitle.setText("Nueva receta oftalmológica con convenio: "+stConvenio.getNombre());
-                strCnvName = "Convenio: "+stConvenio.getNombre();
-            }
-            cargarDatos();
-            comprobarDatosFicha();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(VCrearFicha.class.getName()).log(Level.SEVERE, null, ex);
-            stConvenio = null;
-            GV.setConvenio(null);
-            OptionPane.showMsg("Error inesperado", "Ocurrió un problema al cargar el convenio seleccionado", 3);
-        }
-    }
-
-    private void validaSaldo() {
-        if(GV.getFicha().getSaldo()<0){
-            if(GV.strToNumber(txtDescuento.getText())>GV.strToNumber(txtTotal.getText())){
-                msgRejected("El descuento seleccionado no es válido, su monto es mayor al valor total.");
-            }else{
-                txtAbono.setValue(0);
-                msgRejected("Debe ingresar un abono válido (menor o igual al saldo).");
+                String idTp = load.getCurrentCod(new HistorialPago());
+                hp = new HistorialPago(idTp, new Date(), abono, stTipoPago.getId(), ficha.getCod(),1, null, 0);
             }
         }
+        return load.createFicha(ficha,hp);
     }
-
-    private void loadStaticObjectList() {
-        listTipoPagos = load.listar("0", new TipoPago());
-        listInstituciones = load.listar("0", new Institucion());
-        listClientes = load.listar("0", new Cliente());
-        listDoctores = load.listar("0", new Doctor());
-        listCristales = load.listar("0", new Cristal());
-        listDescuentos = load.listar("0", new Descuento());
-        GV.setInventarioSeleccionado(stInventario.getId());
-        listLentes = load.listar("st", new Lente());
-        GV.setInventarioSeleccionado(0);
-    }
-    
-    private static int contarCaracteres(String cadena, char caracter) {
-        int posicion, contador = 0;
-        //se busca la primera vez que aparece
-        posicion = cadena.indexOf(caracter);
-        while (posicion != -1) { //mientras se encuentre el caracter
-            contador++;           //se cuenta
-            //se sigue buscando a partir de la posición siguiente a la encontrada
-            posicion = cadena.indexOf(caracter, posicion + 1);
-        }
-        return contador;
-   }
 }
