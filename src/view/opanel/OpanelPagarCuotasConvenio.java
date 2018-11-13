@@ -74,7 +74,7 @@ public class OpanelPagarCuotasConvenio extends javax.swing.JPanel {
         });
 
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/btn_Ok_50px.png"))); // NOI18N
-        btnGuardar.setToolTipText("Crear reporte de despacho");
+        btnGuardar.setToolTipText("Registrar pago de cuotas");
         btnGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnGuardarMouseClicked(evt);
@@ -259,10 +259,9 @@ public class OpanelPagarCuotasConvenio extends javax.swing.JPanel {
     }
 
     private int getIdTipoPago(String name){
-        for (Object object : tipoPagoList) {
-            if(((TipoPago)object).getNombre().equals(name)){
-                return ((TipoPago)object).getId();
-            }
+        TipoPago tp = (TipoPago)GV.buscarPorNombreEnLista(name, tipoPagoList, new TipoPago());
+        if(tp != null){
+            return tp.getId();
         }
         return 0;
     }

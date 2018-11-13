@@ -14,7 +14,6 @@ import fn.GV;
 import javax.swing.table.DefaultTableModel;
 import fn.Icons;
 import fn.OptionPane;
-import static fn.date.Cmp.localIsNewOrEqual;
 import fn.globalValues.GlobalValuesBD;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;

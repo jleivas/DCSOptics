@@ -569,42 +569,9 @@ public class VFichas extends javax.swing.JPanel {
     }//GEN-LAST:event_btnExportFichasMouseExited
 
     private void btnExportConvenioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportConvenioMouseClicked
-        if(GV.licenciaExpirada()){
-            GV.mensajeLicenceExpired();
-        }else{
-            if(GV.tipoUserAdmin()){
-                cWT();
-                if(cboFilterOptions.getSelectedIndex() == BY_CONVENY && GV.getFichas().size() > 0){
-                    Convenio cnv = ((Ficha)GV.getFichas().get(0))
-                            .getConvenio();
-                    validaConvenio(cnv);
-                    if(cnv.getEstado() == 1){
-                        if(OptionPane.getConfirmation("Generar reporte de convenio", "La fecha de cierre aún no ha caducado.\n"
-                                + "Si generas este reporte ahora, el convenio se cerrará para futuras recetas y tendrás que crear otro convenio.\n"
-                                + "¿Estas seguro de cerrar el convenio para futuras nuevas recetas?", 2)){
-                            cnv.setFechaInicio((GV.fechaActualOFutura(cnv.getFechaInicio()))?
-                                    GV.dateSumaResta(new Date(), -1, "DAYS"):cnv.getFechaInicio());
-                            cnv.setFechaFin(GV.dateSumaResta(new Date(), -1, "DAYS"));
-                            validaConvenio(cnv);
-                        }else{
-                            cDF();
-                            return;
-                        }
-                    }
-                    GV.convenioGenerateReport(cnv);
-                    OptionPane.showMsg("Generación de reporte", "Se generarán los siguientes reportes:\n"
-                            + "1-Reporte de convenio por recetas oftalmológicas.\n"
-                            + "2-Reporte de cuotas.", 1);
-                    cDF();
-                }else{
-                    cDF();
-                    OptionPane.showMsg("Orden cancelada", "Para generar un reporte, debes filtrar por un convenio con recetas registradas", 2);
-                }
-                cDF();
-            }else{
-                GV.mensajeAccessDenied();
-            }
-        }
+        cWT();
+        GlobalValuesFunctions.exportarConvenio();
+        cDF();
     }//GEN-LAST:event_btnExportConvenioMouseClicked
 
     private void btnExportConvenioMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportConvenioMouseEntered
@@ -791,13 +758,13 @@ public class VFichas extends javax.swing.JPanel {
         }
         btnExportConvenio.setVisible(false);
         if(filter==BY_CONVENY){
-            btnExportConvenio.setVisible(true);
             if(isFiltering){
                 OptionPane.showOptionPanel(new OpanelSelectConvenyFilter(), OptionPane.titleConvenyChooser());
                 isFiltering = false;
                 openDialog = false;
             }else{
                 GV.listarFichasByConveny(GV.convenioIdSelected());
+                btnExportConvenio.setVisible(true);
                 try {
                     Convenio cnv = (Convenio)load.get(null, GV.strToNumber(GV.convenioIdSelected()), new Convenio());
                     ContentAdmin.lblTitle.setText("Registros por Convenio: "+cnv.getNombre());
@@ -903,10 +870,6 @@ public class VFichas extends javax.swing.JPanel {
     }
     private void cDF(){
         GV.cursorDF(this);
-    }
-
-    private void validaConvenio(Convenio cnv) {
-        GV.convenioUpdateBDIfValidated(cnv);
     }
 
     private void mensajeOperacionCanceladaPorTablaVacia() {

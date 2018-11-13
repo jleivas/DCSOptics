@@ -1043,7 +1043,6 @@ public class Remote implements InterfaceSync{
         idParam = idParam.trim();
         try {
             if(type instanceof Ficha){
-                String id = GV.getStr(idParam);
                 if(!GV.fichaIdParamIsFichaList(idParam) && !GV.fichaIdParamIsIdFicha(idParam)){
                     return listar(idParam,new ResF());
                 }
@@ -1585,8 +1584,8 @@ public class Remote implements InterfaceSync{
                         datos.getDate("cnv_last_update"),
                         datos.getInt("cnv_last_hour")
                         );
-                    PreparedStatement consulta2 = RmBd.obtener().prepareStatement("SELECT * FROM cuotas_convenio WHERE convenio_cnv_id = " + cnv.getId() + " AND cc_estado <> 0");
-                    ResultSet datos2 = consulta2.executeQuery();
+                    consulta = RmBd.obtener().prepareStatement("SELECT * FROM cuotas_convenio WHERE convenio_cnv_id = " + cnv.getId() + " AND cc_estado <> 0");
+                    ResultSet datos2 = consulta.executeQuery();
                     while (datos2.next()){
                         cnv.addCuotaConvenio(
                         new CuotasConvenio(

@@ -923,6 +923,52 @@ public class GlobalValuesFunctions {
             GV.mensajeLicenceAccessDenied();
         }
     }
+
+    public static void exportarConvenio() {
+        if(GV.licenciaExpirada()){
+            GV.mensajeLicenceExpired();
+            return;
+        }else{
+            if(GV.tipoUserAdmin()){
+                if(GV.getFichas().size() > 0){
+                    try {
+                        int idConv = (((Ficha)GV.getFichas().get(0))
+                                .getConvenio() != null) ? ((Ficha)GV.getFichas().get(0))
+                                .getConvenio().getId():0;
+                        Convenio cnv = (Convenio)load.get(null, idConv, new Convenio());
+                        if(cnv != null){
+                            GV.convenioUpdateBDIfValidated(cnv);
+                            if(cnv.getEstado() == 1){
+                                if(OptionPane.getConfirmation("Generar reporte de convenio", "La fecha de cierre aún no ha caducado.\n"
+                                        + "Si generas este reporte ahora, el convenio se cerrará para futuras recetas y tendrás que crear otro convenio.\n"
+                                        + "¿Estas seguro de cerrar el convenio para futuras nuevas recetas?", 2)){
+                                    cnv.setFechaInicio((GV.fechaActualOFutura(cnv.getFechaInicio()))?
+                                            GV.dateSumaResta(new Date(), -1, "DAYS"):cnv.getFechaInicio());
+                                    cnv.setFechaFin(GV.dateSumaResta(new Date(), -1, "DAYS"));
+                                    GV.convenioUpdateBDIfValidated(cnv);
+                                }else{
+                                    return;
+                                }
+                            }
+                            GV.convenioGenerateReport(cnv);
+                            OptionPane.showMsg("Generación de reporte", "Se generarán los siguientes reportes:\n"
+                                    + "1-Reporte de convenio por recetas oftalmológicas.\n"
+                                    + "2-Reporte de cuotas.", 1);
+                        }else{
+                            OptionPane.showMsg("Orden cancelada", "Para generar un reporte, debes filtrar por un convenio con recetas registradas", 2);
+                        }    
+                    } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                        Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
+                        GV.mensajeExcepcion(ex.getMessage(), 3);
+                    }
+                }else{
+                    OptionPane.showMsg("Orden cancelada", "Para generar un reporte, debes filtrar por un convenio con recetas registradas", 2);
+                }
+            }else{
+                GV.mensajeAccessDenied();
+            }
+        }
+    }
     
     public void convenioGenerarReporte(Convenio cnv){
         if(cnv.getEstado() == 2){
