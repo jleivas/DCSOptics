@@ -1050,7 +1050,7 @@ public class Local implements InterfaceSync {
                 if(!GV.fichaIdParamIsFichaList(idParam) && !GV.fichaIdParamIsIdFicha(idParam)){
                     return listar(idParam,new ResF());
                 }
-                String sql = getSqlFicha()+" WHERE f.fch_id='" + idParam + "'";
+                String sql = getSqlFicha()+" WHERE ficha.fch_id='" + idParam + "'";
                 sql = (idParam.equals("-2"))?getSqlFicha():sql;
                 if(GV.fichaIdParamIsFichaList(idParam)){
                     sql=getSqlFicha()+GV.cleanIdParam(idParam);
@@ -3614,107 +3614,116 @@ public class Local implements InterfaceSync {
     }
 
     private String getSqlFicha() {
-        return "SELECT fch_id, fch_fecha, fch_fecha_entrega, fch_lugar_entrega, fch_hora_entrega,"
-                        + "fch_obs, fch_valor_total, fch_descuento, fch_saldo, cliente_cli_rut, doctor_doc_rut,"
-                        + "institucion_ins_id, despacho_dsp_id, usuario_us_id, convenio_cnv_id, fch_estado,"
-                        + "fch_last_update, fch_last_hour,"
-                        + "(SELECT cliente.cli_nombre from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_nombre,"
-                        + "(SELECT cliente.cli_telefono1 from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_telefono1,"
-                        + "(SELECT cliente.cli_telefono2 from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_telefono2,"
-                        + "(SELECT cliente.cli_email from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_email,"
-                        + "(SELECT cliente.cli_direccion from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_direccion,"
-                        + "(SELECT cliente.cli_comuna from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_comuna,"
-                        + "(SELECT cliente.cli_ciudad from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_ciudad,"
-                        + "(SELECT cliente.cli_sexo from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_sexo,"
-                        + "(SELECT cliente.cli_nacimiento from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_nacimiento,"
-                        + "(SELECT cliente.cli_estado from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_estado,"
-                        + "(SELECT cliente.cli_last_update from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_last_update,"
-                        + "(SELECT cliente.cli_last_hour from cliente where cliente.cli_rut=f.cliente_cli_rut) as cli_last_hour,"
-                        + "(SELECT doctor.doc_nombre from doctor where doctor.doc_rut=f.doctor_doc_rut) as doc_nombre,"
-                        + "(SELECT doctor.doc_telefono from doctor where doctor.doc_rut=f.doctor_doc_rut) as doc_telefono,"
-                        + "(SELECT doctor.doc_mail from doctor where doctor.doc_rut=f.doctor_doc_rut) as doc_mail,"
-                        + "(SELECT doctor.doc_estado from doctor where doctor.doc_rut=f.doctor_doc_rut) as doc_estado,"
-                        + "(SELECT doctor.doc_last_update from doctor where doctor.doc_rut=f.doctor_doc_rut) as doc_last_update,"
-                        + "(SELECT doctor.doc_last_hour from doctor where doctor.doc_rut=f.doctor_doc_rut) as doc_last_hour,"
-                        + "(SELECT institucion.ins_nombre from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_nombre,"
-                        + "(SELECT institucion.ins_telefono from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_telefono,"
-                        + "(SELECT institucion.ins_mail from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_mail,"
-                        + "(SELECT institucion.ins_web from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_web,"
-                        + "(SELECT institucion.ins_direccion from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_direccion,"
-                        + "(SELECT institucion.ins_comuna from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_comuna,"
-                        + "(SELECT institucion.ins_ciudad from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_ciudad,"
-                        + "(SELECT institucion.ins_estado from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_estado,"
-                        + "(SELECT institucion.ins_last_update from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_last_update,"
-                        + "(SELECT institucion.ins_last_hour from institucion where f.institucion_ins_id=institucion.ins_id)  as ins_last_hour,"
-                        + "(SELECT despacho.dsp_rut from despacho where f.despacho_dsp_id=despacho.dsp_id)  as dsp_rut,"
-                        + "(SELECT despacho.dsp_nombre from despacho where f.despacho_dsp_id=despacho.dsp_id)  as dsp_nombre,"
-                        + "(SELECT despacho.dsp_fecha from despacho where f.despacho_dsp_id=despacho.dsp_id)  as dsp_fecha,"
-                        + "(SELECT despacho.dsp_estado from despacho where f.despacho_dsp_id=despacho.dsp_id)  as dsp_estado,"
-                        + "(SELECT despacho.dsp_last_update from despacho where f.despacho_dsp_id=despacho.dsp_id)  as dsp_last_update,"
-                        + "(SELECT despacho.dsp_last_hour from despacho where f.despacho_dsp_id=despacho.dsp_id)  as dsp_last_hour,"
-                        + "(SELECT armazon.arm_id from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_id_cerca,"
-                        + "(SELECT armazon.arm_tipo from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_tipo_cerca,"
-                        + "(SELECT armazon.arm_marca from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_marca_cerca,"
-                        + "(SELECT armazon.arm_precio_marca from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_precio_marca_cerca,"
-                        + "(SELECT armazon.arm_cristal from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_cristal_cerca,"
-                        + "(SELECT armazon.arm_precio_cristal from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_precio_cristal_cerca,"
-                        + "(SELECT armazon.arm_add from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_add_cerca,"
-                        + "(SELECT armazon.arm_od_a from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_od_a_cerca,"
-                        + "(SELECT armazon.arm_od_esf from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_od_esf_cerca,"
-                        + "(SELECT armazon.arm_od_cil from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_od_cil_cerca,"
-                        + "(SELECT armazon.arm_oi_a from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_oi_a_cerca,"
-                        + "(SELECT armazon.arm_oi_esf from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_oi_esf_cerca,"
-                        + "(SELECT armazon.arm_oi_cil from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_oi_cil_cerca,"
-                        + "(SELECT armazon.arm_dp from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_dp_cerca,"
-                        + "(SELECT armazon.arm_endurecido from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_endurecido_cerca,"
-                        + "(SELECT armazon.arm_capa from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_capa_cerca,"
-                        + "(SELECT armazon.arm_plus_max from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_plus_max_cerca,"
-                        + "(SELECT armazon.arm_estado from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_estado_cerca,"
-                        + "(SELECT armazon.arm_last_update from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_last_update_cerca,"
-                        + "(SELECT armazon.arm_last_hour from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=0)  as arm_last_hour_cerca,"
-                        + "(SELECT armazon.arm_id from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_id_lejos,"
-                        + "(SELECT armazon.arm_tipo from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_tipo_lejos,"
-                        + "(SELECT armazon.arm_marca from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_marca_lejos,"
-                        + "(SELECT armazon.arm_precio_marca from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_precio_marca_lejos,"
-                        + "(SELECT armazon.arm_cristal from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_cristal_lejos,"
-                        + "(SELECT armazon.arm_precio_cristal from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_precio_cristal_lejos,"
-                        + "(SELECT armazon.arm_add from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_add_lejos,"
-                        + "(SELECT armazon.arm_od_a from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_od_a_lejos,"
-                        + "(SELECT armazon.arm_od_esf from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_od_esf_lejos,"
-                        + "(SELECT armazon.arm_od_cil from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_od_cil_lejos,"
-                        + "(SELECT armazon.arm_oi_a from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_oi_a_lejos,"
-                        + "(SELECT armazon.arm_oi_esf from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_oi_esf_lejos,"
-                        + "(SELECT armazon.arm_oi_cil from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_oi_cil_lejos,"
-                        + "(SELECT armazon.arm_dp from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_dp_lejos,"
-                        + "(SELECT armazon.arm_endurecido from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_endurecido_lejos,"
-                        + "(SELECT armazon.arm_capa from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_capa_lejos,"
-                        + "(SELECT armazon.arm_plus_max from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_plus_max_lejos, "
-                        + "(SELECT armazon.arm_estado from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_estado_lejos,"
-                        + "(SELECT armazon.arm_last_update from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_last_update_lejos,"
-                        + "(SELECT armazon.arm_last_hour from armazon where armazon.ficha_fch_id=f.fch_id and armazon.arm_tipo=1)  as arm_last_hour_lejos,"
-                        + "(SELECT usuario.us_nombre from usuario where usuario.us_id=usuario_us_id) as us_nombre,"
-                        + "(SELECT usuario.us_username from usuario where usuario.us_id=usuario_us_id) as us_username,"
-                        + "(SELECT usuario.us_email from usuario where usuario.us_id=usuario_us_id) as us_email,"
-                        + "(SELECT usuario.us_pass from usuario WHERE usuario.us_id=usuario_us_id) as us_pass,"
-                        + "(SELECT usuario.us_tipo from usuario WHERE usuario.us_id=usuario_us_id) as us_tipo,"
-                        + "(SELECT usuario.us_estado from usuario WHERE usuario.us_id=usuario_us_id) as us_estado,"
-                        + "(SELECT usuario.us_last_update from usuario WHERE usuario.us_id=usuario_us_id) as us_last_update,"
-                        + "(SELECT usuario.us_last_hour from usuario WHERE usuario.us_id=usuario_us_id) as us_last_hour,"
-                        + "(SELECT convenio.cnv_nombre from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_nombre,"
-                        + "(SELECT convenio.cnv_fecha_inicio from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_fecha_inicio,"
-                        + "(SELECT convenio.cnv_fecha_fin from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_fecha_fin,"
-                        + "(SELECT convenio.cnv_cuotas from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_cuotas,"
-                        + "(SELECT convenio.cnv_fecha_cobro from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_fecha_cobro,"
-                        + "(SELECT convenio.cnv_monto_maximo from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_monto_maximo,"
-                        + "(SELECT convenio.cnv_monto_pp from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_monto_pp,"
-                        + "(SELECT convenio.cnv_maximo_clientes from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_maximo_clientes,"
-                        + "(SELECT convenio.descuento_des_id from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_descuento_des_id,"
-                        + "(SELECT convenio.cnv_porc_valor_adicional from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_porc_valor_adicional,"
-                        + "(SELECT convenio.institucion_ins_id from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_institucion_ins_id,"
-                        + "(SELECT convenio.cnv_estado from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_estado,"
-                        + "(SELECT convenio.cnv_last_update from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_last_update,"
-                        + "(SELECT convenio.cnv_last_hour from convenio WHERE convenio.cnv_id=convenio_cnv_id) as cnv_last_hour"
-                        + " from ficha f ";
+        return "SELECT " +
+                "fch_id, fch_fecha, fch_fecha_entrega, fch_lugar_entrega, fch_hora_entrega," +
+                "fch_obs, fch_valor_total, fch_descuento, fch_saldo, cliente_cli_rut, doctor_doc_rut, despacho_dsp_id, usuario_us_id, convenio_cnv_id, fch_estado," +
+                "fch_last_update, fch_last_hour," +
+                "cliente.cli_nombre," +
+                "cliente.cli_telefono1," +
+                "cliente.cli_telefono2," +
+                "cliente.cli_email," +
+                "cliente.cli_direccion," +
+                "cliente.cli_comuna," +
+                "cliente.cli_ciudad," +
+                "cliente.cli_sexo," +
+                "cliente.cli_nacimiento," +
+                "cliente.cli_estado," +
+                "cliente.cli_last_update," +
+                "cliente.cli_last_hour," +
+                "doctor.doc_nombre," +
+                "doctor.doc_telefono," +
+                "doctor.doc_mail," +
+                "doctor.doc_estado," +
+                "doctor.doc_last_update," +
+                "doctor.doc_last_hour," +
+                "institucion.ins_id as institucion_ins_id," +
+                "institucion.ins_nombre," +
+                "institucion.ins_telefono," +
+                "institucion.ins_mail," +
+                "institucion.ins_web," +
+                "institucion.ins_direccion," +
+                "institucion.ins_comuna," +
+                "institucion.ins_ciudad," +
+                "institucion.ins_estado," +
+                "institucion.ins_last_update," +
+                "institucion.ins_last_hour," +
+                "despacho.dsp_rut," +
+                "despacho.dsp_nombre," +
+                "despacho.dsp_fecha," +
+                "despacho.dsp_estado," +
+                "despacho.dsp_last_update," +
+                "despacho.dsp_last_hour," +
+                "cerca.arm_id  as arm_id_cerca," +
+                "cerca.arm_tipo  as arm_tipo_cerca," +
+                "cerca.arm_marca  as arm_marca_cerca," +
+                "cerca.arm_precio_marca  as arm_precio_marca_cerca," +
+                "cerca.arm_cristal  as arm_cristal_cerca," +
+                "cerca.arm_precio_cristal  as arm_precio_cristal_cerca," +
+                "cerca.arm_add  as arm_add_cerca," +
+                "cerca.arm_od_a  as arm_od_a_cerca," +
+                "cerca.arm_od_esf  as arm_od_esf_cerca," +
+                "cerca.arm_od_cil  as arm_od_cil_cerca," +
+                "cerca.arm_oi_a  as arm_oi_a_cerca," +
+                "cerca.arm_oi_esf  as arm_oi_esf_cerca," +
+                "cerca.arm_oi_cil  as arm_oi_cil_cerca," +
+                "cerca.arm_dp  as arm_dp_cerca," +
+                "cerca.arm_endurecido  as arm_endurecido_cerca," +
+                "cerca.arm_capa  as arm_capa_cerca," +
+                "cerca.arm_plus_max  as arm_plus_max_cerca," +
+                "cerca.arm_estado  as arm_estado_cerca," +
+                "cerca.arm_last_update  as arm_last_update_cerca," +
+                "cerca.arm_last_hour  as arm_last_hour_cerca," +
+                "lejos.arm_id  as arm_id_lejos," +
+                "lejos.arm_tipo  as arm_tipo_lejos," +
+                "lejos.arm_marca  as arm_marca_lejos," +
+                "lejos.arm_precio_marca  as arm_precio_marca_lejos," +
+                "lejos.arm_cristal  as arm_cristal_lejos," +
+                "lejos.arm_precio_cristal  as arm_precio_cristal_lejos," +
+                "lejos.arm_add  as arm_add_lejos," +
+                "lejos.arm_od_a  as arm_od_a_lejos," +
+                "lejos.arm_od_esf  as arm_od_esf_lejos," +
+                "lejos.arm_od_cil  as arm_od_cil_lejos," +
+                "lejos.arm_oi_a  as arm_oi_a_lejos," +
+                "lejos.arm_oi_esf  as arm_oi_esf_lejos," +
+                "lejos.arm_oi_cil  as arm_oi_cil_lejos," +
+                "lejos.arm_dp  as arm_dp_lejos," +
+                "lejos.arm_endurecido  as arm_endurecido_lejos," +
+                "lejos.arm_capa  as arm_capa_lejos," +
+                "lejos.arm_plus_max  as arm_plus_max_lejos, " +
+                "lejos.arm_estado  as arm_estado_lejos," +
+                "lejos.arm_last_update  as arm_last_update_lejos," +
+                "lejos.arm_last_hour  as arm_last_hour_lejos," +
+                "usuario.us_nombre," +
+                "usuario.us_username," +
+                "usuario.us_email," +
+                "usuario.us_pass," +
+                "usuario.us_tipo," +
+                "usuario.us_estado," +
+                "usuario.us_last_update," +
+                "usuario.us_last_hour," +
+                "convenio.cnv_nombre," +
+                "convenio.cnv_fecha_inicio," +
+                "convenio.cnv_fecha_fin," +
+                "convenio.cnv_cuotas," +
+                "convenio.cnv_fecha_cobro," +
+                "convenio.cnv_monto_maximo," +
+                "convenio.cnv_monto_pp," +
+                "convenio.cnv_maximo_clientes," +
+                "convenio.descuento_des_id," +
+                "convenio.cnv_porc_valor_adicional," +
+                "convenio.institucion_ins_id," +
+                "convenio.cnv_estado," +
+                "convenio.cnv_last_update," +
+                "convenio.cnv_last_hour" +
+                " FROM ficha" +
+                " LEFT JOIN cliente ON cliente.cli_rut = ficha.cliente_cli_rut" +
+                " LEFT JOIN doctor ON doctor.doc_rut = ficha.doctor_doc_rut" +
+                " LEFT JOIN institucion ON institucion.ins_id = ficha.institucion_ins_id" +
+                " LEFT JOIN despacho ON despacho.dsp_id = ficha.despacho_dsp_id" +
+                " LEFT JOIN armazon as cerca ON cerca.ficha_fch_id = ficha.fch_id AND cerca.arm_tipo = 0" +
+                " LEFT JOIN armazon as lejos ON lejos.ficha_fch_id = ficha.fch_id AND lejos.arm_tipo = 1" +
+                " LEFT JOIN usuario ON usuario.us_id = ficha.usuario_us_id" +
+                " LEFT JOIN convenio ON convenio.cnv_id = ficha.convenio_cnv_id ";
     }
     
     public String getSqlSync(Date paramDate, Object type) {

@@ -461,16 +461,16 @@ public class GlobalValuesFunctions {
      */
     public static String getWhereFromFicha(Date dateTo, Date dateFrom,String idUser, String codClient, String idFicha){
         if(idFicha!=null){
-            return "where f.fch_id = '"+idFicha+"'";
+            return "where ficha.fch_id = '"+idFicha+"'";
         }
         if(dateTo==null && dateFrom==null){
             if(idUser != null){
-                return "where f.usuario_us_id = "+idUser+" and f.fch_estado <> 0 ORDER BY f.fch_fecha DESC";
+                return "where ficha.usuario_us_id = "+idUser+" and ficha.fch_estado <> 0 ORDER BY ficha.fch_fecha DESC";
             }
             if(codClient != null){
-                return "where f.cliente_cli_rut = '"+codClient+"' and f.fch_estado <> 0 ORDER BY f.fch_fecha DESC";
+                return "where ficha.cliente_cli_rut = '"+codClient+"' and ficha.fch_estado <> 0 ORDER BY ficha.fch_fecha DESC";
             }
-            return "where f.fch_estado <> 0 ORDER BY f.fch_fecha DESC";
+            return "where ficha.fch_estado <> 0 ORDER BY ficha.fch_fecha DESC";
         }
         dateTo=(dateTo==null)?dateFrom:dateTo;
         dateFrom=(dateFrom==null)?dateTo:dateFrom;
@@ -481,7 +481,7 @@ public class GlobalValuesFunctions {
         }
         String d1 = (!GV.dateToString(dateTo, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateTo, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
         String d2 = (!GV.dateToString(dateFrom, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateFrom, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
-        return "where f.fch_fecha BETWEEN '"+d1+"' and '"+d2+"' and f.fch_estado <> 0 ORDER BY f.fch_fecha DESC";
+        return "where ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"' and ficha.fch_estado <> 0 ORDER BY ficha.fch_fecha DESC";
     }
     
     /**
@@ -498,19 +498,19 @@ public class GlobalValuesFunctions {
      */
     public static String getWhereFromAllFichas(Date dateTo, Date dateFrom,String idUser, String codClient,String idConvenio, String idFicha){
         if(idFicha!=null){
-            return "where f.fch_id = '"+idFicha+"'";
+            return "where ficha.fch_id = '"+idFicha+"'";
         }
         if(idConvenio != null){
-            return "where f.convenio_cnv_id = "+idConvenio+" ORDER BY f.fch_fecha DESC";
+            return "where ficha.convenio_cnv_id = "+idConvenio+" ORDER BY ficha.fch_fecha DESC";
         }
         if(dateTo==null && dateFrom==null){
             if(idUser != null){
-                return "where f.usuario_us_id = "+idUser+" ORDER BY f.fch_fecha DESC";
+                return "where ficha.usuario_us_id = "+idUser+" ORDER BY ficha.fch_fecha DESC";
             }
             if(codClient != null){
-                return "where f.cliente_cli_rut = '"+codClient+"' ORDER BY f.fch_fecha DESC";
+                return "where ficha.cliente_cli_rut = '"+codClient+"' ORDER BY ficha.fch_fecha DESC";
             }
-            return "where f.fch_fecha ='"+GV.dateToString(new Date(), "yyyy-mm-dd")+"' ORDER BY f.fch_fecha DESC";
+            return "where ficha.fch_fecha ='"+GV.dateToString(new Date(), "yyyy-mm-dd")+"' ORDER BY ficha.fch_fecha DESC";
         }
         dateTo=(dateTo==null)?dateFrom:dateTo;
         dateFrom=(dateFrom==null)?dateTo:dateFrom;
@@ -522,9 +522,9 @@ public class GlobalValuesFunctions {
         String d1 = (!GV.dateToString(dateTo, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateTo, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
         String d2 = (!GV.dateToString(dateFrom, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateFrom, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
         if(idUser != null){
-            return "where (f.usuario_us_id = "+idUser+") and (f.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') ORDER BY f.fch_fecha DESC";
+            return "where (ficha.usuario_us_id = "+idUser+") and (ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') ORDER BY ficha.fch_fecha DESC";
         }
-        return "where f.fch_fecha BETWEEN '"+d1+"' and '"+d2+"' ORDER BY f.fch_fecha DESC";
+        return "where ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"' ORDER BY ficha.fch_fecha DESC";
     }
     
     public static void sendReportSalesMail(SalesFichaJasperReport report, String email, String title){
