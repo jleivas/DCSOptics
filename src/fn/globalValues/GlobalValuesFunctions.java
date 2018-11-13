@@ -924,7 +924,6 @@ public class GlobalValuesFunctions {
         }
     }
     
-    
     public void convenioGenerarReporte(Convenio cnv){
         if(cnv.getEstado() == 2){
             

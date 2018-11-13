@@ -1570,24 +1570,7 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_chkDescuentoActionPerformed
 
     private void chkDescuentoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkDescuentoMouseClicked
-        if(chkDescuento.isSelected() && listDescuentos.size() > 0){
-            cboDescuento.setVisible(true);
-            lblDescuento.setVisible(true);
-            txtDescuento.setVisible(true);
-        }else{
-            cboDescuento.setSelectedIndex(0);
-            cboDescuento.setVisible(false);
-            lblDescuento.setVisible(false);
-            txtDescuento.setVisible(false);
-            if(listDescuentos.isEmpty()){
-                chkDescuento.setSelected(false);
-                cboDescuento.setVisible(true);
-                lblDescuento.setVisible(true);
-                txtDescuento.setVisible(true);
-                OptionPane.showMsg("No se puede añadir descuento", "No existen descuentos registrados, debe ingresarlos en \"Configuracion\" opción \"Descuentos\"", 2);
-            }
-        }
-        cmpPrecios();
+        logicaChkDescuento();
     }//GEN-LAST:event_chkDescuentoMouseClicked
 
     private void chkDescuentoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_chkDescuentoFocusLost
@@ -1930,7 +1913,9 @@ public class VCrearFicha extends javax.swing.JPanel {
     }//GEN-LAST:event_iconPhone1MouseClicked
 
     private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
+        GV.cursorWAIT(this);
         botonGuardar();
+        GV.cursorDF(this);
     }//GEN-LAST:event_btnSaveMouseClicked
 
     private void btnSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseEntered
@@ -2140,6 +2125,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         if(evt.getKeyCode()==KeyEvent.VK_BACK_SPACE){
             txtArmazonLejos.setText("");
         }
+        cmpLenteLejos();
     }//GEN-LAST:event_txtArmazonLejosKeyPressed
 
     private void txtCristalLejosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCristalLejosKeyPressed
@@ -2147,12 +2133,14 @@ public class VCrearFicha extends javax.swing.JPanel {
             txtCristalLejos.setText("");
             stCristalLejos=null;
         }
+        cmpCristalLejos();
     }//GEN-LAST:event_txtCristalLejosKeyPressed
 
     private void txtArmazonCercaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtArmazonCercaKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_BACK_SPACE){
             txtArmazonCerca.setText("");
         }
+        cmpLenteCerca();
     }//GEN-LAST:event_txtArmazonCercaKeyPressed
 
     private void txtCristalCercaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCristalCercaKeyPressed
@@ -2160,6 +2148,7 @@ public class VCrearFicha extends javax.swing.JPanel {
             txtCristalCerca.setText("");
             stCristalCerca=null;
         }
+        cmpCristalCerca();
     }//GEN-LAST:event_txtCristalCercaKeyPressed
 
     private void txtDoctorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDoctorActionPerformed
@@ -2426,22 +2415,6 @@ public class VCrearFicha extends javax.swing.JPanel {
         OptionPane.showMsg( "Datos mal ingresados", "Error de ingreso de datos, \n"
                     + "los datos ingresados deben tener un maximo de "+largo+" caracteres.", JOptionPane.WARNING_MESSAGE);
     }
-
-    private void resetTxtCliente() {
-        txtInstitucion.setText("");
-        chkExtranjero.setSelected(false);
-        txtNombreCliente.setText("");
-        txtTelefonoCliente1.setText("");
-        txtTelefonoCliente2.setText("");
-        txtMailCliente.setText("");
-        txtDireccionCliente.setText("");
-        txtComuna.setText("");
-        txtCiudad.setText("");
-        cboSexo.setSelectedIndex(0);
-        txtNacimiento.setDate(null);
-    }
-
-    
     
     private void msgWarning(String message){
         message = GV.getStr(message);
@@ -2956,6 +2929,8 @@ public class VCrearFicha extends javax.swing.JPanel {
                 msgRejected("Lejos: Debe ingresar un lente existente");
                 return false;
             }
+        }else{
+            stLenteLejos = null;
         }
         return true;
     }
@@ -2971,6 +2946,8 @@ public class VCrearFicha extends javax.swing.JPanel {
                 msgRejected("Cerca: Debe ingresar un lente existente");
                 return false;
             }
+        }else{
+            stLenteCerca = null;
         }
         return true;
     }
@@ -2993,7 +2970,7 @@ public class VCrearFicha extends javax.swing.JPanel {
                 msgWarning("Lejos: Falta ingresar un cristal");
                 return true;
             }else{
-                stCristalLejos = ((Cristal)GV.buscarPorIdEnLista(txtCristalLejos.getText(), listCristales, new Cristal()));
+                stCristalLejos = ((Cristal)GV.buscarPorNombreEnLista(txtCristalLejos.getText(), listCristales, new Cristal()));
                 txtCristalLejos.setForeground(negro);
                 if(stCristalLejos==null){
                     txtCristalLejos.setForeground(rojo);
@@ -3001,6 +2978,8 @@ public class VCrearFicha extends javax.swing.JPanel {
                     return false;
                 }
             }
+        }else{
+            stCristalLejos = null;
         }
         return true;
     }
@@ -3011,7 +2990,7 @@ public class VCrearFicha extends javax.swing.JPanel {
                 msgWarning("Cerca: Falta ingresar un cristal");
                 return true;
             }else{
-                stCristalCerca = ((Cristal)GV.buscarPorIdEnLista(txtCristalCerca.getText(), listCristales, new Cristal()));
+                stCristalCerca = ((Cristal)GV.buscarPorNombreEnLista(txtCristalCerca.getText(), listCristales, new Cristal()));
                 txtCristalCerca.setForeground(negro);
                 if(stCristalCerca==null){
                     txtCristalCerca.setForeground(rojo);
@@ -3019,6 +2998,8 @@ public class VCrearFicha extends javax.swing.JPanel {
                     return false;
                 }
             }
+        }else{
+            stCristalCerca = null;
         }
         return true;
     }
@@ -3142,49 +3123,27 @@ public class VCrearFicha extends javax.swing.JPanel {
             return;
         }
         if(GV.sincronizacionIsStopped()){//No guardará los datos si hay una sincronización activa
-            GV.cursorWAIT(this);
             if(!cmpFormulario()){
                 warningsText = (GV.getStr(lblMessageStatus.getText()).isEmpty())?"":lblMessageStatus.getText();
                 OptionPane.showMsg("Falta corregir alguna información", warningsText, 2);
-                GV.cursorDF(this);
                 return;
             }
             warningsText = (GV.getStr(lblMessageStatus.getText()).isEmpty())?"":"Observación:"+lblMessageStatus.getText();
             String confirmText = "Registrar los datos\n" + ((warningsText.isEmpty())? "\n":warningsText+"\n")
                 + "¿Estas seguro que los datos son correctos?";
             if(OptionPane.getConfirmation("Confirmar registro", confirmText, 1)){
-                GV.cursorWAIT(this);
                 asigAllDatas();
                 if(save(FICHA)){
                     GV.printFicha(FICHA);
-                    GV.cursorDF(this);
                     reloadPage();
                 }
-                GV.cursorDF(this);
-            }else{
-                GV.cursorDF(this);
-                OptionPane.showMsg("Operación cancelada", "Los datos aún no se han guardado", 1);
-            } 
+            }
         }
     }
     
     private boolean save(Ficha ficha){
         int abono = (int) txtAbono.getValue();
         HistorialPago hp = null;
-        try {
-            if(load.get(ficha.getCod(), 0, new Ficha()) != null){
-                OptionPane.showMsg("No se puede crear registro", "Existe un conflicto con el identificador generado\n"
-                        + "Debe ponerse en contacto con su proveedor.\n\n"
-                        + "Identificador defectuoso:"+ficha.getCod(), 3);
-                return false;
-            }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            OptionPane.showMsg("No se puede crear registro", "No se pudo validar el identificador generado\n"
-                        + "Debe ponerse en contacto con su proveedor.\n\n"
-                        + "Identificador defectuoso:"+ficha.getCod()+"\n"
-                        + "Error: "+ex.getMessage(), 3);
-            return false;
-        }
         
         if(abono > 0){
             if(stTipoPago == null){
@@ -3196,5 +3155,26 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         }
         return load.createFicha(ficha,hp);
+    }
+    
+    private void logicaChkDescuento(){
+        if(chkDescuento.isSelected() && listDescuentos.size() > 0){
+            cboDescuento.setVisible(true);
+            lblDescuento.setVisible(true);
+            txtDescuento.setVisible(true);
+        }else{
+            cboDescuento.setSelectedIndex(0);
+            cboDescuento.setVisible(false);
+            lblDescuento.setVisible(false);
+            txtDescuento.setVisible(false);
+            if(listDescuentos.isEmpty()){
+                chkDescuento.setSelected(false);
+                cboDescuento.setVisible(true);
+                lblDescuento.setVisible(true);
+                txtDescuento.setVisible(true);
+                OptionPane.showMsg("No se puede añadir descuento", "No existen descuentos registrados, debe ingresarlos en \"Configuracion\" opción \"Descuentos\"", 2);
+            }
+        }
+        cmpPrecios();
     }
 }

@@ -2918,7 +2918,7 @@ public class Local implements InterfaceSync {
         }
         return false;
     }
-    private String sqlInsert(Object objectParam){
+    public String sqlInsert(Object objectParam){
         if(objectParam instanceof Armazon){
             Armazon object = (Armazon)objectParam;
             java.sql.Date sqlfecha1 = new java.sql.Date(object.getLastUpdate().getTime());//la transforma a sql.Date

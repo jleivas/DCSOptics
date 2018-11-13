@@ -6,8 +6,27 @@
 package sync.entities;
 
 import bd.LcBd;
+import entities.Cliente;
+import entities.Convenio;
+import entities.Cristal;
+import entities.CuotasConvenio;
+import entities.Descuento;
+import entities.Doctor;
+import entities.Equipo;
+import entities.Institucion;
+import entities.InternMail;
+import entities.Inventario;
 import entities.Lente;
+import entities.Oficina;
+import entities.RegistroBaja;
+import entities.TipoPago;
+import entities.User;
 import entities.context.InternStockDetail;
+import entities.ficha.Armazon;
+import entities.ficha.Despacho;
+import entities.ficha.EtiquetFicha;
+import entities.ficha.Ficha;
+import entities.ficha.HistorialPago;
 import fn.GV;
 import static fn.GV.dateToString;
 import static fn.GV.strToNumber;
@@ -264,4 +283,340 @@ public class LocalInventario {
     private static String getSqlSync() {
         return "sincronizar";
     }
+    
+    public static boolean addObject(Object objectParam) {
+        Log.setLog(className, Log.getReg());
+        try{
+            if(objectParam == null)
+                return false;
+            if(objectParam instanceof Ficha){
+                Ficha object = (Ficha)objectParam;
+                PreparedStatement insert = LcBd.obtener().prepareStatement(
+                        sqlInsert(object)
+                );
+                if(insert.executeUpdate() != 0) {
+                    LcBd.cerrar();
+                    return true;
+                }
+                return false;
+            }
+            if(objectParam instanceof EtiquetFicha){
+                EtiquetFicha object = (EtiquetFicha)objectParam;
+                PreparedStatement insert = LcBd.obtener().prepareStatement(
+                        sqlInsert(object)
+                );
+                if (insert.executeUpdate() != 0) {
+                    LcBd.cerrar();
+                    return true;
+                }
+                return false;
+            }
+            if(objectParam instanceof Armazon){
+                Armazon object = (Armazon)objectParam;
+                PreparedStatement insert = LcBd.obtener().prepareStatement(
+                        sqlInsert(object)
+                );
+                if (insert.executeUpdate() != 0) {
+                    LcBd.cerrar();
+                    return true;
+                }
+                OptionPane.showMsg("Error inseperado en la operación", "armazon: " + object.getCod()+ "\nNo se pudo insertar.", 3);
+                return false;
+            }
+            if(objectParam instanceof Cliente){
+                Cliente object = (Cliente)objectParam;
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Convenio){
+                Convenio object = (Convenio)objectParam;
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Cristal){
+                Cristal object = (Cristal)objectParam;
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof CuotasConvenio){
+                CuotasConvenio object = (CuotasConvenio)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Descuento){
+                Descuento object = (Descuento)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Despacho){
+                Despacho object = (Despacho)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Doctor){
+                Doctor object = (Doctor)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Equipo){
+                Equipo object = (Equipo)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof HistorialPago){
+                HistorialPago object = (HistorialPago)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Institucion){
+                Institucion object = (Institucion)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof InternMail){
+                InternMail object = (InternMail)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Inventario){
+                Inventario object = (Inventario)objectParam;
+                  
+                PreparedStatement insert = LcBd.obtener().prepareStatement(
+                        sqlInsert(object)
+                               );
+                if(insert.executeUpdate()!=0){
+                    LcBd.cerrar();
+
+                    return true;
+                }
+            }
+            if(objectParam instanceof Lente){
+                Lente object = (Lente)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof Oficina){
+                Oficina object = (Oficina)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof RegistroBaja){
+                RegistroBaja object = (RegistroBaja)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof TipoPago){
+                TipoPago object = (TipoPago)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+
+                        return true;
+                    }
+                return false;
+            }
+            if(objectParam instanceof User){
+                User object = (User)objectParam;
+                
+                    PreparedStatement insert = LcBd.obtener().prepareStatement(
+                            sqlInsert(object)
+                    );
+                    if (insert.executeUpdate() != 0) {
+                        LcBd.cerrar();
+                        //OptionPane.showMsg("Operación realizada correctamente", "Usuario: "+object.getUsername()+"\nId: "+object.getId()+"\nAgregado correctamente.", 1);
+                        return true;
+                    }
+                return false;
+            }else{
+                OptionPane.showMsg("Error inseperado en la operación", "El objeto no se pudo insertar.\n\n"+className+" no soporta el tipo de registro enviado.", 3);
+                return false;
+            }
+        }catch( InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException | NullPointerException ex){
+            Logger.getLogger(Local.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    private static String sqlInsert(Object objectParam){
+        return GV.LOCAL_SYNC.sqlInsert(objectParam);
+    }
+    
+    public static boolean addFicha(Ficha ficha, Armazon cerca, Armazon lejos, HistorialPago hp){
+        try {
+            PreparedStatement insert = LcBd.obtener().prepareStatement(
+                    sqlInsert(hp)
+            );
+            if(insert.executeUpdate() == 0) {
+                return false;
+            }
+            java.sql.Date sqlfechaLejos = new java.sql.Date(lejos.getLastUpdate().getTime());
+            java.sql.Date sqlfechaCerca = new java.sql.Date(cerca.getLastUpdate().getTime());
+            insert = LcBd.obtener().prepareStatement(
+                    sqlInsert(
+                            "INSERT INTO armazon VALUES('"
+                            + lejos.getCod() + "',"
+                            + lejos.getTipo()+ ",'"
+                            + lejos.getMarca()+ "',"
+                            + lejos.getPrecioMarca()+ ",'"
+                            + lejos.getCristal()+ "',"
+                            + lejos.getPrecioCristal()+ ",'"
+                            + lejos.getAdd()+ "','"
+                            + lejos.getOdA()+ "','"
+                            + lejos.getOdEsf()+ "','"
+                            + lejos.getOdCil()+ "','"
+                            + lejos.getOiA()+ "','"
+                            + lejos.getOiEsf()+ "','"
+                            + lejos.getOiCil()+ "',"
+                            + lejos.getDp()+ ","
+                            + lejos.getEndurecido()+ ","
+                            + lejos.getCapa()+ ","
+                            + lejos.getPlusMax()+ ",'"
+                            + lejos.getIdFicha()+ "',"
+                            + lejos.getEstado() + ",'"
+                            + sqlfechaLejos + "',"
+                            + lejos.getLastHour() + "),"
+                            +"('"
+                            + cerca.getCod() + "',"
+                            + cerca.getTipo()+ ",'"
+                            + cerca.getMarca()+ "',"
+                            + cerca.getPrecioMarca()+ ",'"
+                            + cerca.getCristal()+ "',"
+                            + cerca.getPrecioCristal()+ ",'"
+                            + cerca.getAdd()+ "','"
+                            + cerca.getOdA()+ "','"
+                            + cerca.getOdEsf()+ "','"
+                            + cerca.getOdCil()+ "','"
+                            + cerca.getOiA()+ "','"
+                            + cerca.getOiEsf()+ "','"
+                            + cerca.getOiCil()+ "',"
+                            + cerca.getDp()+ ","
+                            + cerca.getEndurecido()+ ","
+                            + cerca.getCapa()+ ","
+                            + cerca.getPlusMax()+ ",'"
+                            + cerca.getIdFicha()+ "',"
+                            + cerca.getEstado() + ",'"
+                            + sqlfechaCerca + "',"
+                            + cerca.getLastHour() + ")"
+                    )
+            );
+            if(insert.executeUpdate() == 0) {
+                return false;
+            }
+            insert = LcBd.obtener().prepareStatement(
+                    sqlInsert(ficha)
+            );
+            if(insert.executeUpdate() == 0) {
+                return false;
+            }
+            LcBd.cerrar();
+            return true;
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
+            Logger.getLogger(LocalInventario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
 }

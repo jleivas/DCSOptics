@@ -495,78 +495,6 @@ public class Dao{
     public ArrayList<InternMail> mensajes(int remitente, int destinatario, int estado) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException{
         return GV.LOCAL_SYNC.mensajes(remitente, destinatario, estado);
     }
-//    public void sincronize() {
-//        Log.setLog(className,Log.getReg());
-//        System.out.println(Log.getLog());
-//        try {
-//            if(GV.isOnline()){
-//                /*Usuario*/
-//                for (Object object : GV.REMOTE_SYNC.listar(GV.LAST_UPDATE,new User())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (User)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar(GV.LAST_UPDATE,new User())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (User)object);
-//                }
-//                /*Cliente*/
-//                for (Object object : GV.REMOTE_SYNC.listar(GV.LAST_UPDATE,new Cliente())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Cliente)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar(GV.LAST_UPDATE,new Cliente())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Cliente)object);
-//                }
-//                /*Cristal*/
-//                for (Object object : GV.REMOTE_SYNC.listar(GV.LAST_UPDATE,new Cristal())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Cristal)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar(GV.LAST_UPDATE,new Cristal())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Cristal)object);
-//                }
-//                /*Descuento*/
-//                for (Object object : GV.REMOTE_SYNC.listar(GV.LAST_UPDATE,new Descuento())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Descuento)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar(GV.LAST_UPDATE,new Descuento())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Descuento)object);
-//                }
-//                /*Doctor*/
-//                for (Object object : GV.REMOTE_SYNC.listar(GV.LAST_UPDATE,new Doctor())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Doctor)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar(GV.LAST_UPDATE,new Doctor())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Doctor)object);
-//                }
-//                /*Oficina*/
-//                for (Object object : GV.REMOTE_SYNC.listar(GV.LAST_UPDATE,new Oficina())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Oficina)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar(GV.LAST_UPDATE,new Oficina())) {
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Oficina)object);
-//                } 
-//            }else{
-//                for (Object object : GV.LOCAL_SYNC.listar("-2",new User())) {//falta opcion en listar
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (User)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar("-2",new Cliente())) {//falta opcion en listar
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Cliente)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar("-2",new Cristal())) {//falta opcion en listar
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Cristal)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar("-2",new Descuento())) {//falta opcion en listar
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Descuento)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar("-2",new Doctor())) {//falta opcion en listar
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Doctor)object);
-//                }
-//                for (Object object : GV.LOCAL_SYNC.listar("-2",new Oficina())) {//falta opcion en listar
-//                    sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, (Oficina)object);
-//                }
-//            }  
-//        } catch (SQLException | ClassNotFoundException ex) {
-//            Logger.getLogger(Dao.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-
 
     /**
      * Retorna el id actual de las entidades Armazon, Despacho, Ficha, HistorialPago y RegistroBaja
@@ -601,23 +529,23 @@ public class Dao{
                 GV.LOCAL_SYNC.add(ficha.getCliente());
             }  
         }
-        if(GV.LOCAL_SYNC.add(ficha.getCerca())){
+        if(LocalInventario.addObject(ficha.getCerca())){
             String idLente = ficha.getCerca().getMarca();
             if(!idLente.isEmpty()){
                 decreaseStock(idLente, 1);
             }
         }
-        if(GV.LOCAL_SYNC.add(ficha.getLejos())){
+        if(LocalInventario.addObject(ficha.getLejos())){
             String idLente = ficha.getLejos().getMarca();
             if(!idLente.isEmpty()){
                 decreaseStock(idLente, 1);
             }
         }  
-        GV.LOCAL_SYNC.add(ficha);
+        LocalInventario.addObject(ficha);
         if(hp != null){
             if(hp.getAbono() > 0){
                 hp.setCod(getCurrentCod(hp));
-                GV.LOCAL_SYNC.add(hp);
+                LocalInventario.addObject(hp);
             }
         }
         return true;
