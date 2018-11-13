@@ -514,7 +514,6 @@ public class VFichas extends javax.swing.JPanel {
 
     private void cboFilterOptionsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboFilterOptionsItemStateChanged
         isFiltering = true;
-        GV.setCboFichasFilter(cboFilterOptions.getSelectedIndex());
         load();
     }//GEN-LAST:event_cboFilterOptionsItemStateChanged
 
@@ -664,6 +663,7 @@ public class VFichas extends javax.swing.JPanel {
 
     private void load(){
         int index = buildIndex(cboMostrar.getSelectedIndex());
+        GV.setCboFichasFilter(cboFilterOptions.getSelectedIndex());
         cargarDatos(index);
     }
     
