@@ -33,6 +33,8 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.0.5 (V405)](https://github.com/softdirex/DCSOptics/search?q=V405&type=Commits)
+ - [Refactoring de generación de reporte para convenios (V405-008)](https://github.com/softdirex/DCSOptics/search?q=V405-008&type=Commits)
+ - [Anular fichas del dia y recuperar stock (V405-007)](https://github.com/softdirex/DCSOptics/search?q=V405-007&type=Commits)
  - [Corrección de registro de abonos en CRUD Fichas UI (V405-006)](https://github.com/softdirex/DCSOptics/search?q=V405-006&type=Commits)
  - [Ver ventas propias del usuario en UI (V405-005)](https://github.com/softdirex/DCSOptics/search?q=V405-005&type=Commits)
  - [Generar excel con sistema antiguo (V405-004)](https://github.com/softdirex/DCSOptics/search?q=V405-004&type=Commits)
