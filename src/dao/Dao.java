@@ -229,6 +229,9 @@ public class Dao{
     }
     
     public boolean increaseStock(String idLente, int cantidad)  {
+        if(GV.getStr(idLente).isEmpty()){
+            return false;
+        }
         if(cantidad < 0){
             return false;
         }
@@ -290,11 +293,22 @@ public class Dao{
             if(type instanceof SyncClass){
                 if(type instanceof Ficha){
                     if(GV.fechaPasada(((Ficha)temp).getFecha())){
-                        OptionPane.showMsg("No se puede eliminar", "Esta opción aún no se encuentra disponible,\n"
+                        OptionPane.showMsg("No se puede eliminar", "Esta opción no se encuentra disponible,\n"
                                 + "solo se pueden anular fichas generadas hoy.", 2);
                         return false;
                     }
                     ((SyncClass)temp).setEstado(((((SyncClass)temp).getEstado())*-1));
+                    String idCerca = null;
+                    String idLejos = null;
+                    if(((Ficha)temp).getCerca()!=null){
+                        idCerca = ((Ficha)temp).getCerca().getMarca();
+                        increaseStock(idCerca, 1);
+                    }
+                    if(((Ficha)temp).getLejos()!=null){
+                        idLejos = ((Ficha)temp).getLejos().getMarca();
+                        increaseStock(idLejos, 1);
+                    }
+                    
                 }else{
                     ((SyncClass)temp).setEstado(0);
                 }
