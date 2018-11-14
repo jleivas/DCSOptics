@@ -14,6 +14,7 @@ import fn.GV;
 import javax.swing.table.DefaultTableModel;
 import fn.Icons;
 import fn.OptionPane;
+import fn.globalValues.GlobalValuesVariables;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -24,8 +25,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.RowFilter;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.TableRowSorter;
 import sync.entities.LocalInventario;
+import view.opanel.OpanelIncreaseStock;
 
 /**
  *
@@ -91,9 +94,10 @@ public class VLentes extends javax.swing.JPanel {
         jLabel19 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
-        btnStock = new javax.swing.JLabel();
+        btnStockDown = new javax.swing.JLabel();
         cboInventarioFilter = new javax.swing.JComboBox<>();
         btnLoad = new javax.swing.JLabel();
+        btnStockUp = new javax.swing.JLabel();
         pnl1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -256,17 +260,17 @@ public class VLentes extends javax.swing.JPanel {
             }
         });
 
-        btnStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Move_Stock_50px.png"))); // NOI18N
-        btnStock.setToolTipText("Reducir Stock");
-        btnStock.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnStockDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_Down_50px.png"))); // NOI18N
+        btnStockDown.setToolTipText("Reducir Stock");
+        btnStockDown.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnStockMouseClicked(evt);
+                btnStockDownMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnStockMouseEntered(evt);
+                btnStockDownMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnStockMouseExited(evt);
+                btnStockDownMouseExited(evt);
             }
         });
 
@@ -292,6 +296,20 @@ public class VLentes extends javax.swing.JPanel {
             }
         });
 
+        btnStockUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_Up_50px.png"))); // NOI18N
+        btnStockUp.setToolTipText("Incrementar Stock");
+        btnStockUp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnStockUpMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnStockUpMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnStockUpMouseExited(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -303,8 +321,10 @@ public class VLentes extends javax.swing.JPanel {
                 .addComponent(btnEliminar)
                 .addGap(18, 18, 18)
                 .addComponent(btnRestaurar)
-                .addGap(18, 18, 18)
-                .addComponent(btnStock)
+                .addGap(77, 77, 77)
+                .addComponent(btnStockUp)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnStockDown)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -339,7 +359,8 @@ public class VLentes extends javax.swing.JPanel {
                     .addComponent(btnAbrir, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnRestaurar, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(cboMostrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnStock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnStockDown, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnStockUp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(36, 36, 36))
         );
 
@@ -1273,62 +1294,7 @@ public class VLentes extends javax.swing.JPanel {
     }//GEN-LAST:event_txtCod2KeyTyped
 
     private void btnUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUpdateMouseClicked
-        try {
-            Inventario inventario = (Inventario)load.get(txtInventario2.getText(), 0, new Inventario());
-            int idInventario = (inventario!= null)?inventario.getId():0;
-            cWT();
-            stLente.setClasificacion(cboTipo2.getSelectedIndex());
-            stLente.setColor(txtCol2.getText());
-            stLente.setDescripcion(txtDsc2.getText());
-            stLente.setFlex(cboFlex2.getSelectedIndex());
-            stLente.setInventario(idInventario);
-            stLente.setMarca(txtMar2.getText());
-            stLente.setMaterial(txtMat2.getText());
-            try {
-                txtPrecAct2.commitEdit();
-            } catch (ParseException ex) {
-                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
-                GV.mensajeExcepcion("Error en valor ingresado al precio actual.", 2);
-                return;
-            }
-            try {
-                txtPrecRef2.commitEdit();
-            } catch (ParseException ex) {
-                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
-                GV.mensajeExcepcion("Error en valor ingresado al precio de referencia.", 2);
-                return;
-            }
-            try {
-                txtStock2.commitEdit();
-            } catch (ParseException ex) {
-                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
-                GV.mensajeExcepcion("Error en valor ingresado al stock.", 2);
-                return;
-            }
-            try {
-                txtStockMin2.commitEdit();
-            } catch (ParseException ex) {
-                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
-                GV.mensajeExcepcion("Error en valor ingresado al stock minimo.", 2);
-                return;
-            }
-            stLente.setPrecioAct((int)txtPrecAct2.getValue());
-            stLente.setPrecioRef((int)txtPrecRef2.getValue());
-            stLente.setStock((int)txtStock2.getValue());
-            stLente.setStockMin((int)txtStockMin2.getValue());
-            stLente.setTipo(txtTip2.getText());
-            
-            if(!load.updateFromUI(stLente)){
-                cDF();
-                return;
-            }
-            cargarDatos("0");
-            cDF();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            OptionPane.showMsg("Error al cargar los datos para modificación.", "Ocurrió un error inesperado al momento de cargar los datos."
-                    + "\nDetalle: "+ex, 3);
-        }
-        cDF();
+        updateLente();
     }//GEN-LAST:event_btnUpdateMouseClicked
 
     private void btnUpdateMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUpdateMouseEntered
@@ -1468,7 +1434,7 @@ public class VLentes extends javax.swing.JPanel {
         btnCancel2.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnCancel2.getIcon().toString()))));
     }//GEN-LAST:event_btnCancel2MouseExited
 
-    private void btnStockMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockMouseClicked
+    private void btnStockDownMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockDownMouseClicked
         try{
             cWT();
             int fila = tblListar.getSelectedRow();
@@ -1478,18 +1444,18 @@ public class VLentes extends javax.swing.JPanel {
             cDF();
         }catch(Exception e){
             OptionPane.showMsg("Seleccione un elemento en la tabla","Debe hacer clic sobre un elemento de la tabla,\n"
-                    + "Luego presione el botón \"Ver\".",  2);
+                    + "Luego presione el botón \"Reducir stock\".",  2);
             cDF();
         }
-    }//GEN-LAST:event_btnStockMouseClicked
+    }//GEN-LAST:event_btnStockDownMouseClicked
 
-    private void btnStockMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockMouseEntered
-        btnStock.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnStock.getIcon().toString()))));
-    }//GEN-LAST:event_btnStockMouseEntered
+    private void btnStockDownMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockDownMouseEntered
+        btnStockDown.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnStockDown.getIcon().toString()))));
+    }//GEN-LAST:event_btnStockDownMouseEntered
 
-    private void btnStockMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockMouseExited
-        btnStock.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnStock.getIcon().toString()))));
-    }//GEN-LAST:event_btnStockMouseExited
+    private void btnStockDownMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockDownMouseExited
+        btnStockDown.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnStockDown.getIcon().toString()))));
+    }//GEN-LAST:event_btnStockDownMouseExited
 
     private void cboInventarioFilterItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboInventarioFilterItemStateChanged
         
@@ -1524,6 +1490,18 @@ public class VLentes extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtInventario2KeyTyped
 
+    private void btnStockUpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockUpMouseClicked
+        increaseStock();
+    }//GEN-LAST:event_btnStockUpMouseClicked
+
+    private void btnStockUpMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockUpMouseEntered
+        btnStockUp.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnStockUp.getIcon().toString()))));
+    }//GEN-LAST:event_btnStockUpMouseEntered
+
+    private void btnStockUpMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnStockUpMouseExited
+        btnStockUp.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnStockUp.getIcon().toString()))));
+    }//GEN-LAST:event_btnStockUpMouseExited
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAbrir;
@@ -1533,7 +1511,8 @@ public class VLentes extends javax.swing.JPanel {
     private javax.swing.JLabel btnGuardar;
     private javax.swing.JLabel btnLoad;
     private javax.swing.JLabel btnRestaurar;
-    private javax.swing.JLabel btnStock;
+    private javax.swing.JLabel btnStockDown;
+    private javax.swing.JLabel btnStockUp;
     private javax.swing.JLabel btnUpdate;
     private javax.swing.JLabel btnUpdate2;
     private javax.swing.JComboBox<String> cboFlex;
@@ -1663,10 +1642,12 @@ public class VLentes extends javax.swing.JPanel {
     private void load(){
         if(cboMostrar.getSelectedIndex()==0){//en nueva version cargar ventana completa con lista de clientes estatica global
             cargarDatos("0");
-            btnStock.setVisible(true);
+            btnStockDown.setVisible(true);
+            btnStockUp.setVisible(true);
         }else{
             cargarDatos("-1");
-            btnStock.setVisible(false);
+            btnStockDown.setVisible(false);
+            btnStockUp.setVisible(false);
         }
     }
     private void cargarDatos(String listar) {
@@ -1713,6 +1694,7 @@ public class VLentes extends javax.swing.JPanel {
         stLente = load.getLente(cod,invName);
         loadPanels(2);
         if(stLente!=null){
+            txtStock2.setModel(new SpinnerNumberModel(stLente.getStock(), stLente.getStock(), stLente.getStock(), 1));
             if(stLente.getCod().isEmpty() || stLente.getCod().equals("null"))
                 txtCod2.setText("");
             else
@@ -1824,5 +1806,82 @@ public class VLentes extends javax.swing.JPanel {
     }
     private void cDF(){
         GV.cursorDF(this);
+    }
+    
+    private void updateLente(){
+        try {
+            Inventario inventario = (Inventario)load.get(txtInventario2.getText(), 0, new Inventario());
+            int idInventario = (inventario!= null)?inventario.getId():0;
+            cWT();
+            stLente.setClasificacion(cboTipo2.getSelectedIndex());
+            stLente.setColor(txtCol2.getText());
+            stLente.setDescripcion(txtDsc2.getText());
+            stLente.setFlex(cboFlex2.getSelectedIndex());
+            stLente.setInventario(idInventario);
+            stLente.setMarca(txtMar2.getText());
+            stLente.setMaterial(txtMat2.getText());
+            try {
+                txtPrecAct2.commitEdit();
+            } catch (ParseException ex) {
+                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
+                GV.mensajeExcepcion("Error en valor ingresado al precio actual.", 2);
+                cDF();
+                return;
+            }
+            try {
+                txtPrecRef2.commitEdit();
+            } catch (ParseException ex) {
+                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
+                GV.mensajeExcepcion("Error en valor ingresado al precio de referencia.", 2);
+                cDF();
+                return;
+            }
+            try {
+                txtStock2.commitEdit();
+            } catch (ParseException ex) {
+                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
+                GV.mensajeExcepcion("Error en valor ingresado al stock.", 2);
+                cDF();
+                return;
+            }
+            try {
+                txtStockMin2.commitEdit();
+            } catch (ParseException ex) {
+                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
+                GV.mensajeExcepcion("Error en valor ingresado al stock minimo.", 2);
+                cDF();
+                return;
+            }
+            stLente.setPrecioAct((int)txtPrecAct2.getValue());
+            stLente.setPrecioRef((int)txtPrecRef2.getValue());
+            stLente.setStockMin((int)txtStockMin2.getValue());
+            stLente.setTipo(txtTip2.getText());
+            
+            if(!load.updateFromUI(stLente)){
+                cDF();
+                return;
+            }
+            cargarDatos("0");
+            cDF();
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            OptionPane.showMsg("Error al cargar los datos para modificación.", "Ocurrió un error inesperado al momento de cargar los datos."
+                    + "\nDetalle: "+ex, 3);
+        }
+        cDF();
+    }
+    
+    private void increaseStock(){
+        try{
+            cWT();
+            int fila = tblListar.getSelectedRow();
+            String codigo = tblListar.getValueAt(fila, 0).toString();
+            GlobalValuesVariables.setIdLenteIncreaseStock(codigo);
+            OptionPane.showOptionPanel(new OpanelIncreaseStock(), "Incrementar Stock");
+            cDF();
+        }catch(Exception e){
+            OptionPane.showMsg("Seleccione un elemento en la tabla","Debe hacer clic sobre un elemento de la tabla,\n"
+                    + "Luego presione el botón \"Incrementar Stock\".",  2);
+            cDF();
+        }
     }
 }

@@ -10,7 +10,6 @@ import dao.Dao;
 import entities.Convenio;
 import entities.Equipo;
 import entities.context.SalesFichaJasperReport;
-import entities.context.SalesReportFicha;
 import fn.GV;
 import static fn.GV.dateToString;
 import static fn.GV.getStr;
@@ -99,6 +98,7 @@ public class GlobalValuesVariables {
     private static String RUT_CLIENT_SELECTED="";
     private static String ID_USER_SELECTED="";
     private static String ID_CONVENIO_SELECTED="";
+    private static String ID_LENTE_INCREASE_STOCK;
     //used in filterList()
     private static List<String> FILTER_LIST = new ArrayList<>();
     
@@ -582,5 +582,13 @@ public class GlobalValuesVariables {
     
     public static void setIntentosAccesoReset(){
         INTENTOS_ACCESO = 0;
+    }
+
+    public static void setIdLenteIncreaseStock(String codigo) {
+        ID_LENTE_INCREASE_STOCK = codigo;
+    }
+    
+    public static String getIdLenteIncreaseStock() {
+        return ID_LENTE_INCREASE_STOCK;
     }
 }

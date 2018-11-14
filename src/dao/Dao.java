@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sun.nio.cs.ext.GB18030;
 import sync.entities.LocalInventario;
 
 /**
@@ -227,6 +228,30 @@ public class Dao{
         }
     }
     
+    public boolean increaseStock(String idLente, int cantidad)  {
+        if(cantidad < 0){
+            return false;
+        }
+        try{
+            Lente temp = (Lente) get(idLente, 0, new Lente());
+            int newStock = 0;
+            if(temp != null){
+                newStock = temp.getStock() + cantidad;
+                if(newStock >= 0){
+                    temp.setStock(newStock);
+                    return update(temp);
+                }else{
+                    OptionPane.showMsg("No se pudo modificar el stock", "El nuevo stock no es disponible,\n"
+                            + "debe ser mayor que cero", 2);
+                }
+            }
+            return false;
+        }catch(IllegalAccessException | InstantiationException | SQLException | ClassNotFoundException ex){
+            return false;
+        }
+    }
+    
+    
     public boolean restoreOrDeleteFromUI(Object object){
         if(!validaPrivilegiosParaEstados(object)){
             if(((SyncClass)object).getEstado() == 0){
@@ -260,119 +285,63 @@ public class Dao{
     
     public boolean delete(String cod,int id, Object type) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Log.setLog(className,Log.getReg());
-        Object temp =  null;
-        if(GV.isOnline() && !(type instanceof Ficha)){
-            temp =  GV.REMOTE_SYNC.getElement(cod,id, type);
-            if(temp != null){//valida si ya existe el desname
-                if(temp instanceof SyncStringId){
-                    if(temp instanceof Ficha){
-                        ((SyncStringId)temp).setEstado(((((SyncStringId)temp).getEstado())*-1));
-                        ((SyncStringId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                        ((SyncStringId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                    }else{
-                        ((SyncStringId)temp).setEstado(0);
-                        ((SyncStringId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                        ((SyncStringId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                    }  
-                } 
-                if(temp instanceof SyncIntId){
-                    ((SyncIntId)temp).setEstado(0);
-                    ((SyncIntId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                    ((SyncIntId)temp).setLastHour(Cmp.hourToInt(new Date()));
+        Object temp =  GV.LOCAL_SYNC.getElement(cod,id, type);
+        if(temp != null){
+            if(type instanceof SyncClass){
+                if(type instanceof Ficha){
+                    if(GV.fechaPasada(((Ficha)temp).getFecha())){
+                        OptionPane.showMsg("No se puede eliminar", "Esta opción aún no se encuentra disponible,\n"
+                                + "solo se pueden anular fichas generadas hoy.", 2);
+                        return false;
+                    }
+                    ((SyncClass)temp).setEstado(((((SyncClass)temp).getEstado())*-1));
+                }else{
+                    ((SyncClass)temp).setEstado(0);
                 }
-                try {
-                    return sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, temp);
-                } catch (SQLException | ClassNotFoundException ex) {
-                    Logger.getLogger(Dao.class.getName()).log(Level.SEVERE, null, ex);
+                ((SyncClass)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
+                ((SyncClass)temp).setLastHour(Cmp.hourToInt(new Date()));
+                
+                if(GV.isOnline()){
+                    GV.REMOTE_SYNC.update(temp);
                 }
+                return GV.LOCAL_SYNC.update(temp);
             }else{
-                OptionPane.showMsg("No se puede eliminar registro", "El registro no existe.", 2);
+                OptionPane.showMsg("No se puede eliminar", "El registro no tiene tipo válido.", 2);
+                return false;
             }
         }else{
-            temp =  GV.LOCAL_SYNC.getElement(cod,id,type);
-            if(temp != null){//valida si ya existe el desname
-                if(temp instanceof SyncStringId){
-                    if(temp instanceof Ficha){
-                        ((SyncStringId)temp).setEstado(((((SyncStringId)temp).getEstado())*-1));
-                        ((SyncStringId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                        ((SyncStringId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                    }else{
-                        ((SyncStringId)temp).setEstado(0);
-                        ((SyncStringId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                        ((SyncStringId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                    }  
-                } 
-                if(temp instanceof SyncIntId){
-                    ((SyncIntId)temp).setEstado(0);
-                    ((SyncIntId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                    ((SyncIntId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                }
-                try {
-                    return sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, temp);
-                } catch (SQLException | ClassNotFoundException ex) {
-                    Logger.getLogger(Dao.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }else{
-                OptionPane.showMsg("No se puede eliminar registro", "El registro no existe.", 2);
-            }
-        }
-        return false;
+            OptionPane.showMsg("No se puede eliminar", "El registro no existe.", 2);
+            return false;
+        } 
     }
 
     public boolean restore(String cod,int id,Object type) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Log.setLog(className,Log.getReg());
-        Object temp =  null;
-        if(GV.isOnline() && !(type instanceof Ficha)){
-            temp =  GV.REMOTE_SYNC.getElement(cod,id,type);
-            if(temp != null){//valida si ya existe el desname
-                if(temp instanceof SyncStringId){
-                    ((SyncStringId)temp).setEstado(1);
-                    ((SyncStringId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                    ((SyncStringId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                } 
-                if(temp instanceof SyncIntId){
-                    ((SyncIntId)temp).setEstado(1);
-                    ((SyncIntId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                    ((SyncIntId)temp).setLastHour(Cmp.hourToInt(new Date()));
+        Object temp =  GV.LOCAL_SYNC.getElement(cod,id, type);
+        if(temp != null){
+            if(type instanceof SyncClass){
+                if(type instanceof Ficha){
+                    OptionPane.showMsg("No se puede restaurar", "Esta opción aún no se encuentra disponible.", 2);
+                    return false;
+                    //((SyncClass)temp).setEstado(((((SyncClass)temp).getEstado())*-1));
+                }else{
+                    ((SyncClass)temp).setEstado(1);
                 }
-                try {
-                    return sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, temp);
-                } catch (SQLException | ClassNotFoundException ex) {
-                    Logger.getLogger(Dao.class.getName()).log(Level.SEVERE, null, ex);
+                ((SyncClass)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
+                ((SyncClass)temp).setLastHour(Cmp.hourToInt(new Date()));
+                
+                if(GV.isOnline()){
+                    GV.REMOTE_SYNC.update(temp);
                 }
+                return GV.LOCAL_SYNC.update(temp);
             }else{
-                OptionPane.showMsg("No se puede eliminar registro", "El registro no existe o fué modificado\n"
-                        + "sincronice los datos para solucionar este error.", 2);
+                OptionPane.showMsg("No se puede restaurar", "El registro no tiene tipo válido.", 2);
+                return false;
             }
         }else{
-            temp =  GV.LOCAL_SYNC.getElement(cod,id,type);
-            if(temp != null){//valida si ya existe el desname
-                if(temp instanceof SyncStringId){
-                    if(type instanceof Ficha){
-                        ((SyncStringId)temp).setEstado((((SyncStringId)temp).getEstado())*-1);
-                        ((SyncStringId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                        ((SyncStringId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                    }else{
-                        ((SyncStringId)temp).setEstado(1);
-                        ((SyncStringId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                        ((SyncStringId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                    }
-                } 
-                if(temp instanceof SyncIntId){
-                    ((SyncIntId)temp).setEstado(1);
-                    ((SyncIntId)temp).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
-                    ((SyncIntId)temp).setLastHour(Cmp.hourToInt(new Date()));
-                }
-                try {
-                    return sync.Sync.add(GV.LOCAL_SYNC, GV.REMOTE_SYNC, temp);
-                } catch (SQLException | ClassNotFoundException ex) {
-                    Logger.getLogger(Dao.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }else{
-                OptionPane.showMsg("No se puede eliminar registro", "El registro no existe.", 2);
-            }
-        }
-        return false;
+            OptionPane.showMsg("No se puede restaurar", "El registro no existe.", 2);
+            return false;
+        } 
     }
     
     /**
