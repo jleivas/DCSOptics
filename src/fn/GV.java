@@ -202,11 +202,7 @@ public class GV extends GlobalValuesCursor{
         return GlobalValuesMailProperties.getMailReport();
     }
     /*********************END MAIL*****************************/
-     /**************************BEGIN PRINT**********************************/
-    public static void printFichaConvenio(){
-        GlobalValuesPrint.print(getFichaConvenio());
-    }
-    
+     /**************************BEGIN PRINT**********************************/    
     public static void printFichas(List<Object> fichas) {
         GlobalValuesPrint.printFichas(fichas);
     }
@@ -222,12 +218,13 @@ public class GV extends GlobalValuesCursor{
     public static void printSalesReport(List<Object> fichas,String title){
         GlobalValuesPrint.printSalesReport(fichas, title);
     }
-    public static void printFicha(){
-        GlobalValuesPrint.print(getFicha());
-    }
     
     public static void printFicha(Ficha ficha){
-        GlobalValuesPrint.print(ficha);
+        GlobalValuesPrint.printFichaView(ficha);
+    }
+    
+    public static void printCotizacion(Ficha ficha){
+        GlobalValuesPrint.printCotizacionView(ficha);
     }
      /**************************END PRINT************************************/
     /**************************BEGIN FUNTIONS**********************************/
@@ -1109,6 +1106,10 @@ public class GV extends GlobalValuesCursor{
     /*****************************BEGIN DIRECTORY***************************************/
     public static String directoryFilesPath(){
         return GlobalValuesDirectories.getFilesPath();
+    }
+    
+    public static String directoryFilesReportsPath(){
+        return GlobalValuesDirectories.getFilesReportsPath();
     }
     
     public static String directoryLocalPath(){

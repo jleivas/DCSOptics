@@ -203,6 +203,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         lblMessageStatus = new javax.swing.JLabel();
         btnSelectConvenios = new javax.swing.JLabel();
         btnClearConvenio = new javax.swing.JLabel();
+        btnCotizar = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -253,10 +254,10 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
         txtFecha.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 txtFechaInputMethodTextChanged(evt);
-            }
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         txtFecha.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -1462,6 +1463,20 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         });
 
+        btnCotizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Purchase_Order_50px.png"))); // NOI18N
+        btnCotizar.setToolTipText("Generar cotización");
+        btnCotizar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCotizarMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnCotizarMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnCotizarMouseExited(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -1497,9 +1512,11 @@ public class VCrearFicha extends javax.swing.JPanel {
                         .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnClearConvenio)
-                        .addGap(31, 31, 31)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSelectConvenios)
-                        .addGap(18, 18, 18)
+                        .addGap(70, 70, 70)
+                        .addComponent(btnCotizar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSave)
                         .addGap(51, 51, 51)))
                 .addContainerGap(59, Short.MAX_VALUE))
@@ -1528,7 +1545,8 @@ public class VCrearFicha extends javax.swing.JPanel {
                     .addComponent(btnSave)
                     .addComponent(btnSelectConvenios)
                     .addComponent(btnClearConvenio)
-                    .addComponent(lblMessageStatus))
+                    .addComponent(lblMessageStatus)
+                    .addComponent(btnCotizar))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -2155,9 +2173,24 @@ public class VCrearFicha extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDoctorActionPerformed
 
+    private void btnCotizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCotizarMouseClicked
+        GV.cursorWAIT(this);
+        cotizar();
+        GV.cursorDF(this);
+    }//GEN-LAST:event_btnCotizarMouseClicked
+
+    private void btnCotizarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCotizarMouseEntered
+        btnCotizar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnCotizar.getIcon().toString()))));
+    }//GEN-LAST:event_btnCotizarMouseEntered
+
+    private void btnCotizarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCotizarMouseExited
+        btnCotizar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnCotizar.getIcon().toString()))));
+    }//GEN-LAST:event_btnCotizarMouseExited
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnClearConvenio;
+    private javax.swing.JLabel btnCotizar;
     private javax.swing.JLabel btnSave;
     private javax.swing.JLabel btnSelectConvenios;
     private javax.swing.JComboBox<String> cboDescuento;
@@ -3176,5 +3209,47 @@ public class VCrearFicha extends javax.swing.JPanel {
             }
         }
         cmpPrecios();
+    }
+    
+    private void cotizar(){
+        String warningsText = "";
+        if(!commitSpinner()){
+            return;
+        }
+            if(!cmpFormularioQuote()){
+                warningsText = (GV.getStr(lblMessageStatus.getText()).isEmpty())?"":lblMessageStatus.getText();
+                OptionPane.showMsg("Falta corregir alguna información", warningsText, 2);
+                return;
+            }
+            warningsText = (GV.getStr(lblMessageStatus.getText()).isEmpty())?"":"Observación:"+lblMessageStatus.getText();
+            String confirmText = "Ver cotización\n" + ((warningsText.isEmpty())? "\n":warningsText+"\n")
+                + "¿Estas seguro que los datos son correctos?";
+            if(OptionPane.getConfirmation("Confirmar registro", confirmText, 1)){
+                asigAllDatas();
+                try{
+                    load.add(FICHA.getCliente());
+                }catch(InstantiationException | IllegalAccessException ex){
+                   GV.mensajeExcepcion(ex.getMessage(), 3);
+                }
+                GV.printCotizacion(FICHA);
+                reloadPage();
+                
+            }
+    }
+    
+    private boolean cmpFormularioQuote(){
+        msgRejectedClear();
+        if(!cmpRut())return false;
+        if(!cmpNombre())return false;
+        if(!cmpContactos())return false;
+        if(!cmpCamposCliente())return false;
+        if(!cmpNacimiento())return false;
+        if(!cmpLenteLejos())return false;
+        if(!cmpLenteCerca())return false;
+        if(!cmpLentesIguales())return false;
+        if(!cmpCristalLejos())return false;
+        if(!cmpCristalCerca())return false;
+        if(!cmpPrecios())return false;
+        return true;
     }
 }

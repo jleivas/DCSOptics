@@ -11,6 +11,7 @@ import entities.Convenio;
 import entities.ficha.Ficha;
 import fn.CalibracionGlobal;
 import fn.GV;
+import static fn.GV.directoryFilesReportsPath;
 import fn.OptionPane;
 import java.awt.Font;
 import java.awt.Frame;
@@ -53,7 +54,35 @@ public class GlobalValuesPrint {
         FichaDataSource dt = new FichaDataSource();
         dt.addFicha(ficha);
         try{
-            is = new FileInputStream("src"+File.separator+"reportes"+File.separator+"ficha.jrxml");
+            is = new FileInputStream(directoryFilesReportsPath()+"ficha.jrxml");
+        }catch(FileNotFoundException e){
+            OptionPane.showMsg("No se puede obtener el recurso", 
+                    "Ocurrió un error al intentar abrir el formato de impresión\n"
+                            + e.getMessage(), 3);
+        }
+        
+        
+        try{
+            JasperDesign jsd = JRXmlLoader.load(is);
+            JasperReport jsrp = JasperCompileManager.compileReport(jsd);
+            jsp = JasperFillManager.fillReport(jsrp, null,dt);
+            JasperViewer viewer = new JasperViewer(jsp, false); //Se crea la vista del reportes
+            viewer.setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Se declara con dispose_on_close para que no se cierre el programa cuando se cierre el reporte
+            viewer.setVisible(true); //Se vizualiza el reporte
+        }catch(JRException e){
+            OptionPane.showMsg("No se puede visualizar el recurso", 
+                    "Ocurrió un error al intentar abrir visualización del formato de impresión\n"
+                            + e.getMessage(), 3);
+        }
+    }
+    
+    public static void printCotizacionView(Ficha ficha){
+        InputStream is = null;
+        JasperPrint jsp = null;
+        FichaDataSource dt = new FichaDataSource();
+        dt.addFicha(ficha);
+        try{
+            is = new FileInputStream(directoryFilesReportsPath()+"cotizacion.jrxml");
         }catch(FileNotFoundException e){
             OptionPane.showMsg("No se puede obtener el recurso", 
                     "Ocurrió un error al intentar abrir el formato de impresión\n"
@@ -84,7 +113,7 @@ public class GlobalValuesPrint {
             dt.addFicha((Ficha)ficha);
         }
         try{
-            is = new FileInputStream("src"+File.separator+"reportes"+File.separator+"fichas.jrxml");
+            is = new FileInputStream(directoryFilesReportsPath()+"fichas.jrxml");
         }catch(FileNotFoundException e){
             OptionPane.showMsg("No se puede obtener el recurso", 
                     "Ocurrió un error al intentar abrir el formato de impresión\n"
@@ -99,18 +128,13 @@ public class GlobalValuesPrint {
             JasperViewer viewer = new JasperViewer(jsp, false); //Se crea la vista del reportes
             viewer.setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Se declara con dispose_on_close para que no se cierre el programa cuando se cierre el reporte
             viewer.setVisible(true); //Se vizualiza el reporte
-//            generateReport(jsp, true, "src"+File.separator+"reportes"+File.separator+"fichasConvenio.xls");
+//            generateReport(jsp, true, directoryFilesReportsPath()+"fichasConvenio.xls");
         }catch( JRException e){
             OptionPane.showMsg("No se puede visualizar el recurso", 
                     "Ocurrió un error al intentar abrir visualización del formato de impresión\n"
                             + e.getMessage(), 3);
         }
     }
-    
-    public static void print(Ficha ficha)
-	{
-            printFichaView(ficha); 
-	}
  
     private static void imprimir(String[] impresion){
         try {
@@ -298,7 +322,7 @@ public class GlobalValuesPrint {
                 return;
             }
             try{
-                is = new FileInputStream("src"+File.separator+"reportes"+File.separator+"reporteVentas.jrxml");
+                is = new FileInputStream(directoryFilesReportsPath()+"reporteVentas.jrxml");
             }catch(FileNotFoundException e){
                 OptionPane.showMsg("No se puede obtener el recurso",
                         "Ocurrió un error al intentar abrir el formato de impresión\n"
@@ -322,8 +346,8 @@ public class GlobalValuesPrint {
         }
         dt2.addConvenio(cnv, title, subtitle);
         try{
-            is = new FileInputStream("src"+File.separator+"reportes"+File.separator+"fichasCnv.jrxml");
-            is2 = new FileInputStream("src"+File.separator+"reportes"+File.separator+"cuotasCnv.jrxml");
+            is = new FileInputStream(directoryFilesReportsPath()+"fichasCnv.jrxml");
+            is2 = new FileInputStream(directoryFilesReportsPath()+"cuotasCnv.jrxml");
         }catch(FileNotFoundException e){
             OptionPane.showMsg("No se puede obtener el recurso",
                     "Ocurrió un error al intentar abrir el formato de impresión\n"
@@ -346,7 +370,7 @@ public class GlobalValuesPrint {
             return;
         }
         try{
-            is = new FileInputStream("src"+File.separator+"reportes"+File.separator+"detalleCuotasCnv.jrxml");
+            is = new FileInputStream(directoryFilesReportsPath()+"detalleCuotasCnv.jrxml");
         }catch(FileNotFoundException e){
             OptionPane.showMsg("No se puede obtener el recurso",
                     "Ocurrió un error al intentar abrir el formato de impresión\n"
@@ -365,7 +389,7 @@ public class GlobalValuesPrint {
                 viewer.setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Se declara con dispose_on_close para que no se cierre el programa cuando se cierre el reporte
                 viewer.setVisible(true); //Se vizualiza el reporte
                 GV.cursorDF();
-//            generateReport(jsp, true, "src"+File.separator+"reportes"+File.separator+"fichasConvenio.xls");
+//            generateReport(jsp, true, directoryFilesReportsPath()+"fichasConvenio.xls");
             }catch( JRException e){
                 GV.cursorDF();
                 OptionPane.showMsg("No se puede visualizar el recurso",
