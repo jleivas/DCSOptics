@@ -288,15 +288,11 @@ public class OpanelUserData extends javax.swing.JPanel {
                 stUser.setNombre(GV.getFilterString(txtNombre.getText()));
                 stUser.setUsername(GV.getFilterString(txtUsername.getText()));
                 stUser.setTipo(cboTipo.getSelectedIndex());
-                if(!GV.isOnline() || !load.updateFromUI(stUser)){
-                    if(!GV.isOnline()){
-                        OptionPane.showMsg("No se puede modificar el registro", "Para poder modificar estos datos debes tener acceso a internet.", 2);
-                    }
+                if(!load.updateFromUI(stUser)){
                     GV.cursorDF(this);
                     return;
                 } 
                 GV.setUser(stUser);
-                load.update(stUser);
                 GlobalValuesFunctions.contentAdminUpdateLabelUser();
                 GV.cursorDF(this);
                 OptionPane.closeOptionPanel();
