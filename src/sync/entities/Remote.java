@@ -1021,7 +1021,7 @@ public class Remote implements InterfaceSync{
             }
         } catch (NullPointerException | ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Local.class.getName()).log(Level.SEVERE, null, ex);
-            return -1000;
+            return GV.strToNumber(GV.dateToString(new Date(), "yyyymmddhhss"));
         }
         return id + 1;
     }
