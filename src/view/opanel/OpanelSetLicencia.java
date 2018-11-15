@@ -5,19 +5,11 @@
  */
 package view.opanel;
 
-import com.mxrck.autocompleter.TextAutoCompleter;
-import dao.Dao;
-import entities.Convenio;
 import fn.Boton;
 import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
 import fn.globalValues.GlobalValuesBD;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
