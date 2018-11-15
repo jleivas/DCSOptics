@@ -259,11 +259,31 @@ public class OpanelUserData extends javax.swing.JPanel {
             OptionPane.showMsg("No se puede modificar el registro", "Para poder modificar estos datos debes tener acceso a internet.", 2);
             return;
         }
-        GV.cursorWAIT(this);
+        
         String pass = null;
-        String userName = GV.getFilterString(txtUsername.getText());
         
         String temp = GV.getFilterString(txtPass1.getText().trim().replaceAll(" ",""));
+        String mail = GV.mailValidate(txtMail.getText());
+        if(GV.getFilterString(txtMail.getText()).isEmpty()){
+            OptionPane.showMsg("Falta completar información", "El correo electrónico no ha sido ingresado", 2);
+            return;
+        }
+        if(GV.getFilterString(txtNombre.getText()).isEmpty()){
+            OptionPane.showMsg("Falta completar información", "El nombre no ha sido ingresado", 2);
+            return;
+        }
+        if(GV.getFilterString(txtUsername.getText()).isEmpty()){
+            OptionPane.showMsg("Falta completar información", "El nombre de usuario no ha sido ingresado", 2);
+            return;
+        }
+        if(mail.isEmpty()){
+            OptionPane.showMsg("Datos mal ingresados", "El correo electrónico ingresado es inválido", 2);
+            return;
+        }
+        if(!temp.isEmpty() && temp.length() <= 4){
+            OptionPane.showMsg("Clave demasiado corta", "La clave debe contener mínimo 5 caracteres", 2);
+            return;
+        }
         if(OptionPane.getConfirmation("Modificar mis datos", "¿Estas seguro que deseas modificar tus datos?", JOptionPane.INFORMATION_MESSAGE)){
             GV.cursorWAIT(this);
             if(temp.length() > 4){
@@ -283,10 +303,18 @@ public class OpanelUserData extends javax.swing.JPanel {
                 if(pass != null){
                     stUser.setPass(pass);
                 }
-                GV.cursorWAIT(this);
-                stUser.setEmail(GV.getFilterString(txtMail.getText()));
+                stUser.setEmail(mail);
                 stUser.setNombre(GV.getFilterString(txtNombre.getText()));
-                stUser.setUsername(GV.getFilterString(txtUsername.getText()));
+                if(!GV.user().getUsername().equals("root")){
+                    stUser.setUsername(GV.getFilterString(txtUsername.getText()));
+                }else{
+                    if(!txtUsername.getText().equals("root")){
+                        OptionPane.showMsg("No se puede modificar", "El username root no puede ser modificado.", 2);
+                        GV.cursorDF(this);
+                        return;
+                    }
+                }
+                
                 stUser.setTipo(cboTipo.getSelectedIndex());
                 if(!load.updateFromUI(stUser)){
                     GV.cursorDF(this);
