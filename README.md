@@ -33,6 +33,7 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.0.5 (V405)](https://github.com/softdirex/DCSOptics/search?q=V405&type=Commits)
+ - [Validaciones al cargar folio por id(V405-013)](https://github.com/softdirex/DCSOptics/search?q=V405-013&type=Commits)
  - [Validaciones al modificar usuario en la sesión(V405-012)](https://github.com/softdirex/DCSOptics/search?q=V405-012&type=Commits)
  - [Aumentar stock oneClick(V405-011)](https://github.com/softdirex/DCSOptics/search?q=V405-011&type=Commits)
  - [Generar cotizaciones(V405-010)](https://github.com/softdirex/DCSOptics/search?q=V405-010&type=Commits)
