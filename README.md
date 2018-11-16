@@ -33,6 +33,7 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.0.5 (V405)](https://github.com/softdirex/DCSOptics/search?q=V405&type=Commits)
+ - [Validaciones de fichas anuladas(V405-015)](https://github.com/softdirex/DCSOptics/search?q=V405-015&type=Commits)
  - [Nuevo formato del id si lanza una excepcion al intentar obtenerlos de la bd(V405-014)](https://github.com/softdirex/DCSOptics/search?q=V405-014&type=Commits)
  - [Validaciones al cargar folio por id(V405-013)](https://github.com/softdirex/DCSOptics/search?q=V405-013&type=Commits)
  - [Validaciones al modificar usuario en la sesión(V405-012)](https://github.com/softdirex/DCSOptics/search?q=V405-012&type=Commits)
