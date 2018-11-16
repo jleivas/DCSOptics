@@ -15,6 +15,7 @@ import fn.OptionPane;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -298,9 +299,15 @@ public class GlobalValuesSaveXls {
         OptionPane.showMsg("No se generó el archivo", "La operacion ha sido cancelada.",2);
     }
     
-    public static boolean exportarFichasAExcel(List<Object> fichas) {
+    public static boolean exportarFichasAExcel(List<Object> lista) {
         JFileChooser archivo = new JFileChooser();
         int resp;
+        List<Object> fichas = new ArrayList<>();
+        for (Object object : lista) {
+            if(((Ficha)object).getEstado() > 0){
+                fichas.add(((Ficha)object));
+            }
+        }
         if(fichas.size()<1){
             OptionPane.showMsg("No se pudo generar archivo", "No existen registros para guardar, Genere una lista de datos válidos.",2);
             return false;

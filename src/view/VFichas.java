@@ -436,35 +436,6 @@ public class VFichas extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnEliminarMouseClicked
 
-    private void btnRestaurarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseClicked
-        if(GV.tipoUserAdmin()){
-            try{
-                cWT();
-                int fila = tblListar.getSelectedRow();
-                String folio = tblListar.getValueAt(fila, 0).toString();
-                if(OptionPane.getConfirmation("Restaurar registro", "¿Esta seguro que desea restaurar el folio "+folio+"?", 2)){
-                    cWT();
-                    if(load.restore(folio,0, new Ficha()))
-                        OptionPane.showMsg("Restaurar Ficha", "La ficha ha sido restaurada", 1);
-                    else
-                        OptionPane.showMsg("Restaurar Ficha", "No se pudo restaurar la ficha", 2);
-                    cDF();
-                }
-                load();
-
-                cDF();
-            }catch(Exception e){
-                OptionPane.showMsg("Seleccione Ficha","Error al cargar valores,\n"
-                        + "es posible que no se haya seleccionado un registro:\n"
-                        + "Debe hacer clic sobre un elemento de la tabla,\n"
-                        + "Luego presione el botón \"Ver\".\n"
-                        + "Otro posible error: el valor seleccionado no tiene un identificador válido.",2);
-            }
-        }else{
-            GV.mensajeAccessDenied();
-        }
-    }//GEN-LAST:event_btnRestaurarMouseClicked
-
     private void btnAbrirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAbrirMouseEntered
         btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnAbrir.getIcon().toString()))));
     }//GEN-LAST:event_btnAbrirMouseEntered
@@ -480,14 +451,6 @@ public class VFichas extends javax.swing.JPanel {
     private void btnEliminarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEliminarMouseExited
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnEliminar.getIcon().toString()))));
     }//GEN-LAST:event_btnEliminarMouseExited
-
-    private void btnRestaurarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseEntered
-        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnRestaurar.getIcon().toString()))));
-    }//GEN-LAST:event_btnRestaurarMouseEntered
-
-    private void btnRestaurarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseExited
-        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnRestaurar.getIcon().toString()))));
-    }//GEN-LAST:event_btnRestaurarMouseExited
 
     private void cboMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboMostrarItemStateChanged
         cWT();
@@ -637,6 +600,45 @@ public class VFichas extends javax.swing.JPanel {
     private void btnExportExcelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportExcelMouseExited
         btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnExportExcel.getIcon().toString()))));
     }//GEN-LAST:event_btnExportExcelMouseExited
+
+    private void btnRestaurarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseExited
+        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnRestaurar.getIcon().toString()))));
+    }//GEN-LAST:event_btnRestaurarMouseExited
+
+    private void btnRestaurarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseEntered
+        btnRestaurar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnRestaurar.getIcon().toString()))));
+    }//GEN-LAST:event_btnRestaurarMouseEntered
+
+    private void btnRestaurarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseClicked
+        OptionPane.showMsg("Funcion no disponible", "Esta opción no se encuentra disponible\n"
+                + "debe generar una ficha nuevamente", 3);
+//        if(GV.tipoUserAdmin()){
+//            try{
+//                cWT();
+//                int fila = tblListar.getSelectedRow();
+//                String folio = tblListar.getValueAt(fila, 0).toString();
+//                if(OptionPane.getConfirmation("Restaurar registro", "¿Esta seguro que desea restaurar el folio "+folio+"?", 2)){
+//                    cWT();
+//                    if(load.restore(folio,0, new Ficha()))
+//                    OptionPane.showMsg("Restaurar Ficha", "La ficha ha sido restaurada", 1);
+//                    else
+//                    OptionPane.showMsg("Restaurar Ficha", "No se pudo restaurar la ficha", 2);
+//                    cDF();
+//                }
+//                load();
+//
+//                cDF();
+//            }catch(Exception e){
+//                OptionPane.showMsg("Seleccione Ficha","Error al cargar valores,\n"
+//                    + "es posible que no se haya seleccionado un registro:\n"
+//                    + "Debe hacer clic sobre un elemento de la tabla,\n"
+//                    + "Luego presione el botón \"Ver\".\n"
+//                    + "Otro posible error: el valor seleccionado no tiene un identificador válido.",2);
+//            }
+//        }else{
+//            GV.mensajeAccessDenied();
+//        }
+    }//GEN-LAST:event_btnRestaurarMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

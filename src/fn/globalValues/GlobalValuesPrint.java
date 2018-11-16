@@ -5,7 +5,6 @@
  */
 package fn.globalValues;
 
-import dao.Dao;
 import entities.Cliente;
 import entities.Convenio;
 import entities.ficha.Ficha;
@@ -110,7 +109,9 @@ public class GlobalValuesPrint {
         FichaRecursoDatos dt = new FichaRecursoDatos();
         dt.addTitle(GV.getContentAdminTitle(), "Documento generado por "+GV.projectName());
         for (Object ficha : fichas) {
-            dt.addFicha((Ficha)ficha);
+            if(((Ficha)ficha).getEstado() > 0){
+                dt.addFicha((Ficha)ficha);
+            }
         }
         try{
             is = new FileInputStream(directoryFilesReportsPath()+"fichas.jrxml");

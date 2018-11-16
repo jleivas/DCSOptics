@@ -912,7 +912,11 @@ public class GlobalValuesFunctions {
                     SalesFichaJasperReport reportSales = new SalesFichaJasperReport(GV.getFichas(), ContentAdmin.lblTitle.getText(), GV.companyName(), 
                             GV.getOficinaWeb(), GV.getOficinaAddress(),
                             GV.getOficinaPhone1());
-                    GV.mailSendSalesReport(reportSales);
+                    if(reportSales.getFilas()>0){
+                        GV.mailSendSalesReport(reportSales);
+                    }else{
+                        OptionPane.showMsg("No hay datos disponibles", "La operación no se puede realizar porque no existen datos", 2);
+                    }
                 }else{
                     OptionPane.showMsg("No hay datos disponibles", "La operación no se puede realizar porque no existen datos en la tabla", 2);
                 }

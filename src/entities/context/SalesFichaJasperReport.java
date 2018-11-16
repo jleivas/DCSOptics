@@ -247,11 +247,13 @@ public class SalesFichaJasperReport {
         int montoPendiente = 0;
         for (Object object : fichas) {
             Ficha ficha = (Ficha)object;
-            if(!addIfExist(ficha)){
-                addVendedor(ficha);
+            if(ficha.getEstado()>0){
+                if(!addIfExist(ficha)){
+                    addVendedor(ficha);
+                }
+                montoPendiente = montoPendiente + ficha.getSaldo();
+                montoTotal = montoTotal + (ficha.getValorTotal() - ficha.getDescuento());
             }
-            montoPendiente = montoPendiente + ficha.getSaldo();
-            montoTotal = montoTotal + (ficha.getValorTotal() - ficha.getDescuento());
         }
         setMontoTotal(montoTotal);
         setMontoTotalPendiente(montoPendiente);
