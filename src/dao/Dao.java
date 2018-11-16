@@ -241,8 +241,7 @@ public class Dao{
             if(temp != null){
                 newStock = temp.getStock() + cantidad;
                 if(newStock >= 0){
-                    temp.setStock(newStock);
-                    return update(temp);
+                    return LocalInventario.insert(idLente, (cantidad * -1));
                 }else{
                     OptionPane.showMsg("No se pudo modificar el stock", "El nuevo stock no es disponible,\n"
                             + "debe ser mayor que cero", 2);

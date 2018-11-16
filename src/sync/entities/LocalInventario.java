@@ -618,5 +618,4 @@ public class LocalInventario {
         }
         return false;
     }
-
 }
