@@ -307,7 +307,21 @@ public class Dao{
                         idLejos = ((Ficha)temp).getLejos().getMarca();
                         increaseStock(idLejos, 1);
                     }
-                    
+                    if(((Ficha)temp).getConvenio()!=null){
+                        int idConv = ((Ficha)temp).getConvenio().getId();
+                        if(idConv != 0){
+                            Convenio cnvLoad = (Convenio)get(null, idConv, new Convenio());
+                            if(cnvLoad.getEstado() == 2){
+                                OptionPane.showMsg("No se puede anular", "Este registro se encuentra relacionado con un convenio que ya fué generado,\n"
+                                        + " por lo tanto es imposible eliminar", 2);
+                                return false;
+                            }else{
+                                Convenio cnv = new Convenio(((idConv) * -1), null, null, null, 0, null, 0, 0, 0, 0, 0, null, 0, null, 0);
+                                ((Ficha)temp).setConvenio(cnv);
+                            }
+                            
+                        }
+                    }
                 }else{
                     ((SyncClass)temp).setEstado(0);
                 }
