@@ -2985,41 +2985,47 @@ public class VCrearFichaMac extends javax.swing.JPanel {
     }
     
     private boolean cmpCristalLejos(){
-        if(!GV.getStr(txtArmazonLejos.getText()).isEmpty()){
-            if(GV.getStr(txtCristalLejos.getText()).isEmpty()){
+        if(GV.getStr(txtCristalLejos.getText()).isEmpty()){
+            stCristalLejos = null;
+            if(!GV.getStr(txtArmazonLejos.getText()).isEmpty()){
                 msgWarning("Lejos: Falta ingresar un cristal");
-                return true;
+            }
+            return true;
+        }else{
+            stCristalLejos = ((Cristal)GV.buscarPorNombreEnLista(txtCristalLejos.getText(), listCristales, new Cristal()));
+            txtCristalLejos.setForeground(negro);
+            if(stCristalLejos==null){
+                txtCristalLejos.setForeground(rojo);
+                msgRejected("Lejos: Debe ingresar un cristal existente");
+                return false;
             }else{
-                stCristalLejos = ((Cristal)GV.buscarPorNombreEnLista(txtCristalLejos.getText(), listCristales, new Cristal()));
-                txtCristalLejos.setForeground(negro);
-                if(stCristalLejos==null){
-                    txtCristalLejos.setForeground(rojo);
-                    msgRejected("Lejos: Debe ingresar un cristal existente");
-                    return false;
+                if(GV.getStr(txtArmazonLejos.getText()).isEmpty()){
+                    msgRejected("Lejos: Falta ingresar un armazon");
                 }
             }
-        }else{
-            stCristalLejos = null;
         }
         return true;
     }
     
     private boolean cmpCristalCerca(){
-        if(!GV.getStr(txtArmazonCerca.getText()).isEmpty()){
-            if(GV.getStr(txtCristalCerca.getText()).isEmpty()){
+        if(GV.getStr(txtCristalCerca.getText()).isEmpty()){
+            stCristalCerca = null;
+            if(!GV.getStr(txtArmazonCerca.getText()).isEmpty()){
                 msgWarning("Cerca: Falta ingresar un cristal");
-                return true;
+            }
+            return true;
+        }else{
+            stCristalCerca = ((Cristal)GV.buscarPorNombreEnLista(txtCristalCerca.getText(), listCristales, new Cristal()));
+            txtCristalCerca.setForeground(negro);
+            if(stCristalCerca==null){
+                txtCristalCerca.setForeground(rojo);
+                msgRejected("Lejos: Debe ingresar un cristal existente");
+                return false;
             }else{
-                stCristalCerca = ((Cristal)GV.buscarPorNombreEnLista(txtCristalCerca.getText(), listCristales, new Cristal()));
-                txtCristalCerca.setForeground(negro);
-                if(stCristalCerca==null){
-                    txtCristalCerca.setForeground(rojo);
-                    msgRejected("Lejos: Debe ingresar un cristal existente");
-                    return false;
+                if(GV.getStr(txtArmazonCerca.getText()).isEmpty()){
+                    msgRejected("Lejos: Falta ingresar un lente");
                 }
             }
-        }else{
-            stCristalCerca = null;
         }
         return true;
     }
@@ -3040,6 +3046,10 @@ public class VCrearFichaMac extends javax.swing.JPanel {
             lentes = lentes + stLenteLejos.getPrecioAct();
         }
         int total = GV.roundPrice((cristales+lentes));
+        if(total == 0){
+            msgRejected("Debe ingresar al menos un producto para generar este documento");
+            return false;
+        }
         total = (stConvenio==null)?total:total + ((total * stConvenio.getPorcentajeAdicion())/100);
         
         int abono = (int)txtAbono.getValue();
@@ -3072,7 +3082,7 @@ public class VCrearFichaMac extends javax.swing.JPanel {
         return true;
     }
     
-        private boolean cmpTipoPago(){
+    private boolean cmpTipoPago(){
         if(GV.strToNumber(txtAbono.getValue().toString()) != 0){
             if(cboTipoPago.getSelectedIndex() == 0){
                 msgRejected("Debe registrar el medio de pago en el abono");
