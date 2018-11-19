@@ -3000,7 +3000,7 @@ public class VCrearFichaMac extends javax.swing.JPanel {
                 return false;
             }else{
                 if(GV.getStr(txtArmazonLejos.getText()).isEmpty()){
-                    msgRejected("Lejos: Falta ingresar un armazon");
+                    msgWarning("Lejos: Falta ingresar un armazon");
                 }
             }
         }
@@ -3023,7 +3023,7 @@ public class VCrearFichaMac extends javax.swing.JPanel {
                 return false;
             }else{
                 if(GV.getStr(txtArmazonCerca.getText()).isEmpty()){
-                    msgRejected("Lejos: Falta ingresar un lente");
+                    msgWarning("Lejos: Falta ingresar un armazon");
                 }
             }
         }
