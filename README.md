@@ -33,6 +33,7 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.0.7 (V407)](https://github.com/softdirex/DCSOptics/search?q=V407&type=Commits)
+ - [Refactoring de autocompletado de lentes constock sobre cero(V407-003)](https://github.com/softdirex/DCSOptics/search?q=V407-003&type=Commits)
  - [Refactoring de mensaje de error al no encontrar un lente para aumentar stock(V407-002)](https://github.com/softdirex/DCSOptics/search?q=V407-002&type=Commits)
  - [Se agrega signo mas como caracter valido para generar fichas en los campos de los armazones(V407-001)](https://github.com/softdirex/DCSOptics/search?q=V407-001&type=Commits)
 
