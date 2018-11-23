@@ -115,6 +115,15 @@ public class GlobalValuesFunctions {
         }
     }
     
+    public static String getFilterString2(String arg){
+        if(arg == null || arg.replaceAll(" ", "").isEmpty())
+            return "";
+        else{
+            String value = arg.replace("*","").replace("(","").replace(")","").replace(";","").replace(",","");
+            return (value.startsWith(" "))?value.replaceFirst(" ", "").trim():value.trim();
+        }
+    }
+    
     public static void emptyTable(JComboBox cbo, JTextField txt, String registry){
         String end = "os";
         registry = (!registry.endsWith("s"))? registry+"s":registry;
