@@ -2514,16 +2514,16 @@ public class VCrearFichaMac extends javax.swing.JPanel {
             capa = (chkCapaCerca.isSelected())? 1:0;
             en = (chkEndurecidoCerca.isSelected())? 1:0;
             pm = (chkPlusMaxCerca.isSelected())? 1:0;
-            add = GV.getFilterString(txtAddCerca.getText());
+            add = GV.getFilterString2(txtAddCerca.getText());
             cristal = stCristalCerca;
             lente = stLenteCerca;
             dp = (int)txtDPCerca.getValue();
-            ODA = GV.getFilterString(txtODCercaA.getText());
-            ODCIL = GV.getFilterString(txtODCercaCIL.getText());
-            ODESF = GV.getFilterString(txtODCercaESF.getText());
-            OIA = GV.getFilterString(txtOICercaA.getText());
-            OICIL = GV.getFilterString(txtOICercaCIL.getText());
-            OIESF = GV.getFilterString(txtOICercaESF.getText());
+            ODA = GV.getFilterString2(txtODCercaA.getText());
+            ODCIL = GV.getFilterString2(txtODCercaCIL.getText());
+            ODESF = GV.getFilterString2(txtODCercaESF.getText());
+            OIA = GV.getFilterString2(txtOICercaA.getText());
+            OICIL = GV.getFilterString2(txtOICercaCIL.getText());
+            OIESF = GV.getFilterString2(txtOICercaESF.getText());
         }else{
             capa = (chkCapaLejos.isSelected())? 1:0;
             en = (chkEndurecidoLejos.isSelected())? 1:0;
@@ -2531,12 +2531,12 @@ public class VCrearFichaMac extends javax.swing.JPanel {
             cristal = stCristalLejos;
             lente = stLenteLejos;
             dp = (int)txtDPLejos.getValue();
-            ODA = GV.getFilterString(txtODLejosA.getText());
-            ODCIL = GV.getFilterString(txtODLejosCIL.getText());
-            ODESF = GV.getFilterString(txtODLejosESF.getText());
-            OIA = GV.getFilterString(txtOILejosA.getText());
-            OICIL = GV.getFilterString(txtOILejosCIL.getText());
-            OIESF = GV.getFilterString(txtOILejosESF.getText());
+            ODA = GV.getFilterString2(txtODLejosA.getText());
+            ODCIL = GV.getFilterString2(txtODLejosCIL.getText());
+            ODESF = GV.getFilterString2(txtODLejosESF.getText());
+            OIA = GV.getFilterString2(txtOILejosA.getText());
+            OICIL = GV.getFilterString2(txtOILejosCIL.getText());
+            OIESF = GV.getFilterString2(txtOILejosESF.getText());
         }
         if(cristal != null){
             precioCristal = (stConvenio==null)?
