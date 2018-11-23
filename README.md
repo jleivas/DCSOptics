@@ -32,7 +32,10 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
- #### [Version 4.0.6 (V406)](https://github.com/softdirex/DCSOptics/search?q=V405&type=Commits)
+ #### [Version 4.0.7 (V407)](https://github.com/softdirex/DCSOptics/search?q=V407&type=Commits)
+ - [Se agrega signo mas como caracter valido para generar fichas en los campos de los armazones(V407-001)](https://github.com/softdirex/DCSOptics/search?q=V407-001&type=Commits)
+
+ #### [Version 4.0.6 (V406)](https://github.com/softdirex/DCSOptics/search?q=V406&type=Commits)
  - [Validaciones de cristales y precios al generar ficha nueva(V406-001)](https://github.com/softdirex/DCSOptics/search?q=V406-001&type=Commits)
 
  #### [Version 4.0.5 (V405)](https://github.com/softdirex/DCSOptics/search?q=V405&type=Commits)
