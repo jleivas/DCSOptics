@@ -251,7 +251,8 @@ public class OpanelIncreaseStock extends javax.swing.JPanel {
         if(lente != null){
             mostrarDatos();
         }else{
-            OptionPane.showMsg("No se puede efectuar la operación", "No se encontraron valores para asaignar", 3);
+            OptionPane.showMsg("No se puede efectuar la operación", "No se encontraron valores para asignar,\n"
+                    + "Es probable que el inventario seleccionado no corresponda con el que está asignado a este equipo.", 3);
         }
     }
     
