@@ -2642,7 +2642,7 @@ public class VCrearFicha extends javax.swing.JPanel {
         listCristales = load.listar("0", new Cristal());
         listDescuentos = load.listar("0", new Descuento());
         GV.setInventarioSeleccionado(stInventario.getId());
-        listLentes = load.listar("st", new Lente());
+        listLentes = load.listar("0", new Lente());
         GV.setInventarioSeleccionado(0);
         convenioObtenerSeleccionado();
         autocompletar();
@@ -2726,14 +2726,14 @@ public class VCrearFicha extends javax.swing.JPanel {
         
         TextAutoCompleter textAutoCompleter6 = new TextAutoCompleter(txtArmazonCerca);
         TextAutoCompleter textAutoCompleter7 = new TextAutoCompleter(txtArmazonLejos);
-        
         for (Object temp : listLentes) {
+            if(((Lente)temp).getStock()>0){
                 textAutoCompleter6.addItem(((Lente)temp).getCod());
                 textAutoCompleter6.setMode(0);
                 textAutoCompleter7.addItem(((Lente)temp).getCod());
                 textAutoCompleter7.setMode(0);
+            }
         }
-        
     }
     /***********************FIN ETAPA 1: PROCESOS DE CARGA*********************/
     /********************INICIO ETAPA 2: VALIDACIONES**************************/
