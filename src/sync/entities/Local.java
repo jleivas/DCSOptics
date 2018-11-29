@@ -1435,6 +1435,37 @@ public class Local implements InterfaceSync {
                 LcBd.cerrar();
                 return lista;
             }
+            if(type instanceof EtiquetFicha){
+                String sql = "SELECT * FROM ficha";
+
+                PreparedStatement consulta = LcBd.obtener().prepareStatement(sql);
+                ResultSet datos = consulta.executeQuery();
+                while (datos.next()) {
+                    lista.add(new EtiquetFicha(
+                        datos.getString("fch_id"),
+                        datos.getDate("fch_fecha"),
+                        datos.getDate("fch_fecha_entrega"),
+                        datos.getString("fch_lugar_entrega"),
+                        datos.getString("fch_hora_entrega"),
+                        datos.getString("fch_obs"),
+                        datos.getInt("fch_valor_total"),
+                        datos.getInt("fch_descuento"),
+                        datos.getInt("fch_saldo"),
+                        datos.getString("cliente_cli_rut"),
+                        datos.getString("doctor_doc_rut"),
+                        datos.getString("institucion_ins_id"),
+                        datos.getString("despacho_dsp_id"),
+                        datos.getInt("usuario_us_id"),
+                        datos.getInt("convenio_cnv_id"),
+                        datos.getInt("fch_estado"),
+                        datos.getDate("fch_last_update"),
+                        datos.getInt("fch_last_hour")
+                        )
+                    );
+                }
+                LcBd.cerrar();
+                return lista;
+            }
             if(type instanceof Armazon){
                 String id = GV.getStr(idParam);
                 String subId = "";
@@ -1532,23 +1563,24 @@ public class Local implements InterfaceSync {
                 PreparedStatement consulta = LcBd.obtener().prepareStatement(sql);
                 ResultSet datos = consulta.executeQuery();
                 while (datos.next()) {
-                    
-                    lista.add(new Cliente(
-                        datos.getString("cli_rut"),
-                        datos.getString("cli_nombre"),
-                        datos.getString("cli_telefono1"),
-                        datos.getString("cli_telefono2"),
-                        datos.getString("cli_email"),
-                        datos.getString("cli_direccion"),
-                        datos.getString("cli_comuna"),
-                        datos.getString("cli_ciudad"),
-                        datos.getInt("cli_sexo"),
-                        datos.getDate("cli_nacimiento"),
-                        datos.getInt("cli_estado"),
-                        datos.getDate("cli_last_update"),
-                        datos.getInt("cli_last_hour")
-                        )
-                    );
+                    if(!GV.getStr(datos.getString("cli_rut")).isEmpty()){
+                        lista.add(new Cliente(
+                            datos.getString("cli_rut"),
+                            datos.getString("cli_nombre"),
+                            datos.getString("cli_telefono1"),
+                            datos.getString("cli_telefono2"),
+                            datos.getString("cli_email"),
+                            datos.getString("cli_direccion"),
+                            datos.getString("cli_comuna"),
+                            datos.getString("cli_ciudad"),
+                            datos.getInt("cli_sexo"),
+                            datos.getDate("cli_nacimiento"),
+                            datos.getInt("cli_estado"),
+                            datos.getDate("cli_last_update"),
+                            datos.getInt("cli_last_hour")
+                            )
+                        );
+                    }
                 }
                 LcBd.cerrar();
                 return lista;
@@ -1840,6 +1872,9 @@ public class Local implements InterfaceSync {
             }
             if (type instanceof InternMail){
                 String sql = "SELECT * FROM message WHERE msg_id =" + idParam + "";
+                if (idParam.equals("-2")) {
+                    sql = "SELECT * FROM message";
+                }
 
                 PreparedStatement consulta = LcBd.obtener().prepareStatement(sql);
                 ResultSet datos = consulta.executeQuery();
@@ -4208,5 +4243,39 @@ public class Local implements InterfaceSync {
             Logger.getLogger(Remote.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    /**
+     * modifica el objeto previa validacion de lastUpdate y lastHour
+     * @param object
+     * @return 
+     */
+    public boolean updateFromDao(Object object){
+        PreparedStatement update;
+        try {
+            update = LcBd.obtener().prepareStatement(
+                    sqlUpdate(object));
+            update.executeUpdate();
+            LcBd.cerrar();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(Remote.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean insertFromDao(String sql){
+        PreparedStatement insert;
+        try {
+            insert = LcBd.obtener().prepareStatement(sql);
+            insert.executeUpdate();
+            LcBd.cerrar();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(Remote.class.getName()).log(Level.SEVERE, null, ex);
+            OptionPane.showMsg("No se pudo ejecutar la consulta", sql, 3);
+            OptionPane.closeInfoPanel();
+            return false;
+        }
+        return true;
     }
 }
