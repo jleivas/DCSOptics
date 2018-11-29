@@ -430,6 +430,7 @@ public class Dao{
                     type = new EtiquetFicha();
                 }
                 ArrayList<Object> defaultList= GV.REMOTE_SYNC.listar("-2",type);
+                ArrayList<Object> defaultLocalList= GV.LOCAL_SYNC.listar("-2",type);
                 /*LISTA1 SE DEBE CARGAR CON UN RETRASO DE DOS MESES PARA RESCATAR ULTIMOS REGISTROS SUBIDOS*/
                 ArrayList<Object> lista1= GV.REMOTE_SYNC.listar(GV.dateSumaResta(GV.LAST_UPDATE, -2, "MONTHS"),type);
                 int size1 = lista1.size();
@@ -437,21 +438,62 @@ public class Dao{
                 
                 int size2 = lista2.size();
                 if(size1 > 0){
+                    int cont =0;
                     for (Object object : lista1) {
+                        cont++;
+                        System.out.println("1:"+cont);
+                        Object local;
                         //System.out.println("lista1");
-                        GV.porcentajeSubCalcular(size1+size2);
-                        sync.Sync.addLocalSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
-                        if(!GV.isOnline()){
-                            GV.stopSincronizacion();
-                        }
-                        if(GV.sincronizacionIsStopped()){
+                        if(object instanceof SyncIntId){
+                            //System.out.println("INT");
+                            local = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), defaultList, type);
+                        }else if(object instanceof SyncStringId){
+                            //System.out.println("STRING");
+                            local = GV.buscarPorIdEnLista(((SyncStringId)object).getCod(), defaultList, type);
+                        }else{
+                            //System.out.println("XXX");
                             return;
                         }
+                        GV.porcentajeSubCalcular(size1+size2);
+                        String sql = "";
+                        if(local == null){
+                            /*CREAR SQL PARA INSERTAR TODOS LOS REGISTROS EN UNA SOLA CONSULTA*/
+                            //System.out.println("INSERT");
+                            sql = getSqlRemoteInsert(sql, object);
+                        }else{
+                            /*VALIDAR SI YA ESTÁ INSERTADO PARA UPDATEAR*/
+                            if(object instanceof SyncClass){
+                                /*VALIDAR SI LA FECHA DEL OBJETO LOCAL ES NUEVA O IGUAL*/
+                                if(Cmp.localIsNewOrEqual(((SyncClass)object).getLastUpdate(), ((SyncClass)local).getLastUpdate())){
+                                    /*VALIDAR SI LA FECHA ES LA MISMA*/
+                                    if(GV.dateToString(((SyncClass)object).getLastUpdate(), "ddmmyyyy").equals(GV.dateToString(((SyncClass)local).getLastUpdate(), "ddmmyyyy"))){
+                                        /*VALIDAR SI LA HORA ES MAS RECIENTE*/
+                                        if(((SyncClass)object).getLastHour() > ((SyncClass)local).getLastHour()){
+                                            GV.LOCAL_SYNC.updateFromDao(object);
+                                            //System.out.println("UPD1");
+                                        }
+                                    }else{
+                                        GV.LOCAL_SYNC.updateFromDao(object);
+                                        //System.out.println("UPD2");
+                                    }
+                                }
+                            }
+                        }
+//                        sync.Sync.addLocalSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
+//                        if(!GV.isOnline()){
+//                            GV.stopSincronizacion();
+//                        }
+//                        if(GV.sincronizacionIsStopped()){
+//                            return;
+//                        }
                     }
                 }
                 if(size2 > 0){
                     String sql = "";
+                    int cont = 0;
                     for (Object object : lista2) {
+                        cont++;
+                        System.out.println(""+cont);
                         //System.out.println("lista2");
                         GV.porcentajeSubCalcular(size1+size2);
                         if(!GV.isOnline()){
@@ -510,7 +552,7 @@ public class Dao{
                     for (Object object : lista2) {
                         GV.porcentajeSubCalcular(tam1);
                         //System.out.println("lentes");
-                        Object tmpLen = GV.buscarPorIdEnLista(((Lente)object).getCod(), lista1, new Lente());
+                        Object tmpLen = GV.buscarPorIdEnLista(((Lente)object).getCod(), defaultList, new Lente());
                         if(tmpLen != null){
                             /*SOLO ACTUALIZA LOS LENTES CON STOCK DISTINTOS*/
                             if(((Lente)object).getStock() != ((Lente)tmpLen).getStock()){
