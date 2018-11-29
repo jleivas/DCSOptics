@@ -55,7 +55,8 @@ public class Cmp {
                                          .replaceAll(lastSeparator, "/")
                                          .replaceAll(firstSeparator, "/");
         }
-        DateFormat fmt = new SimpleDateFormat(strOrder.replaceAll("m","M"));
+        
+        DateFormat fmt = new SimpleDateFormat(strOrder.replaceAll("m","M").replaceAll("hhMM", "hhmm"));
         String strDate = "date-error";
         if(date instanceof Date)
             strDate = fmt.format((Date)date);
