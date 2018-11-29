@@ -32,6 +32,12 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.0.9 (V409)](https://github.com/softdirex/DCSOptics/search?q=V409&type=Commits)
+ - [Estandarización en fecha por defecto al sincronizar todo(V409-004)](https://github.com/softdirex/DCSOptics/search?q=V409-004&type=Commits)
+ - [Se amplía a dos meses los registros remotos sincronizados(V409-003)](https://github.com/softdirex/DCSOptics/search?q=V409-003&type=Commits)
+ - [Refactoring en obtención de fechas con formato(V409-002)](https://github.com/softdirex/DCSOptics/search?q=V409-002&type=Commits)
+ - [Refactoring en generación de identificadores(V409-001)](https://github.com/softdirex/DCSOptics/search?q=V409-001&type=Commits)
+
  #### [Version 4.0.8 (V408)](https://github.com/softdirex/DCSOptics/search?q=V408&type=Commits)
  - [Validación de stock de lentes menores que cero(V408-004)](https://github.com/softdirex/DCSOptics/search?q=V408-004&type=Commits)
  - [Optimizacion de sincronizacion al subir los datos(V408-003)](https://github.com/softdirex/DCSOptics/search?q=V408-003&type=Commits)
