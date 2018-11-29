@@ -974,46 +974,46 @@ public class Local implements InterfaceSync {
                 sql = "SELECT COUNT(arm_id) as id FROM armazon WHERE arm_id LIKE '%-"+getIdEquipo()+"'";
             }
             if(type instanceof Cristal){
-                sql = "SELECT MAX(cri_id) as id FROM cristal";
+                sql = "SELECT COUNT(cri_id) as id FROM cristal";
             }
             if(type instanceof Convenio){
-                sql = "SELECT MAX(cnv_id) as id FROM convenio";
+                sql = "SELECT COUNT(cnv_id) as id FROM convenio";
             }
             if(type instanceof CuotasConvenio){
                 sql = "SELECT COUNT(cc_id) as id FROM cuotas_convenio";
             }
             if(type instanceof Descuento){
-                sql = "SELECT MAX(des_id) as id FROM descuento";
+                sql = "SELECT COUNT(des_id) as id FROM descuento";
             }
             if(type instanceof Despacho){
                 sql = "SELECT COUNT(dsp_id) as id FROM despacho WHERE dsp_id LIKE '%-"+getIdEquipo()+"'";
             }
             if(type instanceof Equipo){
-                sql = "SELECT MAX(eq_id) as id FROM equipo";
+                sql = "SELECT COUNT(eq_id) as id FROM equipo";
             }
              if(type instanceof HistorialPago){
                 sql = "SELECT COUNT(hp_id) as id FROM historial_pago WHERE hp_id LIKE '%-"+getIdEquipo()+"'";
             }
             if(type instanceof Institucion){
-                sql = "SELECT MAX(ins_id) as id FROM institucion";
+                sql = "SELECT COUNT(ins_id) as id FROM institucion";
             }
             if(type instanceof InternMail){
-                sql = "SELECT MAX(msg_id) as id FROM message";
+                sql = "SELECT COUNT(msg_id) as id FROM message";
             }
             if(type instanceof Inventario){
-                sql = "SELECT MAX(inv_id) as id FROM inventario";
+                sql = "SELECT COUNT(inv_id) as id FROM inventario";
             }
             if (type instanceof Oficina) {
-                sql = "SELECT MAX(of_id) as id FROM oficina";
+                sql = "SELECT COUNT(of_id) as id FROM oficina";
             }
             if (type instanceof RegistroBaja) {
                 sql = "SELECT COUNT(rb_id) as id FROM registro_bajas WHERE rb_id LIKE '%-"+getIdEquipo()+"'";
             }
             if (type instanceof TipoPago) {
-                sql = "SELECT MAX(tp_id) as id FROM tipo_pago";
+                sql = "SELECT COUNT(tp_id) as id FROM tipo_pago";
             }
             if(type instanceof User){
-                sql = "SELECT MAX(us_id) as id FROM usuario";
+                sql = "SELECT COUNT(us_id) as id FROM usuario";
             }
             if(sql.length()>2){
                 PreparedStatement consulta = LcBd.obtener().prepareStatement(sql);
