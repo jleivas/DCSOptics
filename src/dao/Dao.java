@@ -418,6 +418,7 @@ public class Dao{
         if(type instanceof Ficha){
             type = new EtiquetFicha();
         }
+        Date date = GV.LAST_UPDATE;
         boolean esLente = (type instanceof Lente);
             //System.out.println(esLente);
         if(GV.isCurrentDate(GV.LAST_UPDATE)){//validar plan de licencia
@@ -429,7 +430,8 @@ public class Dao{
                     type = new EtiquetFicha();
                 }
                 ArrayList<Object> defaultList= GV.REMOTE_SYNC.listar("-2",type);
-                ArrayList<Object> lista1= GV.REMOTE_SYNC.listar(GV.LAST_UPDATE,type);
+                /*LISTA1 SE DEBE CARGAR CON UN RETRASO DE DOS MESES PARA RESCATAR ULTIMOS REGISTROS SUBIDOS*/
+                ArrayList<Object> lista1= GV.REMOTE_SYNC.listar(GV.dateSumaResta(GV.LAST_UPDATE, -2, "MONTHS"),type);
                 int size1 = lista1.size();
                 ArrayList<Object> lista2= GV.LOCAL_SYNC.listar(GV.LAST_UPDATE,type);
                 
@@ -514,6 +516,20 @@ public class Dao{
                             if(((Lente)object).getStock() != ((Lente)tmpLen).getStock()){
                                 //System.out.println("cmbia stock");
                                 if(((Lente)object).getStock() >= 0){
+                                    if(Cmp.localIsNewOrEqual(((Lente)object).getLastUpdate(), ((Lente)tmpLen).getLastUpdate())){
+                                        if(GV.dateToString(((SyncClass)object).getLastUpdate(), "ddmmyyyy").equals(GV.dateToString(((SyncClass)tmpLen).getLastUpdate(), "ddmmyyyy"))){
+                                        /*VALIDAR SI LA HORA ES MAS RECIENTE*/
+                                            if(((SyncClass)object).getLastHour() < ((SyncClass)tmpLen).getLastHour()){
+                                                int stock = ((Lente)object).getStock();
+                                                object = tmpLen;
+                                                ((Lente)object).setStock(stock);
+                                            }
+                                        }
+                                    }else{
+                                        int stock = ((Lente)object).getStock();
+                                        object = tmpLen;
+                                        ((Lente)object).setStock(stock);
+                                    }
                                     ((SyncClass)object).setLastUpdate(new Date());
                                     ((SyncClass)object).setLastHour(GV.strToNumber(GV.dateToString(new Date(), "hhmmss")));
                                     sync.Sync.addRemoteSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
