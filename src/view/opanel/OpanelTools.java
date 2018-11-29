@@ -10,6 +10,7 @@ import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
 import fn.SubProcess;
+import fn.globalValues.GlobalValuesVariables;
 import javax.swing.JOptionPane;
 
 /**
@@ -191,7 +192,7 @@ public class OpanelTools extends javax.swing.JPanel {
     }
 
     private void sincronizacionCompleta() {
-        GV.setLastUpdate(GV.strToDate("01-06-2018"));
+        GV.setLastUpdate(GV.strToDate(GlobalValuesVariables.getFechaDefault()));
         if(GV.licenciaExpirada()){
             GV.mensajeLicenceExpired();
         }else{
