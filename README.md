@@ -32,6 +32,11 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.0.8 (V408)](https://github.com/softdirex/DCSOptics/search?q=V408&type=Commits)
+ - [Optimizacion de sincronizacion al subir los datos(V408-003)](https://github.com/softdirex/DCSOptics/search?q=V408-003&type=Commits)
+ - [Enviar reportes en los mensajes de error(V408-002)](https://github.com/softdirex/DCSOptics/search?q=V408-002&type=Commits)
+ - [crear metodos en las entidades para obtener valores a insertar en sql(V408-001)](https://github.com/softdirex/DCSOptics/search?q=V408-001&type=Commits)
+
  #### [Version 4.0.7 (V407)](https://github.com/softdirex/DCSOptics/search?q=V407&type=Commits)
  - [Refactoring de autocompletado de lentes constock sobre cero(V407-003)](https://github.com/softdirex/DCSOptics/search?q=V407-003&type=Commits)
  - [Refactoring de mensaje de error al no encontrar un lente para aumentar stock(V407-002)](https://github.com/softdirex/DCSOptics/search?q=V407-002&type=Commits)
