@@ -66,6 +66,9 @@ public class OptionPane {
             message = title.toUpperCase()+"\n\n"+message;
             title = title.substring(0,38)+"...";
         }
+        if(statusMsg == JOptionPane.ERROR || statusMsg == JOptionPane.ERROR_MESSAGE){
+            SubProcess.report(title, message);
+        }
         GV.setMsgStatus(statusMsg);
         OpanelMessage p1 = new OpanelMessage();
         GV.mpanel().lblTitle.setText(title);

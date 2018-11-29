@@ -158,9 +158,6 @@ public class OpanelMessage extends javax.swing.JPanel {
 
     private void btnAceptarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAceptarMouseClicked
         
-        if(GV.msgStatus() == JOptionPane.ERROR || GV.msgStatus() == JOptionPane.ERROR_MESSAGE){
-            SubProcess.report(lblTitle.getText(), MSG);
-        }
         cleanMsg();
         OptionPane.closeInfoPanel();
     }//GEN-LAST:event_btnAceptarMouseClicked
@@ -186,7 +183,6 @@ public class OpanelMessage extends javax.swing.JPanel {
         int status = (GV.msgStatus() == JOptionPane.ABORT) ? currentStatus:GV.msgStatus();
         String temp = "<" + GV.getStr(title.toUpperCase()) + ">\n" + GV.getStr(msg);
         GV.setMsgStatus(status);
-        System.out.println("*"+MSG+"*");
         if(GV.getStr(MSG).isEmpty()){
             MSG = "<" + GV.getStr(title.toUpperCase()) + ">\n" + GV.getStr(msg);
         }else{
