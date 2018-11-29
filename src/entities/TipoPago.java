@@ -37,4 +37,9 @@ public class TipoPago extends SyncIntIdValidaName{
     public String toString() {
         return "tipoPago{" + "id=" + getId()+ ", nombre=" + getNombre() + '}';
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "("+getId()+",'"+getNombre()+"',"+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }

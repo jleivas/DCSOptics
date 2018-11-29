@@ -133,7 +133,13 @@ public class Cliente extends SyncStringId{
                 + ", lastUpdate=" + getLastUpdate() + '}';
     }
     
-    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getNacimiento().getTime());
+        java.sql.Date sqlfecha2 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+getNombre()+"','"+getTelefono1()+"','"+getTelefono2()+"','"+getEmail()+"'"
+                + ",'"+getDireccion()+"','"+getComuna()+"','"+getCiudad()+"',"+getSexo()+",'"+sqlfecha1+"'"
+                + ","+getEstado()+",'"+sqlfecha2+"',"+getLastHour()+")";
+    }
     
     
     

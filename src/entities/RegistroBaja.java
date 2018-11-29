@@ -64,4 +64,11 @@ public class RegistroBaja extends SyncFichaClass{
     public String getObs() {
         return getStr(obs);
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getFecha().getTime());
+        java.sql.Date sqlfecha2 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+sqlfecha1+"','"+getIdLente()+"',"+getCantidad()+",'"+getObs()
+                + "',"+getEstado()+",'"+sqlfecha2+"',"+getLastHour()+")";
+    }
 }

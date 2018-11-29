@@ -79,4 +79,11 @@ public class HistorialPago extends SyncFichaClass{
                 + ", estado=" + getEstado() 
                 + ", lastUpdate=" + getLastUpdate() + '}';
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getFecha().getTime());
+        java.sql.Date sqlfecha2 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+sqlfecha1+"',"+getAbono()+","+getIdTipoPago()+",'"+getIdFicha()
+                + "',"+getEstado()+",'"+sqlfecha2+"',"+getLastHour()+")";
+    }
 }

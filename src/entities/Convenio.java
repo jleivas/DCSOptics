@@ -236,4 +236,13 @@ public class Convenio extends SyncIntIdValidaName{
         return false;
     }
     
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getFechaInicio().getTime());
+        java.sql.Date sqlfecha2 = new java.sql.Date(getFechaFin().getTime());
+        java.sql.Date sqlfecha3 = new java.sql.Date(getFechaCobro().getTime());
+        java.sql.Date sqlfecha4 = new java.sql.Date(getLastUpdate().getTime());
+        return "("+getId()+",'"+getNombre()+"','"+sqlfecha1+"','"+sqlfecha2+"',"+getCuotas()
+                + ",'"+sqlfecha3+"',"+getMontoMaximo()+","+getMontoPp()+","+getMaximoClientes()+","+getIdDescuento()
+                + ","+getPorcentajeAdicion()+",'"+getIdInstitucion()+"',"+getEstado()+",'"+sqlfecha4+"',"+getLastHour()+")";
+    }
 }

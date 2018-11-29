@@ -43,4 +43,9 @@ public class Inventario extends SyncIntIdValidaName{
         return getStr(descripcion);
     }
     
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "("+getId()+",'"+getNombre()+"','"+getDescripcion()
+                + "',"+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }

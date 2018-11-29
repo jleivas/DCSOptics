@@ -106,7 +106,10 @@ public class InternMail extends SyncIntId{
         return super.getEstado(); //To change body of generated methods, choose Tools | Templates.
     }
     
-    
-    
-    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getFecha().getTime());
+        java.sql.Date sqlfecha2 = new java.sql.Date(getLastUpdate().getTime());
+        return "("+getId()+","+getRemitente().getId()+","+getDestinatario().getId()+",'"+getAsunto()+"','"+getContenido()
+                + "','"+sqlfecha1+"','"+getHora()+"',"+getEstado()+",'"+sqlfecha2+"',"+getLastHour()+")";
+    }
 }

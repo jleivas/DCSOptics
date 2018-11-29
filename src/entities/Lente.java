@@ -190,4 +190,11 @@ public class Lente extends SyncStringId{
                 " - lastUpdate:"+getLastUpdate()+
                 " - LastHour:"+getLastHour();
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+getColor()+"','"+getTipo()+"','"+getMarca()+"','"+getMaterial()
+                + "',"+getFlex()+","+getClasificacion()+",'"+getDescripcion()+"',"+getPrecioRef()+","+getPrecioAct()
+                + ","+getStock()+","+getStockMin()+","+getInventario()+","+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }

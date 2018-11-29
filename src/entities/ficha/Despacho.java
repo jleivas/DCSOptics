@@ -74,4 +74,11 @@ public class Despacho extends SyncFichaClass{
                 + ", fecha=" + fecha 
                 + ", idFicha=" + idFicha + '}';
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getFecha().getTime());
+        java.sql.Date sqlfecha2 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+getRut()+"','"+getNombre()+"','"+sqlfecha1+"','"+getIdFicha()
+                + "',"+getEstado()+",'"+sqlfecha2+"',"+getLastHour()+")";
+    }
 }

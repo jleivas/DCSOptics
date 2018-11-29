@@ -98,4 +98,11 @@ public class Institucion extends SyncStringId{
     public String toString() {
         return "Institucion{" + "id=" + getCod()+ ", nombre=" + nombre + ", telefono=" + telefono + ", email=" + email + ", direccion=" + direccion + ", comuna=" + comuna + ", ciudad=" + ciudad + ", estado=" + getEstado() + '}';
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+getNombre()+"','"+getTelefono()+"','"+getEmail()+"','"+getWeb()
+                + "','"+getDireccion()+"','"+getComuna()+"','"+getCiudad()
+                + "',"+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }

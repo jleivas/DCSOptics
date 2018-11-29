@@ -102,4 +102,12 @@ public class CuotasConvenio extends SyncFichaClass{
                                         "Sin registro")+"\n"+
                 "_________________";
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getFecha().getTime());
+        java.sql.Date sqlfecha2 = new java.sql.Date(getFechaPagado().getTime());
+        java.sql.Date sqlfecha3 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+sqlfecha1+"','"+sqlfecha2+"',"+getMonto()+","+getIdTipoPago()
+                + ","+getIdConvenio()+","+getEstado()+",'"+sqlfecha3+"',"+getLastHour()+")";
+    }
 }

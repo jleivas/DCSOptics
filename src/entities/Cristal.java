@@ -48,4 +48,9 @@ public class Cristal extends SyncIntIdValidaName{
                 " - Estado:"+getEstado();
     }
     
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "("+getId()+",'"+getNombre()+"',"+getPrecio()+","+getEstado()
+                + ",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }

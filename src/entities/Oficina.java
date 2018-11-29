@@ -100,4 +100,10 @@ public class Oficina extends SyncIntIdValidaName{
                 + " CIUDAD: "+getCiudad()+",\n TELEFONO 1: "+getTelefono1()+",\n TELEFONO 2: "+getTelefono2()+",\n"
                 + " EMAIL: "+getEmail()+",\n WEB: "+getWeb()+",\n ESTADO: "+getEstado()+",\n LAST UPDATE: "+getLastUpdate()+"}";
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "("+getId()+",'"+getNombre()+"','"+getDireccion()+"','"+getCiudad()+"','"+getTelefono1()
+                + "','"+getTelefono2()+"','"+getEmail()+"','"+getWeb()+"',"+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }

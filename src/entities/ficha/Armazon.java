@@ -220,4 +220,12 @@ public class Armazon extends SyncFichaClass{
                 + ", estado=" + getEstado()+"\n"
                 + ", lastUpdate=" + getLastUpdate() + '}';
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"',"+getTipo()+",'"+getMarca()+"',"+getPrecioMarca()+",'"+getCristal()
+                + "',"+getPrecioCristal()+",'"+getAdd()+"','"+getOdA()+"','"+getOdEsf()+"','"+getOdCil()
+                + "','"+getOiA()+"','"+getOiEsf()+"','"+getOiCil()+"',"+getDp()+","+getEndurecido()+","+getCapa()+","+getPlusMax()
+                + ",'"+getIdFicha()+"',"+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }

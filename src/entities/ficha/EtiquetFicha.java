@@ -193,5 +193,12 @@ public class EtiquetFicha extends SyncStringId{
         this.idConvenio = idConvenio;
     }
     
-    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getFecha().getTime());
+        java.sql.Date sqlfecha2 = new java.sql.Date(getFechaEntrega().getTime());
+        java.sql.Date sqlfecha3 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+sqlfecha1+"','"+sqlfecha2+"','"+getLugarEntrega()+"','"+getHoraEntrega()
+                + "','"+getObservacion()+"',"+getValorTotal()+","+getDescuento()+","+getSaldo()+",'"+getRutCliente()
+                + "','"+getRutDoctor()+"','"+getIdInstitucion()+"','"+getIdDespacho()+"',"+getIdUser()+","+getIdConvenio()+","+getEstado()+",'"+sqlfecha3+"',"+getLastHour()+")";
+    }
 }

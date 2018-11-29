@@ -86,4 +86,10 @@ public class User extends SyncIntId{
                 " - LAST_UPDATE:"+fn.date.Cmp.dateToString(getLastUpdate(), "dd-mm-yyyy")+
                 " - Estado:"+getEstado();
     }
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "("+getId()+",'"+getNombre()+"','"+getUsername()+"','"+getEmail()+"','"+getPass()
+                + "',"+getTipo()+","+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }

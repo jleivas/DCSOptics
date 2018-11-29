@@ -64,4 +64,10 @@ public class Doctor extends SyncStringId{
                 + ", estado=" + getEstado()+"\n" 
                 + ", lastUpdate=" + getLastUpdate() + '}';
     } 
+    
+    public String getSqlInsertStatement(){
+        java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
+        return "('"+getCod()+"','"+getNombre()+"','"+getTelefono()+"','"+getEmail()
+                + ","+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+    }
 }
