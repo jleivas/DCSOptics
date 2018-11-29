@@ -513,10 +513,12 @@ public class Dao{
                             /*SOLO ACTUALIZA LOS LENTES CON STOCK DISTINTOS*/
                             if(((Lente)object).getStock() != ((Lente)tmpLen).getStock()){
                                 //System.out.println("cmbia stock");
-                                ((SyncClass)object).setLastUpdate(new Date());
-                                ((SyncClass)object).setLastHour(GV.strToNumber(GV.dateToString(new Date(), "hhmmss")));
-                                sync.Sync.addRemoteSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
-                                GV.REMOTE_SYNC.updateFromDao(object);
+                                if(((Lente)object).getStock() >= 0){
+                                    ((SyncClass)object).setLastUpdate(new Date());
+                                    ((SyncClass)object).setLastHour(GV.strToNumber(GV.dateToString(new Date(), "hhmmss")));
+                                    sync.Sync.addRemoteSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
+                                    GV.REMOTE_SYNC.updateFromDao(object);
+                                }
                             }
                         }
                     }
