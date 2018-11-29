@@ -33,6 +33,7 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.0.8 (V408)](https://github.com/softdirex/DCSOptics/search?q=V408&type=Commits)
+ - [Validación de stock de lentes menores que cero(V408-004)](https://github.com/softdirex/DCSOptics/search?q=V408-004&type=Commits)
  - [Optimizacion de sincronizacion al subir los datos(V408-003)](https://github.com/softdirex/DCSOptics/search?q=V408-003&type=Commits)
  - [Enviar reportes en los mensajes de error(V408-002)](https://github.com/softdirex/DCSOptics/search?q=V408-002&type=Commits)
  - [crear metodos en las entidades para obtener valores a insertar en sql(V408-001)](https://github.com/softdirex/DCSOptics/search?q=V408-001&type=Commits)
