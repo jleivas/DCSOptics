@@ -281,7 +281,7 @@ public class Dao{
             }
         }
         if(GV.licenciaLocal()){
-            System.out.println("no function");
+            //System.out.println("no function");
             return false;
         }else{
             restoreOrDeleteRemote(object);
@@ -419,7 +419,7 @@ public class Dao{
             type = new EtiquetFicha();
         }
         boolean esLente = (type instanceof Lente);
-            System.out.println(esLente);
+            //System.out.println(esLente);
         if(GV.isCurrentDate(GV.LAST_UPDATE)){//validar plan de licencia
             return;//solo hace una actualizacion por día.
         }
@@ -436,7 +436,7 @@ public class Dao{
                 int size2 = lista2.size();
                 if(size1 > 0){
                     for (Object object : lista1) {
-                        System.out.println("lista1");
+                        //System.out.println("lista1");
                         GV.porcentajeSubCalcular(size1+size2);
                         sync.Sync.addLocalSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
                         if(!GV.isOnline()){
@@ -450,7 +450,7 @@ public class Dao{
                 if(size2 > 0){
                     String sql = "";
                     for (Object object : lista2) {
-                        System.out.println("lista2");
+                        //System.out.println("lista2");
                         GV.porcentajeSubCalcular(size1+size2);
                         if(!GV.isOnline()){
                             GV.stopSincronizacion();
@@ -460,18 +460,18 @@ public class Dao{
                         }
                         Object remote;
                         if(object instanceof SyncIntId){
-                            System.out.println("INT");
+                            //System.out.println("INT");
                             remote = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), defaultList, type);
                         }else if(object instanceof SyncStringId){
-                            System.out.println("STRING");
+                            //System.out.println("STRING");
                             remote = GV.buscarPorIdEnLista(((SyncStringId)object).getCod(), defaultList, type);
                         }else{
-                            System.out.println("XXX");
+                            //System.out.println("XXX");
                             return;
                         }
                         if(remote == null){
                             /*CREAR SQL PARA INSERTAR TODOS LOS REGISTROS EN UNA SOLA CONSULTA*/
-                            System.out.println("INSERT");
+                            //System.out.println("INSERT");
                             sql = getSqlRemoteInsert(sql, object);
                         }else{
                             /*VALIDAR SI YA ESTÁ INSERTADO PARA UPDATEAR*/
@@ -483,18 +483,18 @@ public class Dao{
                                         /*VALIDAR SI LA HORA ES MAS RECIENTE*/
                                         if(((SyncClass)object).getLastHour() > ((SyncClass)remote).getLastHour()){
                                             GV.REMOTE_SYNC.updateFromDao(object);
-                                            System.out.println("UPD1");
+                                            //System.out.println("UPD1");
                                         }
                                     }else{
                                         GV.REMOTE_SYNC.updateFromDao(object);
-                                        System.out.println("UPD2");
+                                        //System.out.println("UPD2");
                                     }
                                 }
                             }
                         }
                     }//TERMINA DE RECORRER LA LISTA LOCAL
                     if(!sql.isEmpty()){
-                        System.out.println("EXE INS");
+                        //System.out.println("EXE INS");
                         GV.REMOTE_SYNC.insertFromDao(sql);
                     }
                 }
@@ -507,12 +507,12 @@ public class Dao{
                     int tam1 = lista2.size();
                     for (Object object : lista2) {
                         GV.porcentajeSubCalcular(tam1);
-                        System.out.println("lentes");
+                        //System.out.println("lentes");
                         Object tmpLen = GV.buscarPorIdEnLista(((Lente)object).getCod(), lista1, new Lente());
                         if(tmpLen != null){
                             /*SOLO ACTUALIZA LOS LENTES CON STOCK DISTINTOS*/
                             if(((Lente)object).getStock() != ((Lente)tmpLen).getStock()){
-                                System.out.println("cmbia stock");
+                                //System.out.println("cmbia stock");
                                 ((SyncClass)object).setLastUpdate(new Date());
                                 ((SyncClass)object).setLastHour(GV.strToNumber(GV.dateToString(new Date(), "hhmmss")));
                                 sync.Sync.addRemoteSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
@@ -1218,179 +1218,175 @@ public class Dao{
     public static String getSqlRemoteInsert(String sql, Object object){
         if(object instanceof SyncClass){
             if(sql.startsWith("INSERT")){
-                System.out.println("getSqlRemoteInsert 1");
+                //System.out.println("getSqlRemoteInsert 1");
                 sql = sql + "," + getValuesSqlStatement(object);
             }else{
-                System.out.println("getSqlRemoteInsert 2");
+                //System.out.println("getSqlRemoteInsert 2");
                 sql = getInsertSqlStatement(object) + getValuesSqlStatement(object);
             }
         }
-        System.out.println("SQL: "+sql);
+        //System.out.println("SQL: "+sql);
         return sql;
     }
     
     private static String getValuesSqlStatement(Object object){
         if(object instanceof Armazon){
-            System.out.println("values arm");
+            //System.out.println("values arm");
             return ((Armazon)object).getSqlInsertStatement();
         }
         if(object instanceof Cliente){
-            System.out.println("values cli:"+((Cliente)object).getSqlInsertStatement());
+            //System.out.println("values cli:"+((Cliente)object).getSqlInsertStatement());
             return ((Cliente)object).getSqlInsertStatement();
         }
         if(object instanceof Convenio){
-            System.out.println("values cnv");
+            //System.out.println("values cnv");
             return ((Convenio)object).getSqlInsertStatement();
         }
         if(object instanceof Cristal){
-            System.out.println("values cri");
+            //System.out.println("values cri");
             return ((Cristal)object).getSqlInsertStatement();
         }
         if(object instanceof CuotasConvenio){
-            System.out.println("values cc");
+            //System.out.println("values cc");
             return ((CuotasConvenio)object).getSqlInsertStatement();
         }
         if(object instanceof Descuento){
-            System.out.println("values des");
+            //System.out.println("values des");
             return ((Descuento)object).getSqlInsertStatement();
         }
         if(object instanceof Despacho){
-            System.out.println("values dsp");
+            //System.out.println("values dsp");
             return ((Despacho)object).getSqlInsertStatement();
         }
         if(object instanceof Doctor){
-            System.out.println("values doc");
+            //System.out.println("values doc");
             return ((Doctor)object).getSqlInsertStatement();
         }
         if(object instanceof Equipo){
-            System.out.println("values eq");
+            //System.out.println("values eq");
             return ((Equipo)object).getSqlInsertStatement();
         }
         if(object instanceof EtiquetFicha){
-            System.out.println("values etiq ficha");
+            //System.out.println("values etiq ficha");
             return ((EtiquetFicha)object).getSqlInsertStatement();
         }
         if(object instanceof HistorialPago){
-            System.out.println("values hp");
+            //System.out.println("values hp");
             return ((HistorialPago)object).getSqlInsertStatement();
         }
         if(object instanceof Institucion){
-            System.out.println("values inst");
+            //System.out.println("values inst");
             return ((Institucion)object).getSqlInsertStatement();
         }
         if(object instanceof Inventario){
-            System.out.println("values inv");
+            //System.out.println("values inv");
             return ((Inventario)object).getSqlInsertStatement();
         }
         if(object instanceof Lente){
-            System.out.println("values len");
+            //System.out.println("values len");
             return ((Lente)object).getSqlInsertStatement();
         }
         if(object instanceof InternMail){
-            System.out.println("values mail");
+            //System.out.println("values mail");
             return ((InternMail)object).getSqlInsertStatement();
         }
         if(object instanceof Oficina){
-            System.out.println("values ofi");
+            //System.out.println("values ofi");
             return ((Oficina)object).getSqlInsertStatement();
         }
         if(object instanceof RegistroBaja){
-            System.out.println("values rb");
+            //System.out.println("values rb");
             return ((RegistroBaja)object).getSqlInsertStatement();
         }
         if(object instanceof TipoPago){
-            System.out.println("values tp");
+            //System.out.println("values tp");
             return ((TipoPago)object).getSqlInsertStatement();
         }
         if(object instanceof User){
-            System.out.println("values us");
+            //System.out.println("values us");
             return ((User)object).getSqlInsertStatement();
         }
-        System.out.println("values nadad");
+        //System.out.println("values nadad");
         return "";
     }
     
     private static String getInsertSqlStatement(Object object){
         if(object instanceof Armazon){
-            System.out.println("Armazon");
+            //System.out.println("Armazon");
             return "INSERT INTO armazon VALUES ";
         }
         if(object instanceof Cliente){
-            System.out.println("cliente");
+            //System.out.println("cliente");
             return "INSERT INTO cliente VALUES ";
         }
         if(object instanceof Convenio){
-            System.out.println("convenio");
+            //System.out.println("convenio");
             return "INSERT INTO convenio VALUES ";
         }
         if(object instanceof Cristal){
-            System.out.println("cristal");
+            //System.out.println("cristal");
             return "INSERT INTO cristal VALUES ";
         }
         if(object instanceof CuotasConvenio){
-            System.out.println("cuotas");
+            //System.out.println("cuotas");
             return "INSERT INTO cuotas_convenio VALUES ";
         }
         if(object instanceof Descuento){
-            System.out.println("descuento");
+            //System.out.println("descuento");
             return "INSERT INTO descuento VALUES ";
         }
         if(object instanceof Despacho){
-            System.out.println("despacho");
+            //System.out.println("despacho");
             return "INSERT INTO despacho VALUES ";
         }
         if(object instanceof Doctor){
-            System.out.println("doctor");
+            //System.out.println("doctor");
             return "INSERT INTO doctor VALUES ";
         }
         if(object instanceof Equipo){
-            System.out.println("equipo");
+            //System.out.println("equipo");
             return "INSERT INTO equipo VALUES ";
         }
-        if(object instanceof Ficha || object instanceof EtiquetFicha){
-            if(object instanceof Ficha)
-                System.out.println("ficha");
-            else
-                System.out.println("etiquet");
+        if(object instanceof EtiquetFicha){
             return "INSERT INTO ficha VALUES ";
         }
         if(object instanceof HistorialPago){
-            System.out.println("historialoaogo");
+            //System.out.println("historialoaogo");
             return "INSERT INTO historial_pago VALUES ";
         }
         if(object instanceof Institucion){
-            System.out.println("inst");
+            //System.out.println("inst");
             return "INSERT INTO institucion VALUES ";
         }
         if(object instanceof Inventario){
-            System.out.println("inv");
+            //System.out.println("inv");
             return "INSERT INTO inventario VALUES ";
         }
         if(object instanceof Lente){
-            System.out.println("len");
+            //System.out.println("len");
             return "INSERT INTO lente VALUES ";
         }
         if(object instanceof InternMail){
-            System.out.println("message");
+            //System.out.println("message");
             return "INSERT INTO message VALUES ";
         }
         if(object instanceof Oficina){
-            System.out.println("ofi");
+            //System.out.println("ofi");
             return "INSERT INTO oficina VALUES ";
         }
         if(object instanceof RegistroBaja){
-            System.out.println("rb");
+            //System.out.println("rb");
             return "INSERT INTO registro_bajas VALUES ";
         }
         if(object instanceof TipoPago){
-            System.out.println("tp");
+            //System.out.println("tp");
             return "INSERT INTO tipo_pago VALUES ";
         }
         if(object instanceof User){
-            System.out.println("us");
+            //System.out.println("us");
             return "INSERT INTO usuario VALUES ";
         }
-        System.out.println("sql nada");
+        //System.out.println("sql nada");
         return "";
     }
 }
