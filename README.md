@@ -33,6 +33,7 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.0 (V410)](https://github.com/softdirex/DCSOptics/search?q=V410&type=Commits)
+ - [[V410-009]Validación de formato de folio al cargar una ficha](https://github.com/softdirex/DCSOptics/search?q=V410-009&type=Commits)
  - [[V410-008]Corrección de sintaxis sql con formato string](https://github.com/softdirex/DCSOptics/search?q=V410-008&type=Commits)
  - [[V410-007]Mensaje de error con envio de reporte al email](https://github.com/softdirex/DCSOptics/search?q=V410-007&type=Commits)
  - [[V410-006]Mensaje de error con detalles de la excepción lanzada al insertar registros en sincronización](https://github.com/softdirex/DCSOptics/search?q=V410-006&type=Commits)
