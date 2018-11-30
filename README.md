@@ -33,6 +33,10 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.0 (V410)](https://github.com/softdirex/DCSOptics/search?q=V410&type=Commits)
+ - [[V410-008]Corrección de sintaxis sql con formato string](https://github.com/softdirex/DCSOptics/search?q=V410-008&type=Commits)
+ - [[V410-007]Mensaje de error con envio de reporte al email](https://github.com/softdirex/DCSOptics/search?q=V410-007&type=Commits)
+ - [[V410-006]Mensaje de error con detalles de la excepción lanzada al insertar registros en sincronización](https://github.com/softdirex/DCSOptics/search?q=V410-006&type=Commits)
+ - [[V410-005]Validación de listas vacías en método de búsqueda](https://github.com/softdirex/DCSOptics/search?q=V410-005&type=Commits)
  - [[V410-004]Cierre de panel de herramientas después de escoger una opción](https://github.com/softdirex/DCSOptics/search?q=V410-004&type=Commits)
  - [[V410-003]Reordenamiento de entidades por prioridad para sincronizar](https://github.com/softdirex/DCSOptics/search?q=V410-003&type=Commits)
  - [[V410-002]Comparación de códigos sin discriminar letras mayusculas de minusculas](https://github.com/softdirex/DCSOptics/search?q=V410-002&type=Commits)
