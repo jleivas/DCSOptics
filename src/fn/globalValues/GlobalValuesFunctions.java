@@ -425,7 +425,7 @@ public class GlobalValuesFunctions {
         }
         if(classType instanceof SyncStringId){
             Optional<Object> objectFound = list.stream()
-            .filter(p -> ((SyncStringId)p).getCod().equals(code))
+            .filter(p -> ((SyncStringId)p).getCod().toLowerCase().equals(code.toLowerCase()))
             .findFirst();
             return objectFound.isPresent() ? objectFound.get() : null;
         }
