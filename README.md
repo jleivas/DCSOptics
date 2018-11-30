@@ -32,7 +32,15 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.1.0 (V410)](https://github.com/softdirex/DCSOptics/search?q=V410&type=Commits)
+ - [[V410-004]Cierre de panel de herramientas después de escoger una opción](https://github.com/softdirex/DCSOptics/search?q=V410-004&type=Commits)
+ - [[V410-003]Reordenamiento de entidades por prioridad para sincronizar](https://github.com/softdirex/DCSOptics/search?q=V410-003&type=Commits)
+ - [[V410-002]Comparación de códigos sin discriminar letras mayusculas de minusculas](https://github.com/softdirex/DCSOptics/search?q=V410-002&type=Commits)
+ - [[V410-001]Refactoring en sincronizar registros remotos con los locales](https://github.com/softdirex/DCSOptics/search?q=V410-001&type=Commits)
+
+
  #### [Version 4.0.9 (V409)](https://github.com/softdirex/DCSOptics/search?q=V409&type=Commits)
+ - [[V409-005]Mejora en el proceso de sincronización](https://github.com/softdirex/DCSOptics/search?q=V409-005&type=Commits)
  - [Estandarización en fecha por defecto al sincronizar todo(V409-004)](https://github.com/softdirex/DCSOptics/search?q=V409-004&type=Commits)
  - [Se amplía a dos meses los registros remotos sincronizados(V409-003)](https://github.com/softdirex/DCSOptics/search?q=V409-003&type=Commits)
  - [Refactoring en obtención de fechas con formato(V409-002)](https://github.com/softdirex/DCSOptics/search?q=V409-002&type=Commits)
