@@ -417,6 +417,9 @@ public class GlobalValuesFunctions {
         if(GV.getStr(code).isEmpty()){
             return null;
         }
+        if(list.size() == 0){
+            return null;
+        }
         if(classType instanceof SyncIntId){
             Optional<Object> objectFound = list.stream()
             .filter(p -> ((SyncIntId)p).getId() == GV.strToNumber(code))
