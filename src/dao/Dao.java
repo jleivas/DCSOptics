@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.nio.cs.ext.GB18030;
 import sync.entities.LocalInventario;
 
 /**
@@ -437,7 +436,6 @@ public class Dao{
                 
                 int size2 = lista2.size();
                 if(size1 > 0){
-                    String sql1 = "";
                     for (Object object : lista1) {
                         Object local;
                         //System.out.println("lista1");
@@ -455,7 +453,7 @@ public class Dao{
                         if(local == null){
                             /*CREAR SQL PARA INSERTAR TODOS LOS REGISTROS EN UNA SOLA CONSULTA*/
                             //System.out.println("INSERT");
-                            sql1 = getSqlRemoteInsert(sql1, object);
+                            GV.LOCAL_SYNC.add(object);
                         }else{
                             /*VALIDAR SI YA ESTÁ INSERTADO PARA UPDATEAR*/
                             if(object instanceof SyncClass){
@@ -465,20 +463,16 @@ public class Dao{
                                     if(GV.dateToString(((SyncClass)object).getLastUpdate(), "ddmmyyyy").equals(GV.dateToString(((SyncClass)local).getLastUpdate(), "ddmmyyyy"))){
                                         /*VALIDAR SI LA HORA ES MAS RECIENTE*/
                                         if(((SyncClass)object).getLastHour() > ((SyncClass)local).getLastHour()){
-                                            GV.LOCAL_SYNC.updateFromDao(object);
+                                            GV.LOCAL_SYNC.update(object);
                                             //System.out.println("UPD1");
                                         }
                                     }else{
-                                        GV.LOCAL_SYNC.updateFromDao(object);
+                                        GV.LOCAL_SYNC.update(object);
                                         //System.out.println("UPD2");
                                     }
                                 }
                             }
                         }
-                    }
-                    if(!sql1.isEmpty()){
-                        //System.out.println("EXE INS");
-                        GV.LOCAL_SYNC.insertFromDao(sql1);
                     }
                 }
                 if(size2 > 0){
