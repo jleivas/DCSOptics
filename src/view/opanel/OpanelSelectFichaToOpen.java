@@ -171,8 +171,7 @@ public class OpanelSelectFichaToOpen extends javax.swing.JPanel {
             OptionPane.showMsg("Texto vacío", "Debe ingresar un número de folio", 2);
             return;
         }else{
-            if(!GV.getStr(cod).contains("-") || 
-               !(""+GV.strToNumber(cod.replaceAll("-", ""))).equals(cod.substring(0, cod.lastIndexOf("-")))){
+            if(!GV.getStr(cod).contains("-")){
                 OptionPane.showMsg("Formato incorrecto", "El número de folio debe contener solo números y un guión seguido por\n"
                         + "un identificador de inventario.", 2);
                 return;
