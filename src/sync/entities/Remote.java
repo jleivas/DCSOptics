@@ -4268,7 +4268,7 @@ public class Remote implements InterfaceSync{
             RmBd.cerrar();
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Remote.class.getName()).log(Level.SEVERE, null, ex);
-            OptionPane.showMsg("No se pudo ejecutar la consulta", sql, 3);
+            OptionPane.showMsg(ex.getMessage()+"\nNo se pudo ejecutar la consulta", sql, 3);
             OptionPane.closeInfoPanel();
             return false;
         }

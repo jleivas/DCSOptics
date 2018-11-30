@@ -4271,8 +4271,8 @@ public class Local implements InterfaceSync {
             insert.executeUpdate();
             LcBd.cerrar();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Remote.class.getName()).log(Level.SEVERE, null, ex);
-            OptionPane.showMsg("No se pudo ejecutar la consulta", sql, 3);
+            Logger.getLogger(Local.class.getName()).log(Level.SEVERE, null, ex);
+            OptionPane.showMsg(ex.getMessage()+"\nNo se pudo ejecutar la consulta", sql, 3);
             OptionPane.closeInfoPanel();
             return false;
         }
