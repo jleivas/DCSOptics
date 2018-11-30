@@ -529,6 +529,7 @@ public class GlobalValuesBD {
     public static List<Object> allEntitiesForRemoteSync(){
         List<Object> entities = new ArrayList<>();
         entities.add(new RegistroBaja());
+        entities.add(new Lente());
         entities.add(new TipoPago());
         entities.add(new User());
         entities.add(new EtiquetFicha());
@@ -537,7 +538,6 @@ public class GlobalValuesBD {
         entities.add(new Armazon());
         entities.add(new Cliente());
         entities.add(new Convenio());
-        entities.add(new Lente());
         entities.add(new Oficina());
         entities.add(new Cristal());
         entities.add(new CuotasConvenio());
