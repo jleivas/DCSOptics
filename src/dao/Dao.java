@@ -418,7 +418,6 @@ public class Dao{
         if(type instanceof Ficha){
             type = new EtiquetFicha();
         }
-        Date date = GV.LAST_UPDATE;
         boolean esLente = (type instanceof Lente);
             //System.out.println(esLente);
         if(GV.isCurrentDate(GV.LAST_UPDATE)){//validar plan de licencia
@@ -438,28 +437,25 @@ public class Dao{
                 
                 int size2 = lista2.size();
                 if(size1 > 0){
-                    int cont =0;
+                    String sql1 = "";
                     for (Object object : lista1) {
-                        cont++;
-                        System.out.println("1:"+cont);
                         Object local;
                         //System.out.println("lista1");
                         if(object instanceof SyncIntId){
                             //System.out.println("INT");
-                            local = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), defaultList, type);
+                            local = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), defaultLocalList, type);
                         }else if(object instanceof SyncStringId){
                             //System.out.println("STRING");
-                            local = GV.buscarPorIdEnLista(((SyncStringId)object).getCod(), defaultList, type);
+                            local = GV.buscarPorIdEnLista(((SyncStringId)object).getCod(), defaultLocalList, type);
                         }else{
                             //System.out.println("XXX");
                             return;
                         }
                         GV.porcentajeSubCalcular(size1+size2);
-                        String sql = "";
                         if(local == null){
                             /*CREAR SQL PARA INSERTAR TODOS LOS REGISTROS EN UNA SOLA CONSULTA*/
                             //System.out.println("INSERT");
-                            sql = getSqlRemoteInsert(sql, object);
+                            sql1 = getSqlRemoteInsert(sql1, object);
                         }else{
                             /*VALIDAR SI YA ESTÁ INSERTADO PARA UPDATEAR*/
                             if(object instanceof SyncClass){
@@ -479,21 +475,15 @@ public class Dao{
                                 }
                             }
                         }
-//                        sync.Sync.addLocalSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
-//                        if(!GV.isOnline()){
-//                            GV.stopSincronizacion();
-//                        }
-//                        if(GV.sincronizacionIsStopped()){
-//                            return;
-//                        }
+                    }
+                    if(!sql1.isEmpty()){
+                        //System.out.println("EXE INS");
+                        GV.LOCAL_SYNC.insertFromDao(sql1);
                     }
                 }
                 if(size2 > 0){
-                    String sql = "";
-                    int cont = 0;
+                    String sql2 = "";
                     for (Object object : lista2) {
-                        cont++;
-                        System.out.println(""+cont);
                         //System.out.println("lista2");
                         GV.porcentajeSubCalcular(size1+size2);
                         if(!GV.isOnline()){
@@ -516,7 +506,7 @@ public class Dao{
                         if(remote == null){
                             /*CREAR SQL PARA INSERTAR TODOS LOS REGISTROS EN UNA SOLA CONSULTA*/
                             //System.out.println("INSERT");
-                            sql = getSqlRemoteInsert(sql, object);
+                            sql2 = getSqlRemoteInsert(sql2, object);
                         }else{
                             /*VALIDAR SI YA ESTÁ INSERTADO PARA UPDATEAR*/
                             if(object instanceof SyncClass){
@@ -537,9 +527,9 @@ public class Dao{
                             }
                         }
                     }//TERMINA DE RECORRER LA LISTA LOCAL
-                    if(!sql.isEmpty()){
+                    if(!sql2.isEmpty()){
                         //System.out.println("EXE INS");
-                        GV.REMOTE_SYNC.insertFromDao(sql);
+                        GV.REMOTE_SYNC.insertFromDao(sql2);
                     }
                 }
                 if(esLente){
