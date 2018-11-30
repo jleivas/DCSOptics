@@ -87,6 +87,6 @@ public class Equipo extends SyncIntId{
     public String getSqlInsertStatement(){
         java.sql.Date sqlfecha1 = new java.sql.Date(getLastUpdate().getTime());
         return "("+getId()+",'"+getNombre()+"','"+getLicencia()+"','"+getBd()+"','"+getBdUser()
-                + "','"+getBdPass()+"',"+getBdUrl()+","+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
+                + "','"+getBdPass()+"','"+getBdUrl()+"',"+getEstado()+",'"+sqlfecha1+"',"+getLastHour()+")";
     }
 }
