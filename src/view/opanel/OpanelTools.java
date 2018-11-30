@@ -138,9 +138,11 @@ public class OpanelTools extends javax.swing.JPanel {
                     OptionPane.showMsg("Debe seleccionar una opción", "No ha seleccionado una opción válida en el combo-box", JOptionPane.INFORMATION_MESSAGE);
                     break;
                 case 1://Exportar correos
+                    OptionPane.closeOptionPanel();
                     exportarCorreos();
                     break;
                 case 2://Sincronizacion completa
+                    OptionPane.closeOptionPanel();
                     sincronizacionCompleta();
                     break;
                 default:
