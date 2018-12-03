@@ -71,6 +71,7 @@ public class VUsuariosMac extends javax.swing.JPanel {
         btnEliminar = new javax.swing.JLabel();
         btnRestaurar = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
+        btnResetPass = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         pnl1 = new javax.swing.JPanel();
         lblNewName = new javax.swing.JLabel();
@@ -94,8 +95,6 @@ public class VUsuariosMac extends javax.swing.JPanel {
         jLabel17 = new javax.swing.JLabel();
         cboTipo2 = new javax.swing.JComboBox<>();
         btnModificar = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        txtUpdatePass = new javax.swing.JTextField();
         btnCancelar = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -187,6 +186,20 @@ public class VUsuariosMac extends javax.swing.JPanel {
             }
         });
 
+        btnResetPass.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Password_50px.png"))); // NOI18N
+        btnResetPass.setToolTipText("Restaurar");
+        btnResetPass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnResetPassMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnResetPassMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnResetPassMouseExited(evt);
+            }
+        });
+
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Search_Property_25px_1.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -200,6 +213,8 @@ public class VUsuariosMac extends javax.swing.JPanel {
                 .addComponent(btnEliminar)
                 .addGap(18, 18, 18)
                 .addComponent(btnRestaurar)
+                .addGap(18, 18, 18)
+                .addComponent(btnResetPass)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -229,7 +244,8 @@ public class VUsuariosMac extends javax.swing.JPanel {
                     .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnAbrir, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnRestaurar, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cboMostrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboMostrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnResetPass, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(36, 36, 36))
         );
 
@@ -415,22 +431,6 @@ public class VUsuariosMac extends javax.swing.JPanel {
             }
         });
 
-        jLabel19.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
-        jLabel19.setText("Contraseña");
-
-        txtUpdatePass.setEditable(false);
-        txtUpdatePass.setText("Optica2018");
-        txtUpdatePass.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtUpdatePassActionPerformed(evt);
-            }
-        });
-        txtUpdatePass.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtUpdatePassKeyTyped(evt);
-            }
-        });
-
         btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cancel_50px.png"))); // NOI18N
         btnCancelar.setToolTipText("Cancelar");
         btnCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -450,22 +450,16 @@ public class VUsuariosMac extends javax.swing.JPanel {
         pnl2Layout.setHorizontalGroup(
             pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl2Layout.createSequentialGroup()
-                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(pnl2Layout.createSequentialGroup()
-                        .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtUpdateName, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                                .addComponent(txtUpdateUsername))
-                            .addComponent(cboTipo2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(pnl2Layout.createSequentialGroup()
-                        .addComponent(jLabel19)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtUpdatePass)))
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtUpdateName, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addComponent(txtUpdateUsername))
+                    .addComponent(cboTipo2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -499,9 +493,6 @@ public class VUsuariosMac extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnModificar)
-                    .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel19)
-                        .addComponent(txtUpdatePass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnCancelar)))
         );
 
@@ -692,7 +683,6 @@ public class VUsuariosMac extends javax.swing.JPanel {
         cWT();
         staticUser.setEmail(GV.getFilterString(GV.mailValidate(txtUpdateEmail.getText())));
         staticUser.setNombre(GV.getFilterString(txtUpdateName.getText()));
-        staticUser.setPass(GV.enC(txtUpdatePass.getText()));
         int tipo = cboTipo2.getSelectedIndex();
         staticUser.setTipo(tipo);
         staticUser.setUsername(GV.getFilterString(txtUpdateUsername.getText()));
@@ -720,14 +710,6 @@ public class VUsuariosMac extends javax.swing.JPanel {
     private void txtNewPassKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNewPassKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNewPassKeyTyped
-
-    private void txtUpdatePassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUpdatePassActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtUpdatePassActionPerformed
-
-    private void txtUpdatePassKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUpdatePassKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtUpdatePassKeyTyped
 
     private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
         txtBuscar.addKeyListener(new KeyAdapter() {
@@ -764,6 +746,18 @@ public class VUsuariosMac extends javax.swing.JPanel {
         btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnCancelar.getIcon().toString()))));
     }//GEN-LAST:event_btnCancelarMouseExited
 
+    private void btnResetPassMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnResetPassMouseEntered
+        btnResetPass.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnResetPass.getIcon().toString()))));
+    }//GEN-LAST:event_btnResetPassMouseEntered
+
+    private void btnResetPassMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnResetPassMouseExited
+        btnResetPass.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnResetPass.getIcon().toString()))));
+    }//GEN-LAST:event_btnResetPassMouseExited
+
+    private void btnResetPassMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnResetPassMouseClicked
+        resetPass();
+    }//GEN-LAST:event_btnResetPassMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAbrir;
@@ -771,6 +765,7 @@ public class VUsuariosMac extends javax.swing.JPanel {
     private javax.swing.JLabel btnEliminar;
     private javax.swing.JLabel btnGuardar;
     private javax.swing.JLabel btnModificar;
+    private javax.swing.JLabel btnResetPass;
     private javax.swing.JLabel btnRestaurar;
     private javax.swing.JComboBox<String> cboMostrar;
     private javax.swing.JComboBox<String> cboTipo1;
@@ -779,7 +774,6 @@ public class VUsuariosMac extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -799,7 +793,6 @@ public class VUsuariosMac extends javax.swing.JPanel {
     private javax.swing.JTextField txtNewUsername;
     private javax.swing.JTextField txtUpdateEmail;
     private javax.swing.JTextField txtUpdateName;
-    private javax.swing.JTextField txtUpdatePass;
     private javax.swing.JTextField txtUpdateUsername;
     // End of variables declaration//GEN-END:variables
 
@@ -834,11 +827,13 @@ public class VUsuariosMac extends javax.swing.JPanel {
             btnEliminar.setVisible(false);
             btnAbrir.setVisible(false);
             btnModificar.setVisible(false);
+            btnResetPass.setVisible(false);
         }else{
             btnRestaurar.setVisible(false);
             btnEliminar.setVisible(true);
             btnAbrir.setVisible(true);
             btnModificar.setVisible(true);
+            btnResetPass.setVisible(true);
         }
         
         try{
@@ -901,7 +896,9 @@ public class VUsuariosMac extends javax.swing.JPanel {
                 txtUpdateName.setText(staticUser.getNombre());
                 txtUpdateEmail.setText(staticUser.getEmail());
                 txtUpdateUsername.setText(staticUser.getUsername());
-                txtUpdatePass.setText(getResetPass());
+                if(staticUser.getUsername().equals("admin")){
+                    txtUpdateUsername.setEditable(false);
+                }
                 cboTipo2.setSelectedIndex(staticUser.getTipo());
                 
             }else{
@@ -957,7 +954,6 @@ public class VUsuariosMac extends javax.swing.JPanel {
         txtUpdateName.setText("");
         txtUpdateEmail.setText("");
         txtUpdateUsername.setText("");
-        txtUpdatePass.setText("");
         txtNewName.setText("");
         txtNewEmail.setText("");
         txtNewUsername.setText("");
@@ -997,6 +993,42 @@ public class VUsuariosMac extends javax.swing.JPanel {
             return;
         }
         cargarDatos("0");
+        cDF();
+    }
+    
+    public void resetPass(){
+        String pass = getResetPass();
+        try{
+            cWT();
+            int fila = tblListar.getSelectedRow();
+            String username = tblListar.getValueAt(fila, 0).toString();
+            if((username.equals("admin") || username.equals("root")) && !GV.user().getUsername().equals("admin")){
+                OptionPane.showMsg("No tienes permisos suficientes", "No puedes modificar la clave de este usuario", 2);
+                return;
+            }
+            staticUser = (User)load.get(username, 0, new User());
+            if(staticUser != null){
+                if(OptionPane.getConfirmation("Resetear clave de acceso", "¿Estas seguro que deseas resetear la clave de acceso\n"
+                        + "del usuario: \""+staticUser.getNombre()+"\"?\n"
+                        + "La nueva clave será: \""+pass+"\"", 2)){
+                    staticUser.setPass(GV.enC(pass));
+                    cWT();
+                    if(!load.updateFromUI(staticUser)){
+                        cDF();
+                        return;
+                    } 
+                    cargarDatos("0");
+                    cDF();
+                }else{
+                    OptionPane.showMsg("Operación cancelada", "La clave no se modificó", 1);
+                }
+            }else{
+                OptionPane.showMsg("Seleccione Cliente","Error al cargar el cliente", 2);
+            }
+            cDF();
+        }catch(Exception e){
+            OptionPane.showMsg("Seleccione usuario", "Debe seleccionar un usuario", 2);
+        }
         cDF();
     }
 }
