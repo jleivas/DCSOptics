@@ -32,6 +32,12 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.1.1 (V411)](https://github.com/softdirex/DCSOptics/search?q=V411&type=Commits)
+ - [[V411-003]Username de admin no se puede modificar](https://github.com/softdirex/DCSOptics/search?q=V411-003&type=Commits)
+ - [[V411-002]Se anula la modificación automática de la clave de usuarios](https://github.com/softdirex/DCSOptics/search?q=V411-002&type=Commits)
+ - [[V411-001]Evita pérdida de email al sincronizar por primera vez](https://github.com/softdirex/DCSOptics/search?q=V411-001&type=Commits)
+
+
  #### [Version 4.1.0 (V410)](https://github.com/softdirex/DCSOptics/search?q=V410&type=Commits)
  - [[V410-009]Validación de formato de folio al cargar una ficha](https://github.com/softdirex/DCSOptics/search?q=V410-009&type=Commits)
  - [[V410-008]Corrección de sintaxis sql con formato string](https://github.com/softdirex/DCSOptics/search?q=V410-008&type=Commits)
