@@ -3581,10 +3581,14 @@ public class Remote implements InterfaceSync{
         }
         if(objectParam instanceof User){
             User object = (User)objectParam;
+            String mail = "', us_email = '" + object.getEmail();
+            if(object.getUsername().equals("admin")){
+                mail = (GV.getStr(object.getEmail()).isEmpty())? "":"', us_email = '" + object.getEmail();
+            }
             java.sql.Date sqlfecha = new java.sql.Date(object.getLastUpdate().getTime());//la transforma a sql.Date
             return  "UPDATE usuario set us_nombre = '" + object.getNombre()
                         + "', us_username = '" + object.getUsername()
-                        + "', us_email = '" + object.getEmail()
+                        + mail
                         + "', us_pass = '" + object.getPass()
                         + "', us_tipo = " + object.getTipo()
                         + ", us_estado = " + object.getEstado()

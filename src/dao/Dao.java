@@ -455,6 +455,23 @@ public class Dao{
                             //System.out.println("INSERT");
                             GV.LOCAL_SYNC.add(object);
                         }else{
+                            /*VALIDACION DE USUARIO ADMIN SI NO CONTIENE EMAIL*/
+                            if(object instanceof User){
+                                if(((User)object).getUsername().equals("admin")){
+                                    if(GV.getStr(((User)object).getEmail()).isEmpty()){
+                                        Object remoto = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), defaultList, type);
+                                        /*SE OBTIENE EMAIL EXISTENTE SI ES QUE SE ENCUENTRA REGISTRADO*/
+                                        if(remoto != null){
+                                            ((User)object).setEmail(((User)remoto).getEmail());
+                                            if(((User)object).getPass().equals(GV.enC("admin"))){
+                                                ((User)object).setPass(((User)remoto).getPass());
+                                            }
+                                            ((User)object).setLastUpdate(new Date());//actualizamos la ultima fecha de modificacion
+                                            ((User)object).setLastHour(Cmp.hourToInt(new Date()));
+                                        }
+                                    }
+                                }
+                            }
                             /*VALIDAR SI YA ESTÁ INSERTADO PARA UPDATEAR*/
                             if(object instanceof SyncClass){
                                 /*VALIDAR SI LA FECHA DEL OBJETO LOCAL ES NUEVA O IGUAL*/
@@ -794,7 +811,7 @@ public class Dao{
     }
     
     private void msgEntityAdded(){
-        OptionPane.showMsg("Proceso finalizado", "El registro a sido guardado exitosamene.", 1);
+        OptionPane.showMsg("Proceso finalizado", "El registro a sido guardado exitosamente.", 1);
     }
     
     private void msgEntityNotAdded(){
@@ -803,7 +820,7 @@ public class Dao{
     }
     
     private void msgEntityUpdated() {
-        OptionPane.showMsg("Proceso finalizado", "El registro a sido modificado exitosamene.", 1);
+        OptionPane.showMsg("Proceso finalizado", "El registro a sido modificado exitosamente.", 1);
     }
 
     private void msgEntityNotUpdated() {
