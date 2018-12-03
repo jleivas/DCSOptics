@@ -30,7 +30,7 @@ public class GlobalValuesVariables {
     
     /*  Nombres de sistema  */
     private static String PROJECTNAME="Optics";
-    private static String VERSION = "v4.1.0";
+    private static String VERSION = "v4.1.1";
     private static String EQUIPO;//el nombre debe concatenarse con la fecha de instalacion
     private static int EQUIPO_ID = 1;
     private static String INVENTARIO_NAME;
@@ -90,7 +90,7 @@ public class GlobalValuesVariables {
     private static SalesFichaJasperReport SALESREPORT;
     private static Convenio CONVENIO_SELECTED = null;
     private static String CUOTAS_FECHA_PAGO_PENDIENTE = "01-01-2001";
-    private static String FECHA_DEFAULT = "01-01-2001";
+    private static String FECHA_DEFAULT = "01-01-2001";//NO MODIFICAR
     private static String RECEPTOR_NAME = null;
     private static String RECEPTOR_DIR = null;
     private static String RECEPTOR_CT1 = null;

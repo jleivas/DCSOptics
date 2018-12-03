@@ -385,7 +385,7 @@ public class OpanelOfficeData extends javax.swing.JPanel {
         String direccion = GV.getStr(txtDireccion.getText());
         String ciudad = GV.getStr(txtCiudad.getText());
         if(telefono.isEmpty() || mail.isEmpty() || direccion.isEmpty() || ciudad.isEmpty()){
-            String msgReject = "Loas siguientes campos son obligatorios:\n\n"
+            String msgReject = "Los siguientes campos son obligatorios:\n\n"
                     + "-Teléfono\n"
                     + "-Email\n"
                     + "-Dirección\n"
