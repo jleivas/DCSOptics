@@ -432,6 +432,9 @@ public class OpanelUserData extends javax.swing.JPanel {
             txtMail.setText(stUser.getEmail());
             txtNombre.setText(stUser.getNombre());
             txtUsername.setText(stUser.getUsername());
+            if(stUser.getUsername().equals("admin") || stUser.getUsername().equals("root")){
+                txtUsername.setEditable(false);
+            }
             cboTipo.setSelectedIndex(stUser.getTipo());
         }else{
             OptionPane.showMsg("Error al cargar usuario", "No se pueden cargar los datos del usuario para ser modificados.", JOptionPane.ERROR_MESSAGE);
