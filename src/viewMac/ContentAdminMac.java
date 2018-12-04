@@ -520,11 +520,7 @@ public class ContentAdminMac extends javax.swing.JFrame {
 
     private void btnToolsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnToolsMouseClicked
         if(!syncEnabled()){
-            if(GV.tipoUserAdmin()){
-                OptionPane.showOptionPanel(new OpanelTools(), OptionPane.titleTool());
-            }else{
-                GV.mensajeAccessDenied();
-            }
+            OptionPane.showOptionPanel(new OpanelTools(), OptionPane.titleTool());
         }
     }//GEN-LAST:event_btnToolsMouseClicked
 
