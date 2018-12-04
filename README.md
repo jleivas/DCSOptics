@@ -33,6 +33,8 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.1 (V411)](https://github.com/softdirex/DCSOptics/search?q=V411&type=Commits)
+ - [[V411-005]Otorgar permisos de usuarios para acceder a pagar licencia](https://github.com/softdirex/DCSOptics/search?q=V411-005&type=Commits)
+ - [[V411-004]Sección de redireccionamiento de pago a webpay](https://github.com/softdirex/DCSOptics/search?q=V411-004&type=Commits)
  - [[V411-003]Username de admin no se puede modificar](https://github.com/softdirex/DCSOptics/search?q=V411-003&type=Commits)
  - [[V411-002]Se anula la modificación automática de la clave de usuarios](https://github.com/softdirex/DCSOptics/search?q=V411-002&type=Commits)
  - [[V411-001]Evita pérdida de email al sincronizar por primera vez](https://github.com/softdirex/DCSOptics/search?q=V411-001&type=Commits)
