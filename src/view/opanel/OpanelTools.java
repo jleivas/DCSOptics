@@ -189,7 +189,7 @@ public class OpanelTools extends javax.swing.JPanel {
         cboOption.addItem("Seleccione");
         cboOption.addItem("Exportar correos");
         cboOption.addItem("Sincronización completa");
-        cboOption.addItem("Ir a pagar Licencia");
+        cboOption.addItem("Renovar Licencia");
     }
 
     private void exportarCorreos() {
