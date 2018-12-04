@@ -537,6 +537,10 @@ public class GV extends GlobalValuesCursor{
         GlobalValuesFunctions.updateBDConvenioValidado(convenio);
     }
     
+    public static void goToPayPage(){
+        GlobalValuesFunctions.goToPayPage();
+    }
+    
     public static void convenioGenerateReport(Convenio cnv) {
         GlobalValuesFunctions.convenioGenerateReport(cnv);
     }

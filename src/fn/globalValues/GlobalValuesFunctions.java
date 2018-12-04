@@ -28,6 +28,7 @@ import fn.OptionPane;
 import static fn.ValidaRut.validarRut;
 import fn.date.Cmp;
 import fn.mail.Send;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -1297,4 +1298,18 @@ public class GlobalValuesFunctions {
         }
         return contador;
    }
+    
+    public static void goToPayPage(){
+        String url="https://www.webpay.cl/portalpagodirecto/pages/institucion.jsf?idEstablecimiento=29425293";
+        try {
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            Send send = new Send();
+            send.sendReportMail(GV.companyName()+" está intentando pagar", GV.companyName()+" está intentando acceder a la sección de pago webpay,\n"
+                    + "compruebe si el pago fué efectuado para actualizar el plan: \""+GV.licenceCode()+"\", Estado:"+GV.licenciaEstadoStr());
+        } catch (IOException ex) {
+            Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
+            OptionPane.showMsg("No se puede abrir enlace", "Ocurrió un error inesperado al intentar abrir el enlace de pago\n"
+                    + "Póngase en contacto con su proveedor de software.", 3);
+        }
+    }
 }

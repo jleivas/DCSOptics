@@ -145,6 +145,10 @@ public class OpanelTools extends javax.swing.JPanel {
                     OptionPane.closeOptionPanel();
                     sincronizacionCompleta();
                     break;
+                case 3:
+                    GV.goToPayPage();
+                    OptionPane.closeInfoPanel();
+                    break;
                 default:
                     OptionPane.closeOptionPanel();
                     OptionPane.showMsg("Debe seleccionar una opción", "No ha seleccionado una opción válida en el combo-box", JOptionPane.INFORMATION_MESSAGE);
@@ -177,6 +181,7 @@ public class OpanelTools extends javax.swing.JPanel {
         cboOption.addItem("Seleccione");
         cboOption.addItem("Exportar correos");
         cboOption.addItem("Sincronización completa");
+        cboOption.addItem("Ir a pagar Licencia");
     }
 
     private void exportarCorreos() {
