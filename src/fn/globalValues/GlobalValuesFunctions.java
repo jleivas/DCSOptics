@@ -823,19 +823,22 @@ public class GlobalValuesFunctions {
     }
     
     public static void licenciaComprobarValidez(){
+        String pagar = "\nPara evitar este mensaje:\nEntre al sistema y en el menú superior diríjase a \"Herramientas\", seleccione \"Renovar Licencia\"\n"
+                + "y renueve su licencia con el medio de pago que más le acomode.\n"
+                + "Si usted ya había efectuado el pago correspondiente, póngase en contacto con su proveedor.";
         int expDias = fechaDiferencia(GV.strToDate(GV.expDate())); 
         if(expDias <= 5){
             if(expDias > 1){
-                OptionPane.showMsg("Renueve su licencia", "Su licencia expirará dentro de "+expDias+" días", 2);
+                OptionPane.showMsg("Renueve su licencia", "Su licencia expirará dentro de "+expDias+" días."+pagar, 2);
             }
             if(expDias == 1){
-                OptionPane.showMsg("Renueve su licencia", "Su licencia expirará mañana", 2);
+                OptionPane.showMsg("Renueve su licencia", "Su licencia expirará mañana."+pagar, 2);
             }
             if(expDias == 0){
-                OptionPane.showMsg("Renueve su licencia", "Su licencia expirará hoy", 2);
+                OptionPane.showMsg("Renueve su licencia", "Su licencia expirará hoy."+pagar, 2);
             }
             if(expDias < 0){
-                OptionPane.showMsg("Renueve su licencia", "Su licencia ha caducado", 2);
+                OptionPane.showMsg("Renueve su licencia", "Su licencia ha caducado."+pagar, 2);
             }
         }
     }
