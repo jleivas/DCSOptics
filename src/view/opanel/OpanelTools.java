@@ -155,7 +155,7 @@ public class OpanelTools extends javax.swing.JPanel {
                     break;
                 case 3:
                     GV.goToPayPage();
-                    OptionPane.closeInfoPanel();
+                    OptionPane.closeOptionPanel();
                     break;
                 default:
                     OptionPane.closeOptionPanel();
