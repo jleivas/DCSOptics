@@ -553,33 +553,8 @@ public class Dao{
                     for (Object object : lista2) {
                         GV.porcentajeSubCalcular(tam1);
                         //System.out.println("lentes");
-                        Object tmpLen = GV.buscarPorIdEnLista(((Lente)object).getCod(), remoteObjectList, new Lente());
-                        if(tmpLen != null){
-                            /*SOLO ACTUALIZA LOS LENTES CON STOCK DISTINTOS*/
-                            if(((Lente)object).getStock() != ((Lente)tmpLen).getStock()){
-                                //System.out.println("cmbia stock");
-                                if(((Lente)object).getStock() >= 0){
-                                    if(Cmp.localIsNewOrEqual(((Lente)object).getLastUpdate(), ((Lente)tmpLen).getLastUpdate())){
-                                        if(GV.dateToString(((SyncClass)object).getLastUpdate(), "ddmmyyyy").equals(GV.dateToString(((SyncClass)tmpLen).getLastUpdate(), "ddmmyyyy"))){
-                                        /*VALIDAR SI LA HORA ES MAS RECIENTE*/
-                                            if(((SyncClass)object).getLastHour() < ((SyncClass)tmpLen).getLastHour()){
-                                                int stock = ((Lente)object).getStock();
-                                                object = tmpLen;
-                                                ((Lente)object).setStock(stock);
-                                            }
-                                        }
-                                    }else{
-                                        int stock = ((Lente)object).getStock();
-                                        object = tmpLen;
-                                        ((Lente)object).setStock(stock);
-                                    }
-                                    ((SyncClass)object).setLastUpdate(new Date());
-                                    ((SyncClass)object).setLastHour(GV.strToNumber(GV.dateToString(new Date(), "hhmmss")));
-                                    sync.Sync.addRemoteSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
-                                    GV.LOCAL_SYNC.updateFromDao(object);
-                                }
-                            }
-                        }
+                        sync.Sync.addRemoteSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
+                        GV.LOCAL_SYNC.updateFromDao(object);
                     }
                     LocalInventario.deleteAllRegistry("-2");
                 }
