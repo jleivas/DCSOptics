@@ -33,6 +33,8 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.1 (V411)](https://github.com/softdirex/DCSOptics/search?q=V411&type=Commits)
+ - [[V411-008]Optimización de lentes con stock modificado al actualizar](https://github.com/softdirex/DCSOptics/search?q=V411-008&type=Commits)
+ - [[V411-007]Guardar lente con nuevo stock en bd local al sincronizar](https://github.com/softdirex/DCSOptics/search?q=V411-007&type=Commits)
  - [[V411-006]Mensaje de instrucciones para renovar licencia](https://github.com/softdirex/DCSOptics/search?q=V411-006&type=Commits)
  - [[V411-005]Otorgar permisos de usuarios para acceder a pagar licencia](https://github.com/softdirex/DCSOptics/search?q=V411-005&type=Commits)
  - [[V411-004]Sección de redireccionamiento de pago a webpay](https://github.com/softdirex/DCSOptics/search?q=V411-004&type=Commits)
