@@ -427,8 +427,8 @@ public class Dao{
                 if(type instanceof Ficha){
                     type = new EtiquetFicha();
                 }
-                ArrayList<Object> defaultList= GV.REMOTE_SYNC.listar("-2",type);
-                ArrayList<Object> defaultLocalList= GV.LOCAL_SYNC.listar("-2",type);
+                ArrayList<Object> remoteObjectList= GV.REMOTE_SYNC.listar("-2",type);
+                ArrayList<Object> localObjectList= GV.LOCAL_SYNC.listar("-2",type);
                 /*LISTA1 SE DEBE CARGAR CON UN RETRASO DE DOS MESES PARA RESCATAR ULTIMOS REGISTROS SUBIDOS*/
                 ArrayList<Object> lista1= GV.REMOTE_SYNC.listar(GV.dateSumaResta(GV.LAST_UPDATE, -2, "MONTHS"),type);
                 int size1 = lista1.size();
@@ -441,10 +441,10 @@ public class Dao{
                         //System.out.println("lista1");
                         if(object instanceof SyncIntId){
                             //System.out.println("INT");
-                            local = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), defaultLocalList, type);
+                            local = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), localObjectList, type);
                         }else if(object instanceof SyncStringId){
                             //System.out.println("STRING");
-                            local = GV.buscarPorIdEnLista(((SyncStringId)object).getCod(), defaultLocalList, type);
+                            local = GV.buscarPorIdEnLista(((SyncStringId)object).getCod(), localObjectList, type);
                         }else{
                             //System.out.println("XXX");
                             return;
@@ -459,7 +459,7 @@ public class Dao{
                             if(object instanceof User){
                                 if(((User)object).getUsername().equals("admin")){
                                     if(GV.getStr(((User)object).getEmail()).isEmpty()){
-                                        Object remoto = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), defaultList, type);
+                                        Object remoto = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), remoteObjectList, type);
                                         /*SE OBTIENE EMAIL EXISTENTE SI ES QUE SE ENCUENTRA REGISTRADO*/
                                         if(remoto != null){
                                             ((User)object).setEmail(((User)remoto).getEmail());
@@ -506,10 +506,10 @@ public class Dao{
                         Object remote;
                         if(object instanceof SyncIntId){
                             //System.out.println("INT");
-                            remote = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), defaultList, type);
+                            remote = GV.buscarPorIdEnLista(""+((SyncIntId)object).getId(), remoteObjectList, type);
                         }else if(object instanceof SyncStringId){
                             //System.out.println("STRING");
-                            remote = GV.buscarPorIdEnLista(((SyncStringId)object).getCod(), defaultList, type);
+                            remote = GV.buscarPorIdEnLista(((SyncStringId)object).getCod(), remoteObjectList, type);
                         }else{
                             //System.out.println("XXX");
                             return;
@@ -553,7 +553,7 @@ public class Dao{
                     for (Object object : lista2) {
                         GV.porcentajeSubCalcular(tam1);
                         //System.out.println("lentes");
-                        Object tmpLen = GV.buscarPorIdEnLista(((Lente)object).getCod(), defaultList, new Lente());
+                        Object tmpLen = GV.buscarPorIdEnLista(((Lente)object).getCod(), remoteObjectList, new Lente());
                         if(tmpLen != null){
                             /*SOLO ACTUALIZA LOS LENTES CON STOCK DISTINTOS*/
                             if(((Lente)object).getStock() != ((Lente)tmpLen).getStock()){
@@ -576,7 +576,7 @@ public class Dao{
                                     ((SyncClass)object).setLastUpdate(new Date());
                                     ((SyncClass)object).setLastHour(GV.strToNumber(GV.dateToString(new Date(), "hhmmss")));
                                     sync.Sync.addRemoteSync(GV.LOCAL_SYNC, GV.REMOTE_SYNC, object);
-                                    GV.REMOTE_SYNC.updateFromDao(object);
+                                    GV.LOCAL_SYNC.updateFromDao(object);
                                 }
                             }
                         }
