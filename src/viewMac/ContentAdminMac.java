@@ -232,7 +232,7 @@ public class ContentAdminMac extends javax.swing.JFrame {
         });
         jpUpBar.add(btnInvent, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 10, -1, -1));
 
-        btnSyncronize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Uninstalling_Updates_25px.png"))); // NOI18N
+        btnSyncronize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Sync2_29px.png"))); // NOI18N
         btnSyncronize.setToolTipText("Sincronizar datos");
         btnSyncronize.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

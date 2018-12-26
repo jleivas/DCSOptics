@@ -215,7 +215,7 @@
             <Component class="javax.swing.JLabel" name="btnSyncronize">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/icons8_Uninstalling_Updates_25px.png"/>
+                  <Image iconType="3" name="/icons/icons8_Sync2_29px.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Sincronizar datos"/>
               </Properties>
