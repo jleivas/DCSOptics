@@ -32,6 +32,12 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.1.2 (V412)](https://github.com/softdirex/DCSOptics/search?q=V412&type=Commits)
+ - [[V412-004]Ver reporte de inventarios](https://github.com/softdirex/DCSOptics/search?q=V412-004&type=Commits)
+ - [[V412-003]Botón borrar base de datos y cancelar en ingreso de token y licencia](https://github.com/softdirex/DCSOptics/search?q=V412-003&type=Commits)
+ - [[V412-002]Cambio de íconos al abrir una ficha en vista mac/linux](https://github.com/softdirex/DCSOptics/search?q=V412-002&type=Commits)
+ - [[V412-001]Cambio de ícono de sincronización en vista mac/linux](https://github.com/softdirex/DCSOptics/search?q=V412-001&type=Commits)
+
  #### [Version 4.1.1 (V411)](https://github.com/softdirex/DCSOptics/search?q=V411&type=Commits)
  - [[V411-008]Optimización de lentes con stock modificado al actualizar](https://github.com/softdirex/DCSOptics/search?q=V411-008&type=Commits)
  - [[V411-007]Guardar lente con nuevo stock en bd local al sincronizar](https://github.com/softdirex/DCSOptics/search?q=V411-007&type=Commits)
