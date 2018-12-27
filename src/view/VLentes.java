@@ -150,13 +150,13 @@ public class VLentes extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         txtDsc2 = new javax.swing.JTextArea();
         jLabel31 = new javax.swing.JLabel();
-        txtStock2 = new javax.swing.JSpinner();
         txtPrecRef2 = new javax.swing.JSpinner();
         jLabel32 = new javax.swing.JLabel();
         txtStockMin2 = new javax.swing.JSpinner();
         btnCancel = new javax.swing.JLabel();
         jLabel35 = new javax.swing.JLabel();
         txtInventario2 = new javax.swing.JTextField();
+        txtStock2 = new javax.swing.JTextField();
         pnl3 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
@@ -702,9 +702,6 @@ public class VLentes extends javax.swing.JPanel {
         jLabel31.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
         jLabel31.setText("Stock");
 
-        txtStock2.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
-        txtStock2.setEnabled(false);
-
         txtPrecRef2.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
         jLabel32.setFont(new java.awt.Font("Segoe UI Light", 0, 11)); // NOI18N
@@ -733,6 +730,13 @@ public class VLentes extends javax.swing.JPanel {
         txtInventario2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtInventario2KeyTyped(evt);
+            }
+        });
+
+        txtStock2.setEditable(false);
+        txtStock2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtStock2PropertyChange(evt);
             }
         });
 
@@ -776,27 +780,26 @@ public class VLentes extends javax.swing.JPanel {
                                 .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnl2Layout.createSequentialGroup()
-                                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(pnl2Layout.createSequentialGroup()
-                                        .addComponent(txtStockMin2, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(btnCancel)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnUpdate)
-                                .addContainerGap())
-                            .addGroup(pnl2Layout.createSequentialGroup()
-                                .addComponent(txtStock2, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
                                 .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(txtInventario2, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtCol2, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(txtMar2, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(cboTipo2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(88, 88, 88))))
+                                .addGap(88, 88, 88))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
+                                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(pnl2Layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(btnCancel))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnl2Layout.createSequentialGroup()
+                                        .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(txtStockMin2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtStock2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnUpdate)
+                                .addContainerGap())))
                     .addGroup(pnl2Layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))))
@@ -1533,6 +1536,10 @@ public class VLentes extends javax.swing.JPanel {
         btnReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnReporte.getIcon().toString()))));
     }//GEN-LAST:event_btnReporteMouseExited
 
+    private void txtStock2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtStock2PropertyChange
+        txtStock2.setHorizontalAlignment(4);
+    }//GEN-LAST:event_txtStock2PropertyChange
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAbrir;
@@ -1621,7 +1628,7 @@ public class VLentes extends javax.swing.JPanel {
     private javax.swing.JSpinner txtPrecRef1;
     private javax.swing.JSpinner txtPrecRef2;
     private javax.swing.JSpinner txtStock1;
-    private javax.swing.JSpinner txtStock2;
+    private javax.swing.JTextField txtStock2;
     private javax.swing.JSpinner txtStock3;
     private javax.swing.JSpinner txtStockMin1;
     private javax.swing.JSpinner txtStockMin2;
@@ -1729,7 +1736,7 @@ public class VLentes extends javax.swing.JPanel {
         stLente = load.getLente(cod,invName);
         loadPanels(2);
         if(stLente!=null){
-            txtStock2.setModel(new SpinnerNumberModel(stLente.getStock(), stLente.getStock(), stLente.getStock(), 1));
+            txtStock2.setText(""+stLente.getStock());
             if(stLente.getCod().isEmpty() || stLente.getCod().equals("null"))
                 txtCod2.setText("");
             else
@@ -1747,7 +1754,7 @@ public class VLentes extends javax.swing.JPanel {
             Inventario inv = (Inventario)load.get("BY_ID/"+stLente.getInventario(), 0, new Inventario());
             txtInventario2.setText(invName);
 
-            txtStock2.setValue((int)stLente.getStock());
+            txtStock2.setText(""+stLente.getStock());
             txtStockMin2.setValue((int)stLente.getStockMin());
         }else{
             OptionPane.showMsg("Seleccione registro","Error al cargar valores,\n"
@@ -1798,7 +1805,7 @@ public class VLentes extends javax.swing.JPanel {
         txtPrecRef1.setValue((int)0);
         txtPrecRef2.setValue((int)0);
         txtStock1.setValue((int)0);
-        txtStock2.setValue((int)0);
+        txtStock2.setText("");
         txtStockMin1.setValue((int)0);
         txtStockMin2.setValue((int)0);
         txtTip1.setText("");
@@ -1818,11 +1825,6 @@ public class VLentes extends javax.swing.JPanel {
                 pnl1.setVisible(false);
                 pnl2.setVisible(true);
                 pnl3.setVisible(false);
-                if(GV.tipoUserIventario()){
-                    txtStock2.setEnabled(true);
-                }else{
-                    txtStock2.setEnabled(false);
-                }
                 break;
             case 3:
                 pnl1.setVisible(false);
@@ -1868,14 +1870,6 @@ public class VLentes extends javax.swing.JPanel {
             } catch (ParseException ex) {
                 Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
                 GV.mensajeExcepcion("Error en valor ingresado al precio de referencia.", 2);
-                cDF();
-                return;
-            }
-            try {
-                txtStock2.commitEdit();
-            } catch (ParseException ex) {
-                Logger.getLogger(VLentes.class.getName()).log(Level.SEVERE, null, ex);
-                GV.mensajeExcepcion("Error en valor ingresado al stock.", 2);
                 cDF();
                 return;
             }
