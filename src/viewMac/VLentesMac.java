@@ -1728,6 +1728,8 @@ public class VLentesMac extends javax.swing.JPanel {
         try{
             modelo.setNumRows(0);
             GV.setInventarioSeleccionado(stInventario.getId());
+            //asignamos el nombre del inventario ara el reporte
+            GlobalValuesVariables.LENTES_INVENTARIO = stInventario.getNombre();
             List<Object> lista = load.listar(listar, new Lente());
             GV.setInventarioSeleccionado(0);
             int index = 0;
