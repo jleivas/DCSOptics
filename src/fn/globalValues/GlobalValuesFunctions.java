@@ -11,6 +11,7 @@ import entities.Convenio;
 import entities.CuotasConvenio;
 import entities.Descuento;
 import entities.Equipo;
+import entities.Lente;
 import entities.TipoPago;
 import entities.User;
 import entities.abstractclasses.SyncIntId;
@@ -991,6 +992,10 @@ public class GlobalValuesFunctions {
     }
 
     public static void abrirReporteLentes() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public static void calcularReporteLentes(int index, Lente lente) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -1702,14 +1702,17 @@ public class VLentes extends javax.swing.JPanel {
             GV.setInventarioSeleccionado(stInventario.getId());
             List<Object> lista = load.listar(listar, new Lente());
             GV.setInventarioSeleccionado(0);
+            int index=0;
             for (Object object : lista) {
                 Lente temp = (Lente)object;
-                    Object[] fila = new Object[4];
-                    fila[0] = temp.getCod();
-                    fila[1] = temp.getMarca();
-                    fila[2] = temp.getColor();
-                    fila[3] = temp.getStock();
-                    modelo.addRow(fila);
+                GlobalValuesFunctions.calcularReporteLentes(index, temp);
+                Object[] fila = new Object[4];
+                fila[0] = temp.getCod();
+                fila[1] = temp.getMarca();
+                fila[2] = temp.getColor();
+                fila[3] = temp.getStock();
+                modelo.addRow(fila);
+                index++;
             }
             tblListar.updateUI();
             if(tblListar.getRowCount() == 0){
