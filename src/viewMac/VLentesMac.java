@@ -312,7 +312,7 @@ public class VLentesMac extends javax.swing.JPanel {
             }
         });
 
-        btnReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Invoice_50px.png"))); // NOI18N
+        btnReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Audit_50px.png"))); // NOI18N
         btnReporte.setToolTipText("Restaurar");
         btnReporte.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1538,7 +1538,13 @@ public class VLentesMac extends javax.swing.JPanel {
     }//GEN-LAST:event_btnStockUpMouseExited
 
     private void btnReporteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReporteMouseClicked
-        GlobalValuesFunctions.abrirReporteLentes();
+        if(GV.licenciaExpirada()){
+            OptionPane.showMsg("No se puede generar reporte", "Su licencia ha caducado.\n"
+                    + "Renueve su licencia para disfrutar de todas las funcionalidades del sistema\n"
+                    + "sin limitaciones", 2);
+        }else{
+            GlobalValuesFunctions.abrirReporteLentes();
+        }
     }//GEN-LAST:event_btnReporteMouseClicked
 
     private void btnReporteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReporteMouseEntered
