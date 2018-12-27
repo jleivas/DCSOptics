@@ -996,7 +996,33 @@ public class GlobalValuesFunctions {
     }
     
     public static void calcularReporteLentes(int index, Lente lente) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(index == 0){
+            GlobalValuesVariables.LENTES_STOCK = 0;
+            GlobalValuesVariables.LENTES_STOCK_BAJO = 0;
+            GlobalValuesVariables.LENTES_STOCK_CERO = 0;
+
+            GlobalValuesVariables.LENTES_COMPRA = 0;
+            GlobalValuesVariables.LENTES_VENTA = 0;
+        }
+        if(lente != null){
+            if(lente.getEstado() > 0){
+                GlobalValuesVariables.LENTES_STOCK = (lente.getStock()>0)?
+                        (GlobalValuesVariables.LENTES_STOCK + lente.getStock())
+                        :GlobalValuesVariables.LENTES_STOCK;
+                GlobalValuesVariables.LENTES_STOCK_BAJO = (lente.getStockMin() >= lente.getStock())?
+                        (GlobalValuesVariables.LENTES_STOCK_BAJO + 1)
+                        :GlobalValuesVariables.LENTES_STOCK_BAJO;
+                GlobalValuesVariables.LENTES_STOCK_CERO = (lente.getStock() <= 0)?
+                        (GlobalValuesVariables.LENTES_STOCK_CERO + 1)
+                        :GlobalValuesVariables.LENTES_STOCK_CERO;
+                GlobalValuesVariables.LENTES_COMPRA = (lente.getStock() > 0)?
+                        (GlobalValuesVariables.LENTES_COMPRA + (lente.getStock() * lente.getPrecioRef()))
+                        :GlobalValuesVariables.LENTES_COMPRA;
+                GlobalValuesVariables.LENTES_VENTA = (lente.getStock() > 0)?
+                        (GlobalValuesVariables.LENTES_VENTA + (lente.getStock() * lente.getPrecioAct()))
+                        :GlobalValuesVariables.LENTES_VENTA;
+            }
+        }
     }
     
     public void convenioGenerarReporte(Convenio cnv){
