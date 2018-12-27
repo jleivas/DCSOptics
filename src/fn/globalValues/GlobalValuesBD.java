@@ -673,12 +673,12 @@ public class GlobalValuesBD {
         try {
             LcBd.cerrar();
             if(GV.isOnline() && LcBd.obtener() != null){
-                for (Object type : listaObjetos) {
-                    if(type instanceof EtiquetFicha){
-                        type = new Ficha();
-                    }
-                    createExcel(type);
-                }
+                //for (Object type : listaObjetos) {
+                //    if(type instanceof EtiquetFicha){
+                //        type = new Ficha();
+                //    }
+                //    createExcel(type);
+                //}
                 GlobalValuesZipFiles.zipperBackup();
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {

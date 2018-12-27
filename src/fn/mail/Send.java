@@ -333,7 +333,7 @@ public class Send {
  
     }
     
-    public boolean sendFileMail(String directorio){
+    public boolean sendFileMail(String directorio1){
         try{
             Properties p = new Properties();
             p.put("mail.smtp.host", "smtp.gmail.com");
@@ -347,20 +347,21 @@ public class Send {
             BodyPart text = new MimeBodyPart();
             String equipo = GV.equipo().substring(0,GV.equipo().indexOf("_"));
             text.setText("Respaldo de base de datos Derby, programa "+GV.projectName()+" version "+GV.version()+", equipo: "+equipo);
-            BodyPart adjunto=new MimeBodyPart();
-            if(directorio != null){
-            if(!directorio.equals("")){
-                adjunto.setDataHandler(new DataHandler(new FileDataSource(directorio)));
-                adjunto.setFileName(GV.getToName(directorio.substring(directorio.lastIndexOf(File.separator)+1)));
-                
+            BodyPart adjunto1=new MimeBodyPart();
+            if(directorio1 != null){
+                if(!directorio1.equals("")){
+                    adjunto1.setDataHandler(new DataHandler(new FileDataSource(directorio1)));
+                    adjunto1.setFileName(GV.getToName(directorio1.substring(directorio1.lastIndexOf(File.separator)+1)));
+
+                }
             }
-            }
-            MimeMultipart m = new MimeMultipart();
+            
+            MimeMultipart m = new MimeMultipart("mixed"); 
             m.addBodyPart(text);
-            if(directorio != null){
-            if(!directorio.equals("")){
-                m.addBodyPart(adjunto);
-            }
+            if(directorio1 != null){
+                if(!directorio1.equals("")){
+                    m.addBodyPart(adjunto1);
+                }
             }
             
             MimeMessage mensaje = new MimeMessage(s);
