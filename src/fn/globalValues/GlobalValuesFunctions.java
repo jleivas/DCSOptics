@@ -60,6 +60,7 @@ import view.ContentAdmin;
 import view.opanel.OpanelCompanyData;
 import view.opanel.OpanelConvenyReceptor;
 import view.opanel.OpanelOfficeData;
+import view.opanel.OpanelReporteLentes;
 import view.opanel.OpanelSetLicencia;
 import view.opanel.OpanelSetToken;
 import viewMac.ContentAdminMac;
@@ -992,7 +993,7 @@ public class GlobalValuesFunctions {
     }
 
     public static void abrirReporteLentes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        OptionPane.showOptionPanel(new OpanelReporteLentes(), "Reporte de inventario");
     }
     
     public static void calcularReporteLentes(int index, Lente lente) {
