@@ -14,6 +14,7 @@ import fn.GV;
 import javax.swing.table.DefaultTableModel;
 import fn.Icons;
 import fn.OptionPane;
+import fn.globalValues.GlobalValuesFunctions;
 import fn.globalValues.GlobalValuesVariables;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -98,6 +99,7 @@ public class VLentesMac extends javax.swing.JPanel {
         cboInventarioFilter = new javax.swing.JComboBox<>();
         btnLoad = new javax.swing.JLabel();
         btnStockUp = new javax.swing.JLabel();
+        btnReporte = new javax.swing.JLabel();
         pnl1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -310,6 +312,20 @@ public class VLentesMac extends javax.swing.JPanel {
             }
         });
 
+        btnReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Invoice_50px.png"))); // NOI18N
+        btnReporte.setToolTipText("Restaurar");
+        btnReporte.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnReporteMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnReporteMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnReporteMouseExited(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -322,6 +338,8 @@ public class VLentesMac extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(btnRestaurar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnReporte)
+                .addGap(18, 18, 18)
                 .addComponent(btnStockUp)
                 .addGap(18, 18, 18)
                 .addComponent(btnStockDown)
@@ -364,7 +382,8 @@ public class VLentesMac extends javax.swing.JPanel {
                             .addComponent(btnAbrir, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnRestaurar, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(cboMostrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnStockDown, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btnStockDown, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnReporte, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addGap(36, 36, 36))
         );
 
@@ -1505,6 +1524,18 @@ public class VLentesMac extends javax.swing.JPanel {
         btnStockUp.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnStockUp.getIcon().toString()))));
     }//GEN-LAST:event_btnStockUpMouseExited
 
+    private void btnReporteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReporteMouseClicked
+        GlobalValuesFunctions.abrirReporteLentes();
+    }//GEN-LAST:event_btnReporteMouseClicked
+
+    private void btnReporteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReporteMouseEntered
+        btnReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getEnteredIcon(btnReporte.getIcon().toString()))));
+    }//GEN-LAST:event_btnReporteMouseEntered
+
+    private void btnReporteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReporteMouseExited
+        btnReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnReporte.getIcon().toString()))));
+    }//GEN-LAST:event_btnReporteMouseExited
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAbrir;
@@ -1513,6 +1544,7 @@ public class VLentesMac extends javax.swing.JPanel {
     private javax.swing.JLabel btnEliminar;
     private javax.swing.JLabel btnGuardar;
     private javax.swing.JLabel btnLoad;
+    private javax.swing.JLabel btnReporte;
     private javax.swing.JLabel btnRestaurar;
     private javax.swing.JLabel btnStockDown;
     private javax.swing.JLabel btnStockUp;

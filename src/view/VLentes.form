@@ -81,7 +81,9 @@
                   <Component id="btnEliminar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnRestaurar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                  <Component id="btnReporte" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnStockUp" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btnStockDown" min="-2" max="-2" attributes="0"/>
@@ -127,6 +129,7 @@
                       <Component id="cboMostrar" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="btnStockDown" alignment="1" min="-2" pref="50" max="-2" attributes="0"/>
                       <Component id="btnStockUp" alignment="1" min="-2" pref="50" max="-2" attributes="0"/>
+                      <Component id="btnReporte" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
               </Group>
@@ -319,6 +322,19 @@
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnStockUpMouseClicked"/>
             <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnStockUpMouseEntered"/>
             <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnStockUpMouseExited"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="btnReporte">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/icons/icons8_Invoice_50px.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Ver reporte de inventario"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnReporteMouseClicked"/>
+            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnReporteMouseEntered"/>
+            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnReporteMouseExited"/>
           </Events>
         </Component>
       </SubComponents>

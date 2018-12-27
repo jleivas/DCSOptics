@@ -989,6 +989,10 @@ public class GlobalValuesFunctions {
             }
         }
     }
+
+    public static void abrirReporteLentes() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public void convenioGenerarReporte(Convenio cnv){
         if(cnv.getEstado() == 2){
