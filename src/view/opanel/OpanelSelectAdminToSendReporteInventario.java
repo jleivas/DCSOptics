@@ -192,10 +192,10 @@ public class OpanelSelectAdminToSendReporteInventario extends javax.swing.JPanel
     private void autocompletar() throws SQLException, ClassNotFoundException {
         TextAutoCompleter textAutoCompleter2 = new TextAutoCompleter(txtNombreUsuario);
         for (Object temp : stList) {
-            //if(((User)temp).getTipo() == 1){
+            if(((User)temp).getTipo() == 1){
                 textAutoCompleter2.addItem(((User)temp).getNombre()+" <"+((User)temp).getId()+">");
                 textAutoCompleter2.setMode(0);
-            //}
+            }
         }
     }
 
