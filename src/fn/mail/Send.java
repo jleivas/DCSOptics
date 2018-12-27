@@ -245,11 +245,11 @@ public class Send {
                 "    <td><strong>"+GlobalValuesVariables.LENTES_STOCK+"</strong></td>\n" +
                 "  </tr>\n" +
                 "  <tr>\n" +
-                "    <td>Lentes con stock bajo</td>\n" +
+                "    <td>Productos con stock bajo</td>\n" +
                 "    <td>"+GlobalValuesVariables.LENTES_STOCK_BAJO+"</td>\n" +
                 "  </tr>\n" +
                 "  <tr>\n" +
-                "    <td>Lentes con stock en cero</td>\n" +
+                "    <td>Productos con stock en cero</td>\n" +
                 "    <td>"+GlobalValuesVariables.LENTES_STOCK_CERO+"</td>\n" +
                 "  </tr>\n" +
                 "</table>"
@@ -272,8 +272,9 @@ public class Send {
                     "    <td><strong>"+GV.strToPrice((venta-compra))+"</strong></td>\n" +
                     "  </tr>\n" +
                     "</table>"
-                + "</br>";
-            sendMail("Reporte de inventario desde "+GV.equipo()+" ["+GV.companyName()+"]",
+                + "</br><small>El monto calculado en inventario corresponde al precio de referencia ingresado por item.</small>";
+            String equipo = GV.equipo().substring(GV.equipo().indexOf("_"));
+            sendMail("Reporte de inventario desde "+equipo+" ["+GV.companyName()+"]",
                     mail, title, reporte,
                     "Usuario: "+GV.user().getUsername(), GV.companyName(), "https://www.softdirex.cl/imgOptics/report/logo.png", 
                     "https://www.softdirex.cl/imgOptics/report/user.png", 

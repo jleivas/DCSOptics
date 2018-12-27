@@ -156,8 +156,8 @@ public class OpanelReporteLentes extends javax.swing.JPanel {
                 "REPORTE DE INVENTARIO\n"
                 + "-----------------------\n"
                 + "Stock total de lentes: "+GlobalValuesVariables.LENTES_STOCK+"\n\n"
-                + "Lentes con stock bajo: "+GlobalValuesVariables.LENTES_STOCK_BAJO+"\n"
-                + "Lentes con stock en cero: "+GlobalValuesVariables.LENTES_STOCK_CERO+"\n\n";
+                + "Productos con stock bajo: "+GlobalValuesVariables.LENTES_STOCK_BAJO+"\n"
+                + "Productos con stock en cero: "+GlobalValuesVariables.LENTES_STOCK_CERO+"\n\n";
         String reporteAdmin = 
                 "REPORTE MONETARIO\n"
                 + "-----------------------\n"
