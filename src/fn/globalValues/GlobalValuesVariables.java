@@ -99,6 +99,13 @@ public class GlobalValuesVariables {
     private static String ID_USER_SELECTED="";
     private static String ID_CONVENIO_SELECTED="";
     private static String ID_LENTE_INCREASE_STOCK;
+    
+    public static int LENTES_STOCK;
+    public static int LENTES_STOCK_BAJO;
+    public static int LENTES_STOCK_CERO;
+    
+    public static int LENTES_COMPRA;
+    public static int LENTES_VENTA;
     //used in filterList()
     private static List<String> FILTER_LIST = new ArrayList<>();
     
