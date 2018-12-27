@@ -547,6 +547,11 @@ public class GlobalValuesFunctions {
         mail.sendReportSalesMail(report, email, title);
     }
     
+    public static void sendReporteInventarioMail(String email, String title) {
+        Send mail = new Send();
+        mail.sendReportLentesMail(email, title);
+    }
+    
     /**
      * Devuelde una fecha de tipo Date con el resultado según parámetro sumaresta ingresado
      * @param fecha

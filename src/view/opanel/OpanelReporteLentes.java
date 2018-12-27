@@ -9,9 +9,7 @@ import entities.User;
 import fn.GV;
 import fn.Icons;
 import fn.OptionPane;
-import fn.globalValues.GlobalValuesFunctions;
 import fn.globalValues.GlobalValuesVariables;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,7 +41,8 @@ public class OpanelReporteLentes extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Cancel_50px.png"))); // NOI18N
+        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Forward_Message_50px.png"))); // NOI18N
+        btnCancelar.setToolTipText("Enviar reporte");
         btnCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnCancelarMouseClicked(evt);
@@ -107,7 +106,7 @@ public class OpanelReporteLentes extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseClicked
-        OptionPane.closeOptionPanel();
+        OptionPane.showOptionPanel(new OpanelSelectAdminToSendReporteInventario(), "Enviar reporte de inventario");
     }//GEN-LAST:event_btnCancelarMouseClicked
 
     private void btnCancelarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelarMouseEntered

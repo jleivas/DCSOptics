@@ -6,11 +6,11 @@
 package fn.mail;
 
 import entities.context.SalesFichaJasperReport;
-import entities.context.SalesReportFicha;
 import entities.ficha.Ficha;
 import fn.GV;
 import fn.OptionPane;
 import fn.globalValues.GlobalValuesFunctions;
+import fn.globalValues.GlobalValuesVariables;
 import java.io.File;
 import java.security.GeneralSecurityException;
 import java.util.Date;
@@ -219,6 +219,62 @@ public class Send {
             
             sendMail("Reporte de ventas desde "+GV.equipo()+" ["+GV.companyName()+"]",
                     mail, "Reporte de ventas", salesReport.generateHtml(title),
+                    "Usuario: "+GV.user().getUsername(), GV.companyName(), "https://www.softdirex.cl/imgOptics/report/logo.png", 
+                    "https://www.softdirex.cl/imgOptics/report/user.png", 
+                    "https://www.softdirex.cl/imgOptics/report/company.png");
+            width = 100;
+            height = 140;
+        }
+    }
+    
+    public void sendReportLentesMail(String mail, String title){
+        if(GV.isOnline() && GlobalValuesFunctions.licenciaIsEnableToSendMails()){
+            width = 25;
+            height = 50;
+            color1 =  color_turquesa;
+            int compra = GlobalValuesVariables.LENTES_COMPRA;
+            int venta = GlobalValuesVariables.LENTES_VENTA;
+            String reporte = 
+                "<table style=\"width:100%\">\n" +
+                "  <tr>\n" +
+                "    <th></th>\n" +
+                "    <th></th> \n" +
+                "  </tr>\n" +
+                "  <tr>\n" +
+                "    <td><strong>Stock total de lentes</strong></td>\n" +
+                "    <td><strong>"+GlobalValuesVariables.LENTES_STOCK+"</strong></td>\n" +
+                "  </tr>\n" +
+                "  <tr>\n" +
+                "    <td>Lentes con stock bajo</td>\n" +
+                "    <td>"+GlobalValuesVariables.LENTES_STOCK_BAJO+"</td>\n" +
+                "  </tr>\n" +
+                "  <tr>\n" +
+                "    <td>Lentes con stock en cero</td>\n" +
+                "    <td>"+GlobalValuesVariables.LENTES_STOCK_CERO+"</td>\n" +
+                "  </tr>\n" +
+                "</table>"
+                + "</br></br>"
+                    + "<table style=\"width:100%\">\n" +
+                    "  <tr>\n" +
+                    "    <th>Detalle</th>\n" +
+                    "    <th>Monto</th> \n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td>Inversion</td>\n" +
+                    "    <td>"+GV.strToPrice(compra)+"</td>\n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td>Monto de venta</td>\n" +
+                    "    <td>"+GV.strToPrice(venta)+"</td>\n" +
+                    "  </tr>\n" +
+                    "  <tr>\n" +
+                    "    <td><strong>Retorno</strong></td>\n" +
+                    "    <td><strong>"+GV.strToPrice((venta-compra))+"</strong></td>\n" +
+                    "  </tr>\n" +
+                    "</table>"
+                + "</br>";
+            sendMail("Reporte de inventario desde "+GV.equipo()+" ["+GV.companyName()+"]",
+                    mail, title, reporte,
                     "Usuario: "+GV.user().getUsername(), GV.companyName(), "https://www.softdirex.cl/imgOptics/report/logo.png", 
                     "https://www.softdirex.cl/imgOptics/report/user.png", 
                     "https://www.softdirex.cl/imgOptics/report/company.png");

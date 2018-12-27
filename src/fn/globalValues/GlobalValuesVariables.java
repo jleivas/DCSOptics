@@ -106,6 +106,8 @@ public class GlobalValuesVariables {
     
     public static int LENTES_COMPRA;
     public static int LENTES_VENTA;
+    
+    public static String LENTES_INVENTARIO;
     //used in filterList()
     private static List<String> FILTER_LIST = new ArrayList<>();
     
