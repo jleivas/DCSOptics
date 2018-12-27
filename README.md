@@ -33,6 +33,8 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.2 (V412)](https://github.com/softdirex/DCSOptics/search?q=V412&type=Commits)
+ - [[V412-006]Respaldo de carpetas DB y files](https://github.com/softdirex/DCSOptics/search?q=V412-006&type=Commits)
+ - [[V412-005]Corrección de guardado de armazones a modificar](https://github.com/softdirex/DCSOptics/search?q=V412-005&type=Commits)
  - [[V412-004]Ver reporte de inventarios](https://github.com/softdirex/DCSOptics/search?q=V412-004&type=Commits)
  - [[V412-003]Botón borrar base de datos y cancelar en ingreso de token y licencia](https://github.com/softdirex/DCSOptics/search?q=V412-003&type=Commits)
  - [[V412-002]Cambio de íconos al abrir una ficha en vista mac/linux](https://github.com/softdirex/DCSOptics/search?q=V412-002&type=Commits)
