@@ -184,7 +184,8 @@ public class Send {
             height = 50;
             color1 =  color_turquesa;
             String userName = (GV.user() != null)?GV.user().getUsername():"No iniciado";
-            sendMail("Reporte desde equipo: "+GV.equipo()+", Optica: "+GV.companyName(),
+            String equipo = GV.equipo().substring(0,GV.equipo().indexOf("_"));
+            sendMail("Reporte desde equipo: "+equipo+", Optica: "+GV.companyName(),
                     GV.mailReport(), title, content,
                     "Usuario: "+userName, GV.companyName(), "https://www.softdirex.cl/imgOptics/report/logo.png", 
                     "https://www.softdirex.cl/imgOptics/report/user.png", 
@@ -216,8 +217,8 @@ public class Send {
             width = 25;
             height = 50;
             color1 =  color_turquesa;
-            
-            sendMail("Reporte de ventas desde "+GV.equipo()+" ["+GV.companyName()+"]",
+            String equipo = GV.equipo().substring(0,GV.equipo().indexOf("_"));
+            sendMail("Reporte de ventas desde "+equipo+" ["+GV.companyName()+"]",
                     mail, "Reporte de ventas", salesReport.generateHtml(title),
                     "Usuario: "+GV.user().getUsername(), GV.companyName(), "https://www.softdirex.cl/imgOptics/report/logo.png", 
                     "https://www.softdirex.cl/imgOptics/report/user.png", 
@@ -273,7 +274,7 @@ public class Send {
                     "  </tr>\n" +
                     "</table>"
                 + "</br><small>El monto calculado en inventario corresponde al precio de referencia ingresado por item.</small>";
-            String equipo = GV.equipo().substring(GV.equipo().indexOf("_"));
+            String equipo = GV.equipo().substring(0,GV.equipo().indexOf("_"));
             sendMail("Reporte de inventario desde "+equipo+" ["+GV.companyName()+"]",
                     mail, title, reporte,
                     "Usuario: "+GV.user().getUsername(), GV.companyName(), "https://www.softdirex.cl/imgOptics/report/logo.png", 
@@ -344,7 +345,8 @@ public class Send {
             
             Session s = Session.getDefaultInstance(p,null);
             BodyPart text = new MimeBodyPart();
-            text.setText("Respaldo de base de datos Derby, programa "+GV.projectName()+" version "+GV.version());
+            String equipo = GV.equipo().substring(0,GV.equipo().indexOf("_"));
+            text.setText("Respaldo de base de datos Derby, programa "+GV.projectName()+" version "+GV.version()+", equipo: "+equipo);
             BodyPart adjunto=new MimeBodyPart();
             if(directorio != null){
             if(!directorio.equals("")){
