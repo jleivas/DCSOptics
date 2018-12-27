@@ -153,13 +153,18 @@ public class OpanelReporteLentes extends javax.swing.JPanel {
                 + "-----------------------\n"
                 + "Stock total de lentes: "+GlobalValuesVariables.LENTES_STOCK+"\n\n"
                 + "Lentes con stock bajo: "+GlobalValuesVariables.LENTES_STOCK_BAJO+"\n"
-                + "Lentes con stock en cero: "+GlobalValuesVariables.LENTES_STOCK_CERO+"\n\n"
-                + "REPORTE MONETARIO\n"
+                + "Lentes con stock en cero: "+GlobalValuesVariables.LENTES_STOCK_CERO+"\n\n";
+        String reporteAdmin = 
+                "REPORTE MONETARIO\n"
                 + "-----------------------\n"
-                + "Inversión: "+GV.strToPrice(compra)+"\n"
+                + "En inventario: "+GV.strToPrice(compra)+"\n"
                 + "Monto de venta: "+GV.strToPrice(venta)+"\n"
                 + "Retorno :"+GV.strToPrice((venta-compra));
-        txtReporte.setText(reporte);
+        if(GV.tipoUserSuperAdmin()){
+            txtReporte.setText(reporte+reporteAdmin);
+        }else{
+            txtReporte.setText(reporte);
+        }
     }
 
     

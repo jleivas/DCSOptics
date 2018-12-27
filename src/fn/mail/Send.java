@@ -260,7 +260,7 @@ public class Send {
                     "    <th>Monto</th> \n" +
                     "  </tr>\n" +
                     "  <tr>\n" +
-                    "    <td>Inversion</td>\n" +
+                    "    <td>En inventario</td>\n" +
                     "    <td>"+GV.strToPrice(compra)+"</td>\n" +
                     "  </tr>\n" +
                     "  <tr>\n" +
