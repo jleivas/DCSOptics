@@ -34,7 +34,6 @@ técnico para la puesta en marcha del sistema.
 
  #### [Version 4.1.2 (V412)](https://github.com/softdirex/DCSOptics/search?q=V412&type=Commits)
  - [[V412-009]Cerrar sistema actual si ya se encuentra otro en ejecución](https://github.com/softdirex/DCSOptics/search?q=V412-009&type=Commits)
- - [[V412-008 V411-006]Mensaje de instrucciones para renovar licencia](https://github.com/softdirex/DCSOptics/search?q=V412-008&type=Commits)
  - [[V412-007]Reajuste en envío de correos](https://github.com/softdirex/DCSOptics/search?q=V412-007&type=Commits)
  - [[V412-006]Respaldo de carpetas DB y files](https://github.com/softdirex/DCSOptics/search?q=V412-006&type=Commits)
  - [[V412-005]Corrección de guardado de armazones a modificar](https://github.com/softdirex/DCSOptics/search?q=V412-005&type=Commits)
@@ -42,6 +41,7 @@ técnico para la puesta en marcha del sistema.
  - [[V412-003]Botón borrar base de datos y cancelar en ingreso de token y licencia](https://github.com/softdirex/DCSOptics/search?q=V412-003&type=Commits)
  - [[V412-002]Cambio de íconos al abrir una ficha en vista mac/linux](https://github.com/softdirex/DCSOptics/search?q=V412-002&type=Commits)
  - [[V412-001]Cambio de ícono de sincronización en vista mac/linux](https://github.com/softdirex/DCSOptics/search?q=V412-001&type=Commits)
+ - [[V411-006]Mensaje de instrucciones para renovar licencia](https://github.com/softdirex/DCSOptics/search?q=V411-006&type=Commits)
 
  #### [Version 4.1.1 (V411)](https://github.com/softdirex/DCSOptics/search?q=V411&type=Commits)
  - [[V411-008]Optimización de lentes con stock modificado al actualizar](https://github.com/softdirex/DCSOptics/search?q=V411-008&type=Commits)
