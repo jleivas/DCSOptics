@@ -32,6 +32,10 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.1.3 (V413)](https://github.com/softdirex/DCSOptics/search?q=V413&type=Commits)
+ - [[V413-001]Se agrega opción de filtro por usuario y fecha en interfaz no windows](https://github.com/softdirex/DCSOptics/search?q=V413-001&type=Commits)
+
+
  #### [Version 4.1.2 (V412)](https://github.com/softdirex/DCSOptics/search?q=V412&type=Commits)
  - [[V412-009]Cerrar sistema actual si ya se encuentra otro en ejecución](https://github.com/softdirex/DCSOptics/search?q=V412-009&type=Commits)
  - [[V412-007]Reajuste en envío de correos](https://github.com/softdirex/DCSOptics/search?q=V412-007&type=Commits)
