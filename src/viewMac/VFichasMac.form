@@ -306,12 +306,13 @@
               <Font name="Segoe UI Light" size="11" style="1"/>
             </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="5">
+              <StringArray count="6">
                 <StringItem index="0" value="Por D&#xed;a"/>
                 <StringItem index="1" value="Por Fechas"/>
                 <StringItem index="2" value="Por Cliente"/>
                 <StringItem index="3" value="Por Vendedor"/>
-                <StringItem index="4" value="Por Convenios"/>
+                <StringItem index="4" value="Por Vendedor y Fecha"/>
+                <StringItem index="5" value="Por Convenios"/>
               </StringArray>
             </Property>
           </Properties>
