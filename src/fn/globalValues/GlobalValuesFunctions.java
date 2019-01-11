@@ -842,10 +842,10 @@ public class GlobalValuesFunctions {
                 OptionPane.showMsg("Renueve su licencia", "Su licencia expirará mañana.\n\n"+pagar, 2);
             }
             if(expDias == 0){
-                JOptionPane.showConfirmDialog(null,"Su licencia expirará hoy.\n\n"+pagar,"Renueve su licencia", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Su licencia expirará hoy.\n\n"+pagar,"Renueve su licencia", JOptionPane.WARNING_MESSAGE);
             }
             if(expDias < 0){
-                JOptionPane.showConfirmDialog(null,"Su licencia ha caducado."+pagar,"Renueve su licencia", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"Su licencia ha caducado."+pagar,"Renueve su licencia", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
