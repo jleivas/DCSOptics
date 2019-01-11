@@ -63,19 +63,19 @@ public class SubProcess {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             try {
-                int expToday = 0;
-                int expired = 0;
+                int sumMinutes = 0;
                 int diffDate = 0;
                 while(true){
                     Thread.sleep(TIME_MIN_COMPROBAR_ONLINE*60000);
                     GV.loadXmlOnline();
+                    sumMinutes = sumMinutes + TIME_MIN_COMPROBAR_ONLINE;
                     diffDate = fechaDiferencia(GV.strToDate(GV.expDate()));
-                    if(diffDate == 0 && expToday >= MIN_EXPIRE_TODAY){
-                        expToday=0;
+                    if(diffDate == 0 && sumMinutes >= MIN_EXPIRE_TODAY){
+                        sumMinutes=0;
                         licenciaShowMessageLicenceStatus();
                     }
-                    if(diffDate < 0 && expired >= MIN_EXPIRED){
-                        expired=0;
+                    if(diffDate < 0 && sumMinutes >= MIN_EXPIRED){
+                        sumMinutes=0;
                         licenciaShowMessageLicenceStatus();
                     }
                 }
