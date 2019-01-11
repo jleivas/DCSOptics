@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -157,23 +158,18 @@ public class LcBd{
             if (conn!=null){
                String creartabla="create table "+tableName+columns;//(tableName.toLowerCase().equals("lente"))?"drop table lente":
                
-//               String desc="disconnect;";
                try {
                     PreparedStatement pstm = conn.prepareStatement(creartabla);
                     pstm.execute();
                     pstm.close();
-
-//                    PreparedStatement pstm2 = conn.prepareStatement(desc);
-//                    pstm2.execute();
-//                    pstm2.close();
                     cerrar();
                 } catch (SQLException ex) {
-                    return false;
-//                    System.out.println("\"Error al crear tabla "+tableName+", "+ex.getLocalizedMessage());
-                }
+                    return false;                }
             }
         }catch(SQLException | ClassNotFoundException | ExceptionInInitializerError e){
-         OptionPane.showMsg("Error al crear tabla "+tableName,e.getMessage() ,  3);
+            JOptionPane.showMessageDialog(null,"Ha intentado abrir el programa mas de una vez\n¡"+GV.projectName()+" ya se encuentra en ejecución!"
+                    +"\n\nEl sistema se cerrará",GV.projectName()+" ya se encuentra en ejecución", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
         return true;
     }
