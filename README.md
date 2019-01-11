@@ -33,6 +33,7 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.2 (V412)](https://github.com/softdirex/DCSOptics/search?q=V412&type=Commits)
+ - [[V412-009]Cerrar sistema actual si ya se encuentra otro en ejecución](https://github.com/softdirex/DCSOptics/search?q=V412-009&type=Commits)
  - [[V412-008 V411-006]Mensaje de instrucciones para renovar licencia](https://github.com/softdirex/DCSOptics/search?q=V412-008&type=Commits)
  - [[V412-007]Reajuste en envío de correos](https://github.com/softdirex/DCSOptics/search?q=V412-007&type=Commits)
  - [[V412-006]Respaldo de carpetas DB y files](https://github.com/softdirex/DCSOptics/search?q=V412-006&type=Commits)
