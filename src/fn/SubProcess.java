@@ -71,11 +71,11 @@ public class SubProcess {
                     GV.loadXmlOnline();
                     diffDate = fechaDiferencia(GV.strToDate(GV.expDate()));
                     if(diffDate == 0 && expToday >= MIN_EXPIRE_TODAY){
-                        diffDate=0;
+                        expToday=0;
                         licenciaShowMessageLicenceStatus();
                     }
                     if(diffDate < 0 && expired >= MIN_EXPIRED){
-                        diffDate=0;
+                        expired=0;
                         licenciaShowMessageLicenceStatus();
                     }
                 }
