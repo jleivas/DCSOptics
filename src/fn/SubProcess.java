@@ -7,7 +7,7 @@ package fn;
 
 import dao.Dao;
 import static fn.GV.fechaDiferencia;
-import static fn.globalValues.GlobalValuesFunctions.licenciaComprobarValidez;
+import static fn.globalValues.GlobalValuesFunctions.licenciaShowMessageLicenceStatus;
 import fn.mail.Send;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
@@ -32,11 +32,13 @@ public class SubProcess {
     
     
     private static int TIME_MIN_COMPROBAR_ONLINE = 5;
+    private static int MIN_EXPIRE_TODAY = 30;
+    private static int MIN_EXPIRED = TIME_MIN_COMPROBAR_ONLINE;
     
     Dao load = new Dao();
     
     /**
-     * Comprueba la conección ainternet cada 5 segundos
+     * Comprueba la conección a internet cada 5 segundos
      */
     
     public static void isOnline(){
@@ -57,15 +59,24 @@ public class SubProcess {
     
     public static void licenciaComprobarOnline(){
         GV.loadXmlOnline();
-        licenciaComprobarValidez();
+        licenciaShowMessageLicenceStatus();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             try {
+                int expToday = 0;
+                int expired = 0;
+                int diffDate = 0;
                 while(true){
                     Thread.sleep(TIME_MIN_COMPROBAR_ONLINE*60000);
                     GV.loadXmlOnline();
-                    if(fechaDiferencia(GV.strToDate(GV.expDate())) < 1){
-                        licenciaComprobarValidez();
+                    diffDate = fechaDiferencia(GV.strToDate(GV.expDate()));
+                    if(diffDate == 0 && expToday >= MIN_EXPIRE_TODAY){
+                        diffDate=0;
+                        licenciaShowMessageLicenceStatus();
+                    }
+                    if(diffDate < 0 && expired >= MIN_EXPIRED){
+                        diffDate=0;
+                        licenciaShowMessageLicenceStatus();
                     }
                 }
             } catch (InterruptedException ex) {
