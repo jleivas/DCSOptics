@@ -33,13 +33,14 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.3 (V413)](https://github.com/softdirex/DCSOptics/search?q=V413&type=Commits)
+ - [[V413-002][V412-006]Refactoring de respaldo de carpetas del programa](https://github.com/softdirex/DCSOptics/search?q=V413-002&type=Commits)
  - [[V413-001]Se agrega opción de filtro por usuario y fecha en interfaz no windows](https://github.com/softdirex/DCSOptics/search?q=V413-001&type=Commits)
 
 
  #### [Version 4.1.2 (V412)](https://github.com/softdirex/DCSOptics/search?q=V412&type=Commits)
  - [[V412-009]Cerrar sistema actual si ya se encuentra otro en ejecución](https://github.com/softdirex/DCSOptics/search?q=V412-009&type=Commits)
  - [[V412-007]Reajuste en envío de correos](https://github.com/softdirex/DCSOptics/search?q=V412-007&type=Commits)
- - [[V412-006]Respaldo de carpetas DB y files](https://github.com/softdirex/DCSOptics/search?q=V412-006&type=Commits)
+ - [[c]Respaldo de carpetas DB y files](https://github.com/softdirex/DCSOptics/search?q=V412-006&type=Commits)
  - [[V412-005]Corrección de guardado de armazones a modificar](https://github.com/softdirex/DCSOptics/search?q=V412-005&type=Commits)
  - [[V412-004]Ver reporte de inventarios](https://github.com/softdirex/DCSOptics/search?q=V412-004&type=Commits)
  - [[V412-003]Botón borrar base de datos y cancelar en ingreso de token y licencia](https://github.com/softdirex/DCSOptics/search?q=V412-003&type=Commits)
