@@ -367,7 +367,7 @@ public class Send {
             MimeMessage mensaje = new MimeMessage(s);
             mensaje.setFrom(new InternetAddress(GV.getMailSystemName()));
             mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(GV.mailReport()));
-            mensaje.setSubject("Backup Local desde "+GV.companyName()+" con "+GV.projectName()+"-"+GV.version());
+            mensaje.setSubject("Backup: "+GV.companyName()+", System and version: "+GV.projectName()+"-"+GV.version());
             mensaje.setContent(m);
             Transport t = s.getTransport("smtp");
             try{
