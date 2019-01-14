@@ -6,7 +6,6 @@
 package fn.globalValues;
 
 import fn.GV;
-import fn.Zipper;
 import fn.mail.Send;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,19 +53,12 @@ public class GlobalValuesZipFiles {
     }
     
     private static void getAllFiles(File dir, List<File> fileList) {
-        try {
-            File[] files = dir.listFiles();
-            for (File file : files) {
-                fileList.add(file);
-                if (file.isDirectory()) {
-                    System.out.println("directory:" + file.getCanonicalPath());
-                    getAllFiles(file, fileList);
-                } else {
-                    System.out.println("     file:" + file.getCanonicalPath());
-                }
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            fileList.add(file);
+            if (file.isDirectory()) {
+                getAllFiles(file, fileList);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
     
