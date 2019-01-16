@@ -33,6 +33,7 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.3 (V413)](https://github.com/softdirex/DCSOptics/search?q=V413&type=Commits)
+ - [[V413-003]Se agregan datos del cliente en orden de trabajo](https://github.com/softdirex/DCSOptics/search?q=V413-003&type=Commits)
  - [[V413-002][V412-006]Refactoring de respaldo de carpetas del programa](https://github.com/softdirex/DCSOptics/search?q=V413-002&type=Commits)
  - [[V413-001]Se agrega opción de filtro por usuario y fecha en interfaz no windows](https://github.com/softdirex/DCSOptics/search?q=V413-001&type=Commits)
 

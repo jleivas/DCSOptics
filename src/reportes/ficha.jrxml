@@ -106,9 +106,9 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="39">
+		<band height="40">
 			<textField>
-				<reportElement x="80" y="11" width="230" height="20" uuid="9a1b3da3-4270-4d81-9e33-f93ec6426bda"/>
+				<reportElement x="80" y="0" width="230" height="20" uuid="9a1b3da3-4270-4d81-9e33-f93ec6426bda"/>
 				<box leftPadding="3">
 					<pen lineWidth="0.25"/>
 				</box>
@@ -116,12 +116,42 @@
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="8" y="11" width="67" height="20" forecolor="#002259" uuid="bb774b23-77f8-4e47-b2d9-451c3b72478a"/>
+				<reportElement x="8" y="0" width="67" height="20" forecolor="#002259" uuid="bb774b23-77f8-4e47-b2d9-451c3b72478a"/>
 				<textElement textAlignment="Left">
 					<font size="14"/>
 				</textElement>
 				<text><![CDATA[Cliente]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="8" y="20" width="67" height="20" forecolor="#002259" uuid="b65abbc9-d5fd-4b4d-af98-9be2de65e686"/>
+				<textElement textAlignment="Left">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Contacto]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="20" width="200" height="20" uuid="f56aca4a-9e23-4bb3-9bbe-444f26a1d844"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{phone}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="280" y="20" width="67" height="20" forecolor="#002259" uuid="072b432c-7299-494f-89c8-c7554094c28c"/>
+				<textElement textAlignment="Left">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Entrega]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="350" y="20" width="204" height="20" uuid="2e7ab993-6cf4-4733-89be-f46a0bad03cf"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{place}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
