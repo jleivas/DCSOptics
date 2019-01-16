@@ -136,7 +136,7 @@ public class Send {
 "							<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n" +
 "								<tr>\n" +
 "									<td style=\"color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;\" width=\"75%\">\n" +
-"										&reg; Todos los derechos reservados "+GV.dateToString(new Date(), "yyyy")+"<br/>\n" +
+"										&reg; Todos los derechos reservados 2018<br/>\n" +
 "										Un producto de <a href=\"http://www.softdirex.cl\" style=\"color: #ffffff;\"><font color=\"#ffffff\">Softdirex</font></a>\n" +
 "									</td>\n" +
 "									<td align=\"right\" width=\"25%\">\n" +
