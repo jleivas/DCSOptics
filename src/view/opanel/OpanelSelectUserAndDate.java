@@ -234,7 +234,7 @@ public class OpanelSelectUserAndDate extends javax.swing.JPanel {
             }
             OptionPane.closeOptionPanel();
             try {
-                boton.fichas(GV.cboFichasFilter());
+                boton.fichas(GV.getCboFichasFilterData());
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(OpanelSelectUserAndDate.class.getName()).log(Level.SEVERE, null, ex);
             }

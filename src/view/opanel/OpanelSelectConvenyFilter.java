@@ -145,7 +145,7 @@ public class OpanelSelectConvenyFilter extends javax.swing.JPanel {
             GV.convenioIdSelected(idConvenio);
             OptionPane.closeOptionPanel();
             try {
-                boton.fichas(GV.cboFichasFilter());
+                boton.fichas(GV.getCboFichasFilterData());
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(OpanelSelectConvenyFilter.class.getName()).log(Level.SEVERE, null, ex);
             }

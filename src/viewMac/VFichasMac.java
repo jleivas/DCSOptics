@@ -6,9 +6,6 @@
 package viewMac;
 
 import dao.Dao;
-import entities.Cliente;
-import entities.Convenio;
-import entities.User;
 import entities.ficha.Ficha;
 import fn.Boton;
 import fn.GV;
@@ -19,16 +16,10 @@ import fn.globalValues.GlobalValuesFunctions;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
-import view.opanel.OpanelSelectClient;
-import view.opanel.OpanelSelectConvenyFilter;
-import view.opanel.OpanelSelectDate;
-import view.opanel.OpanelSelectUser;
-import view.opanel.OpanelSelectUserAndDate;
 
 /**
  *
@@ -37,14 +28,8 @@ import view.opanel.OpanelSelectUserAndDate;
 public class VFichasMac extends javax.swing.JPanel {
     Boton boton = new Boton();
     Dao load= new Dao();
-    public static boolean isFiltering = false;
-    private static int BY_DAY =0;
-    private static int BY_DATE=1;
-    public static int BY_CLIENT=2;
-    private static int BY_USER=3;
-    private static int BY_USER_DATE = 4;
-    private static int BY_CONVENY=5;
-    private static int COLUMNAS_TABLA = 7;
+    
+    private static final int COLUMNAS_TABLA = 7;
     TableRowSorter trs;
     DefaultTableModel modelo = new DefaultTableModel() {
            @Override
@@ -69,7 +54,7 @@ public class VFichasMac extends javax.swing.JPanel {
         modelo.addColumn("Vendedor");
         tblListar.setModel(modelo);
         cboFilterOptions.setSelectedIndex(filter);
-        btnExportConvenio.setVisible(false);
+        cboMostrar.setSelectedIndex(GV.getCboFichasFilterStatus());
         load();
         OptionPane.closeOptionPanel();
     }
@@ -108,11 +93,23 @@ public class VFichasMac extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Lista de registros", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 11))); // NOI18N
 
-        cboMostrar.setFont(new java.awt.Font("Segoe UI Light", 1, 18)); // NOI18N
+        cboMostrar.setFont(new java.awt.Font("Segoe UI Light", 1, 10)); // NOI18N
         cboMostrar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todas", "Pendientes", "Pagadas", "Entregadas", "Garantias", "Anuladas" }));
         cboMostrar.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cboMostrarItemStateChanged(evt);
+            }
+        });
+        cboMostrar.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+                cboMostrarCaretPositionChanged(evt);
+            }
+        });
+        cboMostrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboMostrarActionPerformed(evt);
             }
         });
 
@@ -203,11 +200,11 @@ public class VFichasMac extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnReloadFilterMouseClicked(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnReloadFilterMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnReloadFilterMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnReloadFilterMouseEntered(evt);
             }
         });
 
@@ -217,11 +214,11 @@ public class VFichasMac extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnReportSalesMouseClicked(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnReportSalesMouseEntered(evt);
-            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnReportSalesMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnReportSalesMouseEntered(evt);
             }
         });
 
@@ -301,41 +298,39 @@ public class VFichasMac extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 991, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnAbrir)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEliminar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnRestaurar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnDespacharTodo)
-                        .addGap(109, 109, 109)
-                        .addComponent(btnReportSales)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSalesReport)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnExportExcel)
-                        .addGap(8, 8, 8)
-                        .addComponent(btnExportFichas)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnExportConvenio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel19)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cboFilterOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnReloadFilter)
-                        .addGap(1, 1, 1)))
-                .addContainerGap())
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(239, 239, 239)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cboFilterOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnReloadFilter)
+                .addGap(13, 13, 13))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(btnAbrir)
+                .addGap(18, 18, 18)
+                .addComponent(btnEliminar)
+                .addGap(18, 18, 18)
+                .addComponent(btnRestaurar)
+                .addGap(18, 18, 18)
+                .addComponent(btnDespacharTodo)
+                .addGap(109, 109, 109)
+                .addComponent(btnReportSales)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnSalesReport)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnExportExcel)
+                .addGap(8, 8, 8)
+                .addComponent(btnExportFichas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnExportConvenio)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -346,10 +341,11 @@ public class VFichasMac extends javax.swing.JPanel {
                         .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnReloadFilter, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(cboFilterOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1))
-                    .addComponent(btnReloadFilter, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addComponent(jLabel1)
+                        .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -358,8 +354,7 @@ public class VFichasMac extends javax.swing.JPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btnEliminar)
                             .addComponent(btnAbrir)
-                            .addComponent(btnRestaurar)
-                            .addComponent(cboMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btnRestaurar)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -373,6 +368,8 @@ public class VFichasMac extends javax.swing.JPanel {
                         .addComponent(btnDespacharTodo)))
                 .addGap(36, 36, 36))
         );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cboFilterOptions, cboMostrar});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -492,9 +489,7 @@ public class VFichasMac extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRestaurarMouseExited
 
     private void cboMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboMostrarItemStateChanged
-        cWT();
-        load();
-        cDF();
+        
     }//GEN-LAST:event_cboMostrarItemStateChanged
 
     private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
@@ -515,13 +510,11 @@ public class VFichasMac extends javax.swing.JPanel {
     }//GEN-LAST:event_txtBuscarKeyTyped
 
     private void cboFilterOptionsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cboFilterOptionsItemStateChanged
-        isFiltering = true;
-        load();
+       
     }//GEN-LAST:event_cboFilterOptionsItemStateChanged
 
     private void btnReloadFilterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReloadFilterMouseClicked
-        isFiltering = true;
-        load();
+        openFilter();
     }//GEN-LAST:event_btnReloadFilterMouseClicked
 
     private void btnReloadFilterMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReloadFilterMouseEntered
@@ -556,7 +549,7 @@ public class VFichasMac extends javax.swing.JPanel {
                 GV.printFichas(GV.getFichas());
                 cDF();
             }else{
-                mensajeOperacionCanceladaPorTablaVacia();
+                GlobalValuesFunctions.fichasMensajeOperacionCanceladaPorTablaVacia();
             } 
         }
     }//GEN-LAST:event_btnExportFichasMouseClicked
@@ -590,12 +583,12 @@ public class VFichasMac extends javax.swing.JPanel {
                     cWT();
                     GV.fichasToDelivery(GV.getFichas());
                     cDF();
-                    boton.fichas(GV.cboFichasFilter());
+                    boton.fichas(GV.getCboFichasFilterData());
                 } catch (SQLException | ClassNotFoundException ex) {
                     Logger.getLogger(VFichasMac.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }else{
-                mensajeOperacionCanceladaPorTablaVacia();
+                GlobalValuesFunctions.fichasMensajeOperacionCanceladaPorTablaVacia();
             }
         }else{
             GV.mensajeAccessDenied();
@@ -640,6 +633,14 @@ public class VFichasMac extends javax.swing.JPanel {
         btnExportExcel.setIcon(new javax.swing.ImageIcon(getClass().getResource(Icons.getExitedIcon(btnExportExcel.getIcon().toString()))));
     }//GEN-LAST:event_btnExportExcelMouseExited
 
+    private void cboMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMostrarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboMostrarActionPerformed
+
+    private void cboMostrarCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_cboMostrarCaretPositionChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cboMostrarCaretPositionChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAbrir;
@@ -664,8 +665,8 @@ public class VFichasMac extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void load(){
+        btnExportConvenio.setVisible(false);
         int index = buildIndex(cboMostrar.getSelectedIndex());
-        GV.setCboFichasFilter(cboFilterOptions.getSelectedIndex());
         cargarDatos(index);
     }
     
@@ -680,102 +681,9 @@ public class VFichasMac extends javax.swing.JPanel {
         index = (index==INDEX_TODOS)?-1:index;
         return (index==INDEX_ELIMINADOS)? 0:index;
     }
-    private void cargarDatos(int status) {
-        int filter = cboFilterOptions.getSelectedIndex();
-        boolean openDialog = (isFiltering)?false:true;
-        if(filter==BY_DAY){
-            ContentAdminMac.lblTitle.setText("Registros del día: "+GV.dateToString(new Date(), "dd/mm/yyyy"));
-            GV.listarFichasByDate(new Date(),null);
-        }
-        if(filter==BY_DATE){
-            if(isFiltering){
-                OptionPane.showOptionPanel(new OpanelSelectDate(), OptionPane.titleDateChooser());
-                isFiltering = false;
-            }else{
-                GV.listarFichasByDate(GV.dateFrom(),GV.dateTo());
-            }
-            String fecha1 = GV.dateToString(GV.dateFrom(), "dd/mm/yyyy");
-            String fecha2 = GV.dateToString(GV.dateTo(), "dd/mm/yyyy");
-            String tempTitle = "Registros entre los días "+fecha1+" y "+fecha2;
-            if(fecha1.equals(fecha2)){
-                tempTitle = "Registros del día: "+fecha1;
-            }
-            
-            tempTitle = (tempTitle.contains("date-error"))?tempTitle.replaceAll("date-error", ".").replaceAll("y", "."):tempTitle;
-            ContentAdminMac.lblTitle.setText(tempTitle);
-        }
-        if(filter==BY_CLIENT){
-            if(isFiltering){
-                OptionPane.showOptionPanel(new OpanelSelectClient(), OptionPane.titleClientChooser());
-                isFiltering = false;
-                openDialog = false;
-            }else{
-                GV.listarFichasByClient(GV.rutClientSelected());
-                try {
-                    Cliente cli = (Cliente)load.get(GV.rutClientSelected(), 0, new Cliente());
-                    ContentAdminMac.lblTitle.setText("Registros por Cliente: "+cli.getNombre()+" [Rut: "+cli.getCod()+"]");
-                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                    Logger.getLogger(VFichasMac.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        if(filter==BY_USER){
-            if(isFiltering){
-                OptionPane.showOptionPanel(new OpanelSelectUser(), OptionPane.titleUserChooser());
-                isFiltering = false;
-                openDialog = false;
-            }else{
-                GV.listarFichasByUser(GV.userIdSelected());
-                try {
-                    User us = (User)load.get(null, GV.strToNumber(GV.userIdSelected()), new User());
-                    ContentAdminMac.lblTitle.setText("Registros por Vendedor: "+us.getNombre());
-                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                    Logger.getLogger(VFichasMac.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        if(filter==BY_USER_DATE){
-            if(isFiltering){
-                OptionPane.showOptionPanel(new OpanelSelectUserAndDate(), OptionPane.titleUserChooser());
-                isFiltering = false;
-                openDialog = false;
-            }else{
-                GV.listarFichasByUserAndDate(GV.userIdSelected(),GV.dateFrom(),GV.dateTo());
-                try {
-                    User us = (User)load.get(null, GV.strToNumber(GV.userIdSelected()), new User());
-                    ContentAdminMac.lblTitle.setText("Registros de "+us.getNombre());
-                    String fecha1 = GV.dateToString(GV.dateFrom(), "dd/mm/yyyy");
-                    String fecha2 = GV.dateToString(GV.dateTo(), "dd/mm/yyyy");
-                    String tempTitle = " entre los días "+fecha1+" y "+fecha2;
-                    if(fecha1.equals(fecha2)){
-                        tempTitle = " del día: "+fecha1;
-                    }
-
-                    tempTitle = (tempTitle.contains("date-error"))?tempTitle.replaceAll("date-error", ".").replaceAll("y", "."):tempTitle;
-                    ContentAdminMac.lblTitle.setText(ContentAdminMac.lblTitle.getText() + tempTitle);
-                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                    Logger.getLogger(VFichasMac.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        btnExportConvenio.setVisible(false);
-        if(filter==BY_CONVENY){
-            if(isFiltering){
-                OptionPane.showOptionPanel(new OpanelSelectConvenyFilter(), OptionPane.titleConvenyChooser());
-                isFiltering = false;
-                openDialog = false;
-            }else{
-                GV.listarFichasByConveny(GV.convenioIdSelected());
-                btnExportConvenio.setVisible(true);
-                try {
-                    Convenio cnv = (Convenio)load.get(null, GV.strToNumber(GV.convenioIdSelected()), new Convenio());
-                    ContentAdminMac.lblTitle.setText("Registros por Convenio: "+cnv.getNombre());
-                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                    Logger.getLogger(VFichasMac.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-            }
-        }
+    
+    public void cargarDatos(int status) {
+        loadFilter();
         if(status == 0){
             btnRestaurar.setVisible(true);
             btnEliminar.setVisible(false);
@@ -788,78 +696,9 @@ public class VFichasMac extends javax.swing.JPanel {
             btnReportSales.setVisible(true);
         }
         try{
-            modelo.setNumRows(0);
-            for (Object object : GV.getFichas()) {
-                Ficha temp = (Ficha)object;
-                if(status == -1 && temp.getEstado() > GV.estadoFichaDeleted()){
-                    Object[] fila = new Object[COLUMNAS_TABLA];
-                    fila[0] = temp.getCod();
-                    fila[1] = GV.dateToString(temp.getFecha(), "dd/mm/yyyy");
-                    fila[2] = temp.getCliente().getCod();
-                    fila[3] = temp.getCliente().getNombre();
-                    fila[4] = GV.estadoFicha(temp.getEstado());
-                    fila[5] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[6] = temp.getUser().getNombre();
-                    modelo.addRow(fila);
-                }
-                if(status == GV.estadoFichaDeleted() && temp.getEstado() < GV.estadoFichaDeleted()){
-                    Object[] fila = new Object[COLUMNAS_TABLA];
-                    fila[0] = temp.getCod();
-                    fila[1] = GV.dateToString(temp.getFecha(), "dd/mm/yyyy");
-                    fila[2] = temp.getCliente().getNombre();
-                    fila[3] = GV.estadoFicha(temp.getEstado());
-                    fila[4] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[5] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[6] = temp.getUser().getNombre();
-                    modelo.addRow(fila);
-                }
-                if(status == GV.estadoFichaDelivered()&& temp.getEstado() == GV.estadoFichaDelivered()){
-                    Object[] fila = new Object[COLUMNAS_TABLA];
-                    fila[0] = temp.getCod();
-                    fila[1] = GV.dateToString(temp.getFecha(), "dd/mm/yyyy");
-                    fila[2] = temp.getCliente().getNombre();
-                    fila[3] = GV.estadoFicha(temp.getEstado());
-                    fila[4] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[5] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[6] = temp.getUser().getNombre();
-                    modelo.addRow(fila);
-                }
-                if(status == GV.estadoFichaPaid()&& (temp.getEstado() == GV.estadoFichaPaid() || temp.getEstado() == GV.estadoFichaDelivered())){
-                    Object[] fila = new Object[COLUMNAS_TABLA];
-                    fila[0] = temp.getCod();
-                    fila[1] = GV.dateToString(temp.getFecha(), "dd/mm/yyyy");
-                    fila[2] = temp.getCliente().getNombre();
-                    fila[3] = GV.estadoFicha(temp.getEstado());
-                    fila[4] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[5] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[6] = temp.getUser().getNombre();
-                    modelo.addRow(fila);
-                }
-                if(status == GV.estadoFichaPending()&& temp.getEstado() == GV.estadoFichaPending()){
-                    Object[] fila = new Object[COLUMNAS_TABLA];
-                    fila[0] = temp.getCod();
-                    fila[1] = GV.dateToString(temp.getFecha(), "dd/mm/yyyy");
-                    fila[2] = temp.getCliente().getNombre();
-                    fila[3] = GV.estadoFicha(temp.getEstado());
-                    fila[4] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[5] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[6] = temp.getUser().getNombre();
-                    modelo.addRow(fila);
-                }
-                if(status == GV.estadoFichaWarranty()&& temp.getEstado() == GV.estadoFichaWarranty()){
-                    Object[] fila = new Object[COLUMNAS_TABLA];
-                    fila[0] = temp.getCod();
-                    fila[1] = GV.dateToString(temp.getFecha(), "dd/mm/yyyy");
-                    fila[2] = temp.getCliente().getNombre();
-                    fila[3] = GV.estadoFicha(temp.getEstado());
-                    fila[4] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[5] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
-                    fila[6] = temp.getUser().getNombre();
-                    modelo.addRow(fila);
-                }
-            }
+            GV.loadDataTable(modelo,COLUMNAS_TABLA);
             tblListar.updateUI();
-            if(tblListar.getRowCount() == 0 && openDialog){
+            if(tblListar.getRowCount() == 0){
                 GV.emptyTable(cboMostrar, txtBuscar, "Fichas");
             }
         }catch(Exception e){
@@ -873,35 +712,18 @@ public class VFichasMac extends javax.swing.JPanel {
     private void cDF(){
         GV.cursorDF(this);
     }
-
-    private void mensajeOperacionCanceladaPorTablaVacia() {
-        OptionPane.showMsg("No hay datos disponibles", "La operación no se puede realizar porque no existen datos en la tabla", 2);
-    }
     
     private void verReporte(){
-        if(GV.licenciaExpirada()){
-            GV.mensajeLicenceExpired();
-        }else{
-            if(GV.tipoUserAdmin()){
-                if(GV.getFichas().size()>0){
-                    cWT();
-                    GV.printSalesReport(GV.getFichas(), ContentAdminMac.lblTitle.getText());
-                    cDF();
-                }else{
-                    mensajeOperacionCanceladaPorTablaVacia();
-                }
-            }else{
-                int filter = cboFilterOptions.getSelectedIndex();
-                if(filter == BY_USER_DATE){
-                    if(GV.userIdSelected().equals(""+GV.user().getId())){
-                        cWT();
-                        GV.printSalesReport(GV.getFichas(), ContentAdminMac.lblTitle.getText());
-                        cDF();
-                        return;
-                    }
-                }
-                GV.mensajeAccessDenied();
-            }
-        }
+        GlobalValuesFunctions.fichasVerReporte();
+    }
+    
+    private void openFilter(){
+        GV.setCboFichasFilterData(cboFilterOptions.getSelectedIndex());
+        GV.setCboFichasFilterStatus(cboMostrar.getSelectedIndex());
+        GlobalValuesFunctions.fichasOpenFilter();
+    }
+    
+    private void loadFilter(){
+        GlobalValuesFunctions.fichasLoadFilter(btnExportConvenio);
     }
 }

@@ -517,7 +517,7 @@ public class VFichas extends javax.swing.JPanel {
                 GV.printFichas(GV.getFichas());
                 cDF();
             }else{
-                mensajeOperacionCanceladaPorTablaVacia();
+                GlobalValuesFunctions.fichasMensajeOperacionCanceladaPorTablaVacia();
             } 
         }
     }//GEN-LAST:event_btnExportFichasMouseClicked
@@ -551,12 +551,12 @@ public class VFichas extends javax.swing.JPanel {
                     cWT();
                     GV.fichasToDelivery(GV.getFichas());
                     cDF();
-                    boton.fichas(GV.cboFichasFilter());
+                    boton.fichas(GV.getCboFichasFilterData());
                 } catch (SQLException | ClassNotFoundException ex) {
                     Logger.getLogger(VFichas.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }else{
-                mensajeOperacionCanceladaPorTablaVacia();
+                GlobalValuesFunctions.fichasMensajeOperacionCanceladaPorTablaVacia();
             }
         }else{
             GV.mensajeAccessDenied();
@@ -665,7 +665,7 @@ public class VFichas extends javax.swing.JPanel {
 
     private void load(){
         int index = buildIndex(cboMostrar.getSelectedIndex());
-        GV.setCboFichasFilter(cboFilterOptions.getSelectedIndex());
+        GV.setCboFichasFilterData(cboFilterOptions.getSelectedIndex());
         cargarDatos(index);
     }
     
@@ -873,10 +873,6 @@ public class VFichas extends javax.swing.JPanel {
     private void cDF(){
         GV.cursorDF(this);
     }
-
-    private void mensajeOperacionCanceladaPorTablaVacia() {
-        OptionPane.showMsg("No hay datos disponibles", "La operación no se puede realizar porque no existen datos en la tabla", 2);
-    }
     
     private void verReporte(){
         if(GV.licenciaExpirada()){
@@ -888,7 +884,7 @@ public class VFichas extends javax.swing.JPanel {
                     GV.printSalesReport(GV.getFichas(), ContentAdmin.lblTitle.getText());
                     cDF();
                 }else{
-                    mensajeOperacionCanceladaPorTablaVacia();
+                    GlobalValuesFunctions.fichasMensajeOperacionCanceladaPorTablaVacia();
                 }
             }else{
                 int filter = cboFilterOptions.getSelectedIndex();

@@ -146,7 +146,7 @@ public class OpanelSelectClient extends javax.swing.JPanel {
                 GV.cursorWAIT(this);
                 GV.cursorDF(this);
                 OptionPane.closeOptionPanel();
-                boton.fichas(GV.cboFichasFilter());
+                boton.fichas(GV.getCboFichasFilterData());
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(OpanelSelectClient.class.getName()).log(Level.SEVERE, null, ex);
             }

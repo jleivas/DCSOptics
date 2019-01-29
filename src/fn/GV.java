@@ -42,6 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import sync.entities.Local;
 import sync.entities.Remote;
 import view.init.Acceso;
@@ -660,12 +661,20 @@ public class GV extends GlobalValuesCursor{
         return GlobalValuesVariables.getSqlLowStock();
     }
     
-    public static int cboFichasFilter(){
-        return GlobalValuesVariables.cboFichasFilter();
+    public static int getCboFichasFilterData(){
+        return GlobalValuesVariables.getCboFichasFilterData();
     }
     
-    public static void setCboFichasFilter(int filter){
-        GlobalValuesVariables.setCboFichasFilter(filter);
+    public static void setCboFichasFilterData(int filter){
+        GlobalValuesVariables.setCboFichasFilterData(filter);
+    }
+    
+    public static int getCboFichasFilterStatus(){
+        return GlobalValuesVariables.getCboFichasFilterStatus();
+    }
+    
+    public static void setCboFichasFilterStatus(int filter){
+        GlobalValuesVariables.setCboFichasFilterStatus(filter);
     }
     
     public static String username() {
@@ -1229,5 +1238,21 @@ public class GV extends GlobalValuesCursor{
 
     public static void mensajeExcepcion(String error, int status) {
         JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado:\n"+error, "Error critico", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void loadDataTable(DefaultTableModel modelo, int columns) {
+        modelo.setNumRows(0);
+        for (Object object : getFichas()) {
+            Ficha temp = (Ficha)object;
+            Object[] fila = new Object[columns];
+            fila[0] = temp.getCod();
+            fila[1] = GV.dateToString(temp.getFecha(), "dd/mm/yyyy");
+            fila[2] = temp.getCliente().getCod();
+            fila[3] = temp.getCliente().getNombre();
+            fila[4] = GV.estadoFicha(temp.getEstado());
+            fila[5] = GV.strToPrice((temp.getValorTotal()-temp.getDescuento()));
+            fila[6] = temp.getUser().getNombre();
+            modelo.addRow(fila);
+        }
     }
 }

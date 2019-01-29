@@ -7,6 +7,7 @@ package fn.globalValues;
 
 import com.toedter.calendar.JDateChooser;
 import dao.Dao;
+import entities.Cliente;
 import entities.Convenio;
 import entities.CuotasConvenio;
 import entities.Descuento;
@@ -51,6 +52,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -61,6 +63,11 @@ import view.opanel.OpanelCompanyData;
 import view.opanel.OpanelConvenyReceptor;
 import view.opanel.OpanelOfficeData;
 import view.opanel.OpanelReporteLentes;
+import view.opanel.OpanelSelectClient;
+import view.opanel.OpanelSelectConvenyFilter;
+import view.opanel.OpanelSelectDate;
+import view.opanel.OpanelSelectUser;
+import view.opanel.OpanelSelectUserAndDate;
 import view.opanel.OpanelSetLicencia;
 import view.opanel.OpanelSetToken;
 import viewMac.ContentAdminMac;
@@ -76,6 +83,20 @@ public class GlobalValuesFunctions {
     private static int POS_DATE = 2;
     private static int TAMANO_COLUMN_ABONOS = 3;//la columna dos corresponde a la descripcion del tipo de pago, se usa en funciones para imprimir
     private static Dao load = new Dao();
+    
+    private static final int BY_DAY =0;
+    private static final int BY_DATE=1;
+    public static final int BY_CLIENT=2;
+    private static final int BY_USER=3;
+    private static final int BY_USER_DATE = 4;
+    private static final int BY_CONVENY=5;
+    
+    public static final int STATUS_ALL = 0;
+    public static final int STATUS_PENDING = 1;
+    public static final int STATUS_PAID = 2;
+    public static final int STATUS_DELIVERED = 3;
+    public static final int STATUS_WARRANTY = 4;
+    public static final int STATUS_DELETED = 5;
     
     public static String dateToString(Date date,String format){
         return Cmp.dateToString(date, format);
@@ -512,20 +533,44 @@ public class GlobalValuesFunctions {
      * @return 
      */
     public static String getWhereFromAllFichas(Date dateTo, Date dateFrom,String idUser, String codClient,String idConvenio, String idFicha){
+        String statusFilter;
+        switch (GV.getCboFichasFilterStatus()){
+            case GlobalValuesFunctions.STATUS_ALL:
+                statusFilter = " <> 0";
+                break;
+            case GlobalValuesFunctions.STATUS_PENDING:
+                statusFilter = " = "+GV.estadoFichaPending();
+                break;
+            case GlobalValuesFunctions.STATUS_DELETED:
+                statusFilter = " = "+GV.estadoFichaDeleted();
+                break;
+            case GlobalValuesFunctions.STATUS_DELIVERED:
+                statusFilter = " = "+GV.estadoFichaDelivered();
+                break;
+            case GlobalValuesFunctions.STATUS_PAID:
+                statusFilter = " = "+GV.estadoFichaPaid();
+                break;
+            case GlobalValuesFunctions.STATUS_WARRANTY:
+                statusFilter = " = "+GV.estadoFichaWarranty();
+                break;
+            default:
+                statusFilter = " <> 0";
+                break;
+        }
         if(idFicha!=null){
-            return "where ficha.fch_id = '"+idFicha+"'";
+            return "where ficha.fch_id = '"+idFicha+"' and ficha.fch_estado "+statusFilter;
         }
         if(idConvenio != null){
-            return "where ficha.convenio_cnv_id = "+idConvenio+" ORDER BY ficha.fch_fecha DESC";
+            return "where ficha.convenio_cnv_id = "+idConvenio+" and ficha.fch_estado "+statusFilter+" ORDER BY ficha.fch_fecha DESC";
         }
         if(dateTo==null && dateFrom==null){
             if(idUser != null){
-                return "where ficha.usuario_us_id = "+idUser+" ORDER BY ficha.fch_fecha DESC";
+                return "where ficha.usuario_us_id = "+idUser+" and ficha.fch_estado "+statusFilter+" ORDER BY ficha.fch_fecha DESC";
             }
             if(codClient != null){
-                return "where ficha.cliente_cli_rut = '"+codClient+"' ORDER BY ficha.fch_fecha DESC";
+                return "where ficha.cliente_cli_rut = '"+codClient+"' and ficha.fch_estado "+statusFilter+" ORDER BY ficha.fch_fecha DESC";
             }
-            return "where ficha.fch_fecha ='"+GV.dateToString(new Date(), "yyyy-mm-dd")+"' ORDER BY ficha.fch_fecha DESC";
+            return "where ficha.fch_fecha ='"+GV.dateToString(new Date(), "yyyy-mm-dd")+"' and ficha.fch_estado "+statusFilter+" ORDER BY ficha.fch_fecha DESC";
         }
         dateTo=(dateTo==null)?dateFrom:dateTo;
         dateFrom=(dateFrom==null)?dateTo:dateFrom;
@@ -537,9 +582,9 @@ public class GlobalValuesFunctions {
         String d1 = (!GV.dateToString(dateTo, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateTo, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
         String d2 = (!GV.dateToString(dateFrom, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateFrom, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
         if(idUser != null){
-            return "where (ficha.usuario_us_id = "+idUser+") and (ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') ORDER BY ficha.fch_fecha DESC";
+            return "where (ficha.usuario_us_id = "+idUser+") and (ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') and ficha.fch_estado "+statusFilter+" ORDER BY ficha.fch_fecha DESC";
         }
-        return "where ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"' ORDER BY ficha.fch_fecha DESC";
+        return "where (ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') and ficha.fch_estado "+statusFilter+"  ORDER BY ficha.fch_fecha DESC";
     }
     
     public static void sendReportSalesMail(SalesFichaJasperReport report, String email, String title){
@@ -1027,6 +1072,149 @@ public class GlobalValuesFunctions {
                 GlobalValuesVariables.LENTES_VENTA = (lente.getStock() > 0)?
                         (GlobalValuesVariables.LENTES_VENTA + (lente.getStock() * lente.getPrecioAct()))
                         :GlobalValuesVariables.LENTES_VENTA;
+            }
+        }
+    }
+
+    public static void fichasLoadFilter(JLabel btnExportConvenio) {
+        int filter = GV.getCboFichasFilterData();
+        String fecha1 = GV.dateToString(GV.dateFrom(), "dd/mm/yyyy");
+        String fecha2 = GV.dateToString(GV.dateTo(), "dd/mm/yyyy");
+        String tempTitle = "Registros entre los días "+fecha1+" y "+fecha2;
+        String lblStatus = "";
+        switch (GV.getCboFichasFilterStatus()){
+            case STATUS_ALL:
+                lblStatus = "Todas las fichas";
+                break;
+            case STATUS_DELETED:
+                lblStatus = "Fichas anuladas";
+                break;
+            case STATUS_DELIVERED:
+                lblStatus = "Fichas entregadas";
+                break;
+            case STATUS_PAID:
+                lblStatus = "Fichas pagadas";
+                break;
+            case STATUS_PENDING:
+                lblStatus = "Fichas pendientes";
+                break;
+            case STATUS_WARRANTY:
+                lblStatus = "Fichas en garantía";
+                break;
+            default:
+                break;
+        }
+        switch (filter){
+            case BY_DATE:
+                GV.listarFichasByDate(GV.dateFrom(),GV.dateTo());
+                if(fecha1.equals(fecha2)){
+                    tempTitle = "Registros del día: "+fecha1;
+                }
+                tempTitle = (tempTitle.contains("date-error"))?tempTitle.replaceAll("date-error", ".").replaceAll("y", "."):tempTitle;
+                ContentAdminMac.lblTitle.setText(lblStatus +": "+tempTitle);
+                break;
+            case BY_CLIENT:
+                GV.listarFichasByClient(GV.rutClientSelected());
+                try {
+                    Cliente cli = (Cliente)load.get(GV.rutClientSelected(), 0, new Cliente());
+                    ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros por Cliente: "+cli.getNombre()+" [Rut: "+cli.getCod()+"]");
+                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                    Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            case BY_USER:
+                GV.listarFichasByUser(GV.userIdSelected());
+                try {
+                    User us = (User)load.get(null, GV.strToNumber(GV.userIdSelected()), new User());
+                    ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros por Vendedor: "+us.getNombre());
+                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                    Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            case BY_USER_DATE:
+                GV.listarFichasByUserAndDate(GV.userIdSelected(),GV.dateFrom(),GV.dateTo());
+                try {
+                    User us = (User)load.get(null, GV.strToNumber(GV.userIdSelected()), new User());
+                    ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros de "+us.getNombre());
+                    
+                    tempTitle = " entre los días "+fecha1+" y "+fecha2;
+                    if(fecha1.equals(fecha2)){
+                        tempTitle = " del día: "+fecha1;
+                    }
+
+                    tempTitle = (tempTitle.contains("date-error"))?tempTitle.replaceAll("date-error", ".").replaceAll("y", "."):tempTitle;
+                    ContentAdminMac.lblTitle.setText(ContentAdminMac.lblTitle.getText() + tempTitle);
+                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                    Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            case BY_CONVENY:
+                GV.listarFichasByConveny(GV.convenioIdSelected());
+                btnExportConvenio.setVisible(true);
+                try {
+                    Convenio cnv = (Convenio)load.get(null, GV.strToNumber(GV.convenioIdSelected()), new Convenio());
+                    ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros por Convenio: "+cnv.getNombre());
+                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                    Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            default:
+                ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros del día: "+GV.dateToString(new Date(), "dd/mm/yyyy"));
+                GV.listarFichasByDate(new Date(),null);
+                break;
+        }
+    }
+
+    public static void fichasOpenFilter() {
+        int filter = GV.getCboFichasFilterData();
+        switch (filter){
+            case BY_DATE:
+                OptionPane.showOptionPanel(new OpanelSelectDate(), OptionPane.titleDateChooser());
+                break;
+            case BY_CLIENT:
+                OptionPane.showOptionPanel(new OpanelSelectClient(), OptionPane.titleClientChooser());
+                break;
+            case BY_USER:
+                OptionPane.showOptionPanel(new OpanelSelectUser(), OptionPane.titleUserChooser());
+                break;
+            case BY_USER_DATE:
+                OptionPane.showOptionPanel(new OpanelSelectUserAndDate(), OptionPane.titleUserChooser());
+                break;
+            case BY_CONVENY:
+                OptionPane.showOptionPanel(new OpanelSelectConvenyFilter(), OptionPane.titleConvenyChooser());
+                break;
+            default:
+                Boton boton =new Boton();
+        {
+            try {
+                boton.fichas(GV.getCboFichasFilterData());
+            } catch (SQLException | ClassNotFoundException ex) {
+                Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+                break;
+        }
+    }
+
+    public static void fichasMensajeOperacionCanceladaPorTablaVacia() {
+        OptionPane.showMsg("No hay datos disponibles", "La operación no se puede realizar porque no existen datos en la tabla", 2);
+    }
+            
+    public static void fichasVerReporte() {
+        if(GV.licenciaExpirada()){
+            GV.mensajeLicenceExpired();
+        }else{
+            if(GV.tipoUserAdmin()){
+                if(GV.getFichas().size()>0){
+                    GV.printSalesReport(GV.getFichas(), ContentAdminMac.lblTitle.getText());
+                }else{
+                    fichasMensajeOperacionCanceladaPorTablaVacia();
+                }
+            }else{
+                if(GV.userIdSelected().equals(""+GV.user().getId())){
+                    GV.printSalesReport(GV.getFichas(), ContentAdminMac.lblTitle.getText());
+                    return;
+                }
             }
         }
     }

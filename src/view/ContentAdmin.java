@@ -605,7 +605,7 @@ public class ContentAdmin extends javax.swing.JFrame {
     private void btnListarFichasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnListarFichasMouseClicked
         if(!syncEnabled()){
             try {
-                boton.fichas(GV.cboFichasFilter());
+                boton.fichas(GV.getCboFichasFilterData());
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(ContentAdmin.class.getName()).log(Level.SEVERE, null, ex);
             }

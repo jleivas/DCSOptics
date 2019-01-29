@@ -85,7 +85,8 @@ public class GlobalValuesVariables {
     private static String ID_PARAM_IS_TABLE_LIST = "LIST/";
     private static String ID_PARAM_IS_DATE_LIST = "DATE/";
     private static String ID_PARAM_IS_FICHA_LIST = "LISTAR_FICHAS/";
-    private static int CBO_FICHA_FILTER=0;
+    private static int CBO_FICHA_FILTER_DATA=0;
+    private static int CBO_FICHA_FILTER_STATUS=0;
     private static String SQL_LOW_STOCK="lowStock";
     private static SalesFichaJasperReport SALESREPORT;
     private static Convenio CONVENIO_SELECTED = null;
@@ -382,12 +383,20 @@ public class GlobalValuesVariables {
         return ID_PARAM_IS_DATE_LIST+cleanIdParam(arg);
     }
     
-    public static int cboFichasFilter(){
-        return CBO_FICHA_FILTER;
+    public static int getCboFichasFilterData(){
+        return CBO_FICHA_FILTER_DATA;
     }
     
-    public static void setCboFichasFilter(int filter){
-        CBO_FICHA_FILTER = filter;
+    public static void setCboFichasFilterData(int filter){
+        CBO_FICHA_FILTER_DATA = filter;
+    }
+    
+    public static int getCboFichasFilterStatus(){
+        return CBO_FICHA_FILTER_STATUS;
+    }
+    
+    public static void setCboFichasFilterStatus(int filter){
+        CBO_FICHA_FILTER_STATUS = filter;
     }
     
     public static String cleanIdParam(String arg){

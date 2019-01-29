@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import fn.Icons;
 import fn.OptionPane;
 import fn.ValidaRut;
+import fn.globalValues.GlobalValuesFunctions;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -1034,9 +1035,9 @@ public class VClientesMac extends javax.swing.JPanel {
         cWT();
         GV.listarFichasByClient(txtRut.getText());
         GV.rutClientSelected(txtRut.getText());
-        GV.setCboFichasFilter(VFichasMac.BY_CLIENT);
+        GV.setCboFichasFilterData(GlobalValuesFunctions.BY_CLIENT);
         try {
-            boton.fichas(GV.cboFichasFilter());
+            boton.fichas(GV.getCboFichasFilterData());
             //abrir fichas
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(VClientesMac.class.getName()).log(Level.SEVERE, null, ex);

@@ -145,7 +145,7 @@ public class OpanelSelectUser extends javax.swing.JPanel {
             GV.userIdSelected(idUser);
             OptionPane.closeOptionPanel();
             try {
-                boton.fichas(GV.cboFichasFilter());
+                boton.fichas(GV.getCboFichasFilterData());
             } catch (SQLException | ClassNotFoundException ex) {
                 Logger.getLogger(OpanelSelectUser.class.getName()).log(Level.SEVERE, null, ex);
             }
