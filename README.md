@@ -32,6 +32,10 @@ técnico para la puesta en marcha del sistema.
  # System versions
  ## Registro de versiones del sistema
 
+ #### [Version 4.1.4 (V414)](https://github.com/softdirex/DCSOptics/search?q=V414&type=Commits)
+ - Corregir enviar reporte entre los dias 1.1.188 y 29.1.19 
+- [[V414-001]Refactoring de código, optimización de las vistas](https://github.com/softdirex/DCSOptics/search?q=V414-001&type=Commits)
+
  #### [Version 4.1.3 (V413)](https://github.com/softdirex/DCSOptics/search?q=V413&type=Commits)
  - [[V413-004]Refactoring de año actual en el footer del correo electrónico](https://github.com/softdirex/DCSOptics/search?q=V413-004&type=Commits)
  - [[V413-003]Se agregan datos del cliente en orden de trabajo](https://github.com/softdirex/DCSOptics/search?q=V413-003&type=Commits)
