@@ -7,6 +7,8 @@ package fn.globalValues;
 
 import fn.Log;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  *
@@ -19,14 +21,19 @@ public class GlobalValuesNetwork {
     
     public static void checkIfOnline(){
         Log.setLog(className,Log.getReg());
-        String comando = "ping www.softdirex.cl";//ping -c 1 google.com
-        boolean value = false;
-        try{
-            value = (Runtime.getRuntime().exec (comando).waitFor() == 0);
-        }catch(IOException | InterruptedException e){
-            value = false;
+        boolean estado; 
+        try { 
+
+            URL ruta=new URL("http://www.google.com"); 
+            URLConnection rutaC=ruta.openConnection(); 
+            rutaC.connect(); 
+            estado=true; 
+           }catch(Exception e){ 
+
+            estado=false; 
         }
-        setIsOnline(value);
+        
+        setIsOnline(estado);
     }
     
     public static void setIsOnline(boolean value){

@@ -88,11 +88,13 @@ public class OptionPane {
     }
 
     public static void closeInfoPanel() {
-        GV.mpanel().setVisible(false);
+        //GV.mpanel().setVisible(false);
+        GV.mpanel().dispose();
     }
     
     public static void closeOptionPanel() {
-        GV.opanel().setVisible(false);
+        //GV.opanel().setVisible(false);
+        GV.opanel().dispose();
     }
 
     public static boolean getConfirmation(String title, String message, int statusMsg){

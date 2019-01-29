@@ -5,13 +5,17 @@
  */
 package test;
 
+import fn.GV;
 import fn.OptionPane;
 import fn.globalValues.GlobalValuesDirectories;
+import fn.globalValues.GlobalValuesFunctions;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.naming.Context;
+import static org.apache.derby.iapi.reference.ClassName.Context;
 
 /**
  *
@@ -27,6 +33,29 @@ import java.util.zip.ZipOutputStream;
 public class main {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
+//        String key=GV.dsC("7I3BGWJw0NkWB27uZBhdAAvDMJqldqNFUlanmPiDI1FNZOqo+NL6mkFOVRT2PNhGMIE9YlM/DGuzdp47zxz6Efh+pMzGkbEPi+d773m0mjg=");
+//        String token=GV.dsC("il6ied5XAHdroQ2cTeBkUh4trn9QMitqwBm4kkrQzI37mmCDUJa4BWaBYeqI9psc00n85xWXBmmoo2PywGirD3pY60uyAUfR");
+//        System.out.println(key+"\n"+token);
+        System.out.println(estadoConexion());
+    }
+    
+    public static boolean estadoConexion(){ 
+        boolean estado; 
+        try { 
+
+            URL ruta=new URL("http://www.google.com"); 
+            URLConnection rutaC=ruta.openConnection(); 
+            rutaC.connect(); 
+            estado=true; 
+           }catch(Exception e){ 
+
+            estado=false; 
+        } 
+
+        return estado; 
+    }
+    
+    public static void testZip(){
         try {
             File directoryToZip = new File(GlobalValuesDirectories.getFilesPath());
             System.out.println(GlobalValuesDirectories.getFilesPath());
