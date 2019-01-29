@@ -974,10 +974,12 @@ public class GlobalValuesFunctions {
     }
 
     public static void enviarReporteVentas() {
+        String title = (ContentAdmin.lblTitle != null)?ContentAdmin.lblTitle.getText():"";
+        title = (ContentAdminMac.lblTitle != null)?ContentAdminMac.lblTitle.getText():title;
         if(GlobalValuesFunctions.licenciaIsEnableToSendMails()){
             if(!GV.licenciaExpirada()){
                 if(GV.getFichas().size() > 0){
-                    SalesFichaJasperReport reportSales = new SalesFichaJasperReport(GV.getFichas(), ContentAdmin.lblTitle.getText(), GV.companyName(), 
+                    SalesFichaJasperReport reportSales = new SalesFichaJasperReport(GV.getFichas(), title, GV.companyName(), 
                             GV.getOficinaWeb(), GV.getOficinaAddress(),
                             GV.getOficinaPhone1());
                     if(reportSales.getFilas()>0){

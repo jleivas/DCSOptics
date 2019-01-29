@@ -33,8 +33,9 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.4 (V414)](https://github.com/softdirex/DCSOptics/search?q=V414&type=Commits)
- - Corregir enviar reporte entre los dias 1.1.188 y 29.1.19 
-- [[V414-001]Refactoring de código, optimización de las vistas](https://github.com/softdirex/DCSOptics/search?q=V414-001&type=Commits)
+ - [[V414-003]Titulos del panel principal validados en caso de no estar inicializados](https://github.com/softdirex/DCSOptics/search?q=V414-003&type=Commits)
+ - [[V414-002]Refactoring de código para mostrar datos en las tablas](https://github.com/softdirex/DCSOptics/search?q=V414-002&type=Commits)
+ - [[V414-001]Refactoring de código, optimización de las vistas](https://github.com/softdirex/DCSOptics/search?q=V414-001&type=Commits)
 
  #### [Version 4.1.3 (V413)](https://github.com/softdirex/DCSOptics/search?q=V413&type=Commits)
  - [[V413-004]Refactoring de año actual en el footer del correo electrónico](https://github.com/softdirex/DCSOptics/search?q=V413-004&type=Commits)
