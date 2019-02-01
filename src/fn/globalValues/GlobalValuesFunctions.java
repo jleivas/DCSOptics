@@ -974,8 +974,7 @@ public class GlobalValuesFunctions {
     }
 
     public static void enviarReporteVentas() {
-        String title = (ContentAdmin.lblTitle != null)?ContentAdmin.lblTitle.getText():"";
-        title = (ContentAdminMac.lblTitle != null)?ContentAdminMac.lblTitle.getText():title;
+        String title = (isWindows())?ContentAdmin.lblTitle.getText():ContentAdminMac.lblTitle.getText();
         if(GlobalValuesFunctions.licenciaIsEnableToSendMails()){
             if(!GV.licenciaExpirada()){
                 if(GV.getFichas().size() > 0){
@@ -1113,13 +1112,12 @@ public class GlobalValuesFunctions {
                     tempTitle = "Registros del día: "+fecha1;
                 }
                 tempTitle = (tempTitle.contains("date-error"))?tempTitle.replaceAll("date-error", ".").replaceAll("y", "."):tempTitle;
-                ContentAdminMac.lblTitle.setText(lblStatus +": "+tempTitle);
                 break;
             case BY_CLIENT:
                 GV.listarFichasByClient(GV.rutClientSelected());
                 try {
                     Cliente cli = (Cliente)load.get(GV.rutClientSelected(), 0, new Cliente());
-                    ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros por Cliente: "+cli.getNombre()+" [Rut: "+cli.getCod()+"]");
+                    tempTitle = "Registros por Cliente: "+cli.getNombre()+" [Rut: "+cli.getCod()+"]";
                 } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                     Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1128,7 +1126,7 @@ public class GlobalValuesFunctions {
                 GV.listarFichasByUser(GV.userIdSelected());
                 try {
                     User us = (User)load.get(null, GV.strToNumber(GV.userIdSelected()), new User());
-                    ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros por Vendedor: "+us.getNombre());
+                    tempTitle = "Registros por Vendedor: "+us.getNombre();
                 } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                     Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1137,15 +1135,13 @@ public class GlobalValuesFunctions {
                 GV.listarFichasByUserAndDate(GV.userIdSelected(),GV.dateFrom(),GV.dateTo());
                 try {
                     User us = (User)load.get(null, GV.strToNumber(GV.userIdSelected()), new User());
-                    ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros de "+us.getNombre());
                     
-                    tempTitle = " entre los días "+fecha1+" y "+fecha2;
+                    tempTitle = "Registros de "+us.getNombre()+" entre los días "+fecha1+" y "+fecha2;
                     if(fecha1.equals(fecha2)){
-                        tempTitle = " del día: "+fecha1;
+                        tempTitle = "Registros de "+us.getNombre()+" del día: "+fecha1;
                     }
 
                     tempTitle = (tempTitle.contains("date-error"))?tempTitle.replaceAll("date-error", ".").replaceAll("y", "."):tempTitle;
-                    ContentAdminMac.lblTitle.setText(ContentAdminMac.lblTitle.getText() + tempTitle);
                 } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                     Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1155,15 +1151,20 @@ public class GlobalValuesFunctions {
                 btnExportConvenio.setVisible(true);
                 try {
                     Convenio cnv = (Convenio)load.get(null, GV.strToNumber(GV.convenioIdSelected()), new Convenio());
-                    ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros por Convenio: "+cnv.getNombre());
+                    tempTitle = "Registros por Convenio: "+cnv.getNombre();
                 } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                     Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
             default:
-                ContentAdminMac.lblTitle.setText(lblStatus +": "+"Registros del día: "+GV.dateToString(new Date(), "dd/mm/yyyy"));
+                tempTitle = "Registros del día: "+GV.dateToString(new Date(), "dd/mm/yyyy");
                 GV.listarFichasByDate(new Date(),null);
                 break;
+        }
+        if(isWindows()){
+            ContentAdmin.lblTitle.setText(lblStatus +": "+tempTitle);
+        }else{
+            ContentAdminMac.lblTitle.setText(lblStatus +": "+tempTitle);
         }
     }
 
@@ -1208,13 +1209,13 @@ public class GlobalValuesFunctions {
         }else{
             if(GV.tipoUserAdmin()){
                 if(GV.getFichas().size()>0){
-                    GV.printSalesReport(GV.getFichas(), ContentAdminMac.lblTitle.getText());
+                    GV.printSalesReport(GV.getFichas(), ((isWindows())?ContentAdmin.lblTitle.getText():ContentAdminMac.lblTitle.getText()));
                 }else{
                     fichasMensajeOperacionCanceladaPorTablaVacia();
                 }
             }else{
                 if(GV.userIdSelected().equals(""+GV.user().getId())){
-                    GV.printSalesReport(GV.getFichas(), ContentAdminMac.lblTitle.getText());
+                    GV.printSalesReport(GV.getFichas(), ((isWindows())?ContentAdmin.lblTitle.getText():ContentAdminMac.lblTitle.getText()));
                     return;
                 }
             }

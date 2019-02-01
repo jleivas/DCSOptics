@@ -101,10 +101,10 @@ public class VFichasMac extends javax.swing.JPanel {
             }
         });
         cboMostrar.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
                 cboMostrarCaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         cboMostrar.addActionListener(new java.awt.event.ActionListener() {
@@ -195,7 +195,7 @@ public class VFichasMac extends javax.swing.JPanel {
         jLabel1.setText("Mostrar");
 
         btnReloadFilter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/icons8_Filter_25px.png"))); // NOI18N
-        btnReloadFilter.setToolTipText("Volver a filtrar");
+        btnReloadFilter.setToolTipText("Filtrar");
         btnReloadFilter.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 btnReloadFilterMouseClicked(evt);

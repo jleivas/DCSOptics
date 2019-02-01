@@ -335,7 +335,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/icons/icons8_Filter_25px.png"/>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value="Volver a filtrar"/>
+            <Property name="toolTipText" type="java.lang.String" value="Filtrar"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnReloadFilterMouseClicked"/>
