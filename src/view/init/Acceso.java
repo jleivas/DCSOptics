@@ -246,12 +246,14 @@ public class Acceso extends javax.swing.JFrame {
                     GV.username(usu.getUsername());
                     GV.setUser(usu);
                     GlobalValuesXmlFiles.crearRegistroLocal();
-                    ContentAdmin principalAdmin;
-                    ContentAdminMac principalAdminMac;
+                    
+                    
                     if(GV.isWindowsOs()){
+                        ContentAdmin principalAdmin;
                         principalAdmin = new ContentAdmin();
                         principalAdmin.setVisible(true);
                     }else{
+                        ContentAdminMac principalAdminMac;
                         principalAdminMac = new ContentAdminMac();
                         principalAdminMac.setVisible(true);
                     }

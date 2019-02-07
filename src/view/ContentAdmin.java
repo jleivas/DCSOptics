@@ -57,7 +57,6 @@ public class ContentAdmin extends javax.swing.JFrame {
         setIconImage(icon);
         
         setLblLicencia();
-        lblSync();
         String userName = (GV.user()!=null) ? GV.user().getNombre():"";
         lblUserName.setText(userName);
         if(GV.licenciaTipoPlan()==GlobalValuesVariables.licenciaTipoFree()){
@@ -853,15 +852,7 @@ public class ContentAdmin extends javax.swing.JFrame {
     private void cerrar() throws SQLException, ClassNotFoundException, InterruptedException{//cerrar con opciones en nueva implementacion
         GlobalValuesFunctions.cerrarSistema();
     }
-
-    /**
-     * imprrme en la información de la licencia el estado de sincronizacion una vez
-     * que se encuentra en ejecucion.
-     */
-    private void lblSync() {
-        SubProcess.lblSyncStatus(lblLicence);
-    }
-
+    
     private void setLblLicencia() {
         lblLicence.setText(GV.licenciaEstadoStr());
         this.setTitle(GV.projectName()+" "+GV.version()+"     "+GV.licenciaEstadoStr());

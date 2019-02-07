@@ -30,7 +30,7 @@ public class GlobalValuesVariables {
     
     /*  Nombres de sistema  */
     private static String PROJECTNAME="Optics";
-    private static String VERSION = "v4.1.3";
+    private static String VERSION = "v4.1.4";
     private static String EQUIPO;//el nombre debe concatenarse con la fecha de instalacion
     private static int EQUIPO_ID = 1;
     private static String INVENTARIO_NAME;
@@ -77,6 +77,7 @@ public class GlobalValuesVariables {
     /* Variables del sistema */
     
     private static String USERNAME;
+    private static String PLACE_FILTER;
     private static int ID_USER = 0;
     private static Date TMP_DATE_FROM = null;
     private static Date TMP_DATE_TO =null;
@@ -314,6 +315,14 @@ public class GlobalValuesVariables {
 
     public static String getUserName() {
         return getStr(USERNAME);
+    }
+    
+    public static void setPlaceFilter(String name) {
+        PLACE_FILTER = getStr(name);
+    }
+
+    public static String getPlaceFilter() {
+        return getStr(PLACE_FILTER);
     }
 
     public static void setExpDate(String date) {

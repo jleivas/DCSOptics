@@ -30,6 +30,7 @@ public class OptionPane {
     private static String CLIENT_CHOOSER_TITLE = "Seleccione cliente";
     private static String DATE_CHOOSER_TITLE = "Seleccione una fecha";
     private static String USER_CHOOSER_TITLE = "Seleccione usuario";
+    private static String PLACE_CHOOSER_TITLE = "Seleccione lugar y fecha";
     private static String TOOL_TITLE = "Opciones de herramienta";
     private static String USER_DATA_TITLE = "Modificar mis datos";
     private static String COMPANY_DATA_TITLE = "Modificar datos de la empresa";
@@ -174,6 +175,10 @@ public class OptionPane {
     
     public static String titleUserChooser(){
         return USER_CHOOSER_TITLE;
+    }
+    
+    public static String titlePlaceChooser(){
+        return PLACE_CHOOSER_TITLE;
     }
     
     public static String titleTool(){

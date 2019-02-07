@@ -41,8 +41,10 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -66,6 +68,7 @@ import view.opanel.OpanelReporteLentes;
 import view.opanel.OpanelSelectClient;
 import view.opanel.OpanelSelectConvenyFilter;
 import view.opanel.OpanelSelectDate;
+import view.opanel.OpanelSelectPlaceAndDate;
 import view.opanel.OpanelSelectUser;
 import view.opanel.OpanelSelectUserAndDate;
 import view.opanel.OpanelSetLicencia;
@@ -89,7 +92,8 @@ public class GlobalValuesFunctions {
     public static final int BY_CLIENT=2;
     private static final int BY_USER=3;
     private static final int BY_USER_DATE = 4;
-    private static final int BY_CONVENY=5;
+    private static final int BY_PLACE = 5;
+    private static final int BY_CONVENY=6;
     
     public static final int STATUS_ALL = 0;
     public static final int STATUS_PENDING = 1;
@@ -135,6 +139,61 @@ public class GlobalValuesFunctions {
             return "";
         else{
             String value = arg.replaceAll("[+^‘´'{}]","");
+            return (value.startsWith(" "))?value.replaceFirst(" ", "").trim():value.trim();
+        }
+    }
+    
+    public static boolean stringSimilarity(String firstString, String secondString){
+        int MAX_PERCENT = 75;
+        return (stringSimilarityPercent(getCleanerString(firstString), getCleanerString(secondString)) > MAX_PERCENT);
+    }
+    
+    private static int stringSimilarityPercent(String s1, String s2) {
+        String longer = s1, shorter = s2;
+        if (s1.length() < s2.length()) { // longer should always have greater length
+          longer = s2; shorter = s1;
+        }
+        int longerLength = longer.length();
+        if (longerLength == 0) { return 100; /* both strings are zero length */ }
+        return (int)(((longerLength - editDistance(longer, shorter)) / (double) longerLength)*100);
+    }
+    
+    // Example implementation of the Levenshtein Edit Distance
+    // See http://rosettacode.org/wiki/Levenshtein_distance#Java
+    private static int editDistance(String s1, String s2) {
+      s1 = s1.toLowerCase();
+      s2 = s2.toLowerCase();
+
+      int[] costs = new int[s2.length() + 1];
+      for (int i = 0; i <= s1.length(); i++) {
+        int lastValue = i;
+        for (int j = 0; j <= s2.length(); j++) {
+          if (i == 0)
+            costs[j] = j;
+          else {
+            if (j > 0) {
+              int newValue = costs[j - 1];
+              if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                newValue = Math.min(Math.min(newValue, lastValue),
+                    costs[j]) + 1;
+              costs[j - 1] = lastValue;
+              lastValue = newValue;
+            }
+          }
+        }
+        if (i > 0)
+          costs[s2.length()] = lastValue;
+      }
+      return costs[s2.length()];
+    }
+    
+    
+    public static String getCleanerString(String arg){
+        if(arg == null || arg.replaceAll(" ", "").isEmpty())
+            return "";
+        else{
+            arg = arg.replaceAll(" ", "");
+            String value = arg.replaceAll("[+.^‘´'{}]","");
             return (value.startsWith(" "))?value.replaceFirst(" ", "").trim():value.trim();
         }
     }
@@ -532,11 +591,11 @@ public class GlobalValuesFunctions {
      * @param idFicha 
      * @return 
      */
-    public static String getWhereFromAllFichas(Date dateTo, Date dateFrom,String idUser, String codClient,String idConvenio, String idFicha){
+    public static String getWhereFromAllFichas(Date dateTo, Date dateFrom,String idUser, String codClient,String idConvenio, String idFicha,String place){
         String statusFilter;
         switch (GV.getCboFichasFilterStatus()){
             case GlobalValuesFunctions.STATUS_ALL:
-                statusFilter = " <> 0";
+                statusFilter = " > 0";
                 break;
             case GlobalValuesFunctions.STATUS_PENDING:
                 statusFilter = " = "+GV.estadoFichaPending();
@@ -554,7 +613,7 @@ public class GlobalValuesFunctions {
                 statusFilter = " = "+GV.estadoFichaWarranty();
                 break;
             default:
-                statusFilter = " <> 0";
+                statusFilter = " > 0";
                 break;
         }
         if(idFicha!=null){
@@ -583,6 +642,23 @@ public class GlobalValuesFunctions {
         String d2 = (!GV.dateToString(dateFrom, "yyyy-mm-dd").equals("date-error"))?GV.dateToString(dateFrom, "yyyy-mm-dd"):GV.dateToString(new Date(), "yyyy-mm-dd");
         if(idUser != null){
             return "where (ficha.usuario_us_id = "+idUser+") and (ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') and ficha.fch_estado "+statusFilter+" ORDER BY ficha.fch_fecha DESC";
+        }
+        if(place!=null){
+            String[] places = place.toUpperCase().split(" ");
+            String like = "";
+            boolean moreThanOneValidation = false;
+            for (String w : places) {
+                if(like.isEmpty()){
+                    like = " (UPPER(fch_lugar_entrega) LIKE '%"+w+"%') ";
+                }else{
+                    moreThanOneValidation = true;
+                    like = like + "OR (UPPER(fch_lugar_entrega) LIKE '%"+w+"%')";
+                }
+            }
+            if(moreThanOneValidation){
+                like = "("+like+")";
+            }
+            return "where "+like+" and (ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') and ficha.fch_estado "+statusFilter+" ORDER BY ficha.fch_fecha DESC";
         }
         return "where (ficha.fch_fecha BETWEEN '"+d1+"' and '"+d2+"') and ficha.fch_estado "+statusFilter+"  ORDER BY ficha.fch_fecha DESC";
     }
@@ -1146,6 +1222,15 @@ public class GlobalValuesFunctions {
                     Logger.getLogger(GlobalValuesFunctions.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
+            case BY_PLACE:
+                GV.listarFichasByPlaceAndDate(GV.getLugarEntregaFiltrar(),GV.dateFrom(),GV.dateTo());
+                tempTitle = GV.getLugarEntregaFiltrar();
+                if(fecha1.equals(fecha2)){
+                    tempTitle = tempTitle + " del día: "+fecha1;
+                }else{
+                    tempTitle = tempTitle + " entre los días "+fecha1+" y "+fecha2;
+                }
+                break;
             case BY_CONVENY:
                 GV.listarFichasByConveny(GV.convenioIdSelected());
                 btnExportConvenio.setVisible(true);
@@ -1182,6 +1267,9 @@ public class GlobalValuesFunctions {
                 break;
             case BY_USER_DATE:
                 OptionPane.showOptionPanel(new OpanelSelectUserAndDate(), OptionPane.titleUserChooser());
+                break;
+            case BY_PLACE:
+                OptionPane.showOptionPanel(new OpanelSelectPlaceAndDate(), OptionPane.titlePlaceChooser());
                 break;
             case BY_CONVENY:
                 OptionPane.showOptionPanel(new OpanelSelectConvenyFilter(), OptionPane.titleConvenyChooser());
@@ -1221,10 +1309,33 @@ public class GlobalValuesFunctions {
             }
         }
     }
+
+    public static List<String> limpiarListaString(List<String> lista) {
+        if(lista == null)return lista;
+        List<String> listOutput= new ArrayList<>();
+        if(!lista.isEmpty() && lista.size() > 1){
+            listOutput.add(lista.get(0));
+            for (String w1 : lista) {//recorremos la lista con una palabra seleccionada
+                String wAdd = null;
+                for (String wOut : listOutput) {
+                    wAdd = w1;
+                    
+                    if(stringSimilarity(w1,wOut)){
+                        wAdd = null;
+                        break;
+                    }
+                }
+                if(wAdd != null){
+                    listOutput.add(wAdd);
+                }
+            }
+        }
+        Collections.sort(listOutput);
+        return listOutput;//retornamos una nueva lista filtrada solo con los string diferentes
+    }
     
     public void convenioGenerarReporte(Convenio cnv){
         if(cnv.getEstado() == 2){
-            
         }else{
             OptionPane.showMsg("No se puede generar el reporte", "El convenio debe estar generado,\n"
                     + "el sistema no adminte convenios anulados ni activos.", 2);
@@ -1267,7 +1378,7 @@ public class GlobalValuesFunctions {
                     
                     load.update(cnv);
                     
-                    fichasPagarTodo(GlobalValuesBD.listarAllFichas(null, null, null, null, ""+cnv.getId(), null),fechaRegistro,1);
+                    fichasPagarTodo(GlobalValuesBD.listarAllFichas(null, null, null, null, ""+cnv.getId(), null,null),fechaRegistro,1);
                 }
             }
             return true;

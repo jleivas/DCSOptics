@@ -774,27 +774,31 @@ public class GlobalValuesBD {
     }
 
     public static void listarFichasByDate(Date date1, Date date2) {
-        LISTA_FICHAS = listarAllFichas(date1, date2, null, null,null, null);
+        LISTA_FICHAS = listarAllFichas(date1, date2, null, null,null, null,null);
     }
     
     public static void listarFichasByClient(String rut) {
-        LISTA_FICHAS = listarAllFichas(null, null, null, rut,null, null);
+        LISTA_FICHAS = listarAllFichas(null, null, null, rut,null, null,null);
     }
     
     public static void listarFichasByUser(String user) {
-        LISTA_FICHAS = listarAllFichas(null, null, user, null,null, null);
+        LISTA_FICHAS = listarAllFichas(null, null, user, null,null, null,null);
     }
     
     public static void listarFichasByUserAndDate(String user, Date date1, Date date2) {
-        LISTA_FICHAS = listarAllFichas(date1, date2, user, null,null, null);
+        LISTA_FICHAS = listarAllFichas(date1, date2, user, null,null, null,null);
+    }
+    
+    public static void listarFichasByPlaceAndDate(String place, Date date1, Date date2) {
+        LISTA_FICHAS = listarAllFichas(date1, date2, null, null,null, null,place);
     }
     
     public static void listarFichasByConveny(String idCnv) {
-        LISTA_FICHAS = listarAllFichas(null, null, null, null,idCnv, null);
+        LISTA_FICHAS = listarAllFichas(null, null, null, null,idCnv, null,null);
     }
     
     public static Object openFichaByCod(String cod){
-        List<Object> lista = listarAllFichas(null, null, null, null,null, cod);
+        List<Object> lista = listarAllFichas(null, null, null, null,null, cod,null);
         if(lista.size() > 0){
             return lista.get(0);
         }
@@ -802,7 +806,7 @@ public class GlobalValuesBD {
     }
     
     public static List<Object> getFichasByConveny(int idCnv){
-        return listarAllFichas(null, null, null, null,""+idCnv, null);
+        return listarAllFichas(null, null, null, null,""+idCnv, null,null);
     }
     
     
@@ -851,11 +855,26 @@ public class GlobalValuesBD {
      * @param idFicha 
      * @return 
      */
-    public static List<Object> listarAllFichas(Date dateTo, Date dateFrom,String idUser, String codClient, String idConvenio, String idFicha){
+    public static List<Object> listarAllFichas(Date dateTo, Date dateFrom,String idUser, String codClient, String idConvenio, String idFicha, String place){
         Dao load = new Dao();
-        String idParam = getWhereFromAllFichas(dateTo, dateFrom, idUser, codClient,idConvenio, idFicha);
+        String idParam = getWhereFromAllFichas(dateTo, dateFrom, idUser, codClient,idConvenio, idFicha,place);
         idParam = GV.convertFichaIdToFichaList(idParam);
-        return load.listar(idParam, new Ficha());
+        List<Object> list = load.listar(idParam, new Ficha());
+        if(place != null){
+            list = new ArrayList<>(filterListByPlace(place, list));
+        }  
+        return list;
+    }
+    
+    private static List<Object> filterListByPlace(String place,List<Object> listToFilter){
+        List<Object> listOutPut = new ArrayList<>();
+        for (Object object : listToFilter) {
+            String place1 = ((Ficha)object).getLugarEntrega();
+            if(GlobalValuesFunctions.stringSimilarity(place, place1)){
+                listOutPut.add(object);
+            }
+        }
+        return listOutPut;
     }
     
     public static void resetAllDataSource(){

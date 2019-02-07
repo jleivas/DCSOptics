@@ -245,6 +245,20 @@ public class LocalInventario {
         return lista;
     }
     
+    public static List<String> listarLugaresDeEntrega() throws ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException{
+        ArrayList<String> lista = new ArrayList<>();
+        String sql = "SELECT distinct(UPPER(fch_lugar_entrega)) as lugar FROM ficha WHERE fch_estado > 0 ORDER BY UPPER(fch_lugar_entrega) ASC";
+        
+        PreparedStatement consulta = LcBd.obtener().prepareStatement(sql);
+        ResultSet datos = consulta.executeQuery();
+        while (datos.next()) {
+            lista.add(datos.getString("lugar"));
+        }
+        LcBd.cerrar();
+        return lista;
+    }
+    
+    
     public static boolean deleteAllRegistry(String idLente) {
         try{
             String sql = "UPDATE intern_stock set estado = 0 WHERE id_lente = '" + idLente+"' AND estado = 1";

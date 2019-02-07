@@ -345,6 +345,10 @@ public class GV extends GlobalValuesCursor{
         return GlobalValuesFunctions.getFilterString2(arg);
     }
     
+    public static String getCleanerString(String arg){
+        return GlobalValuesFunctions.getCleanerString(arg);
+    }
+    
     public static String getStToName(String arg){
         return GlobalValuesFunctions.getToName(arg);
     }
@@ -958,6 +962,10 @@ public class GV extends GlobalValuesCursor{
         GlobalValuesBD.listarFichasByUserAndDate(idUser,d1,d2);
     }
     
+    public static void listarFichasByPlaceAndDate(String place,Date d1,Date d2) {
+        GlobalValuesBD.listarFichasByPlaceAndDate(place,d1,d2);
+    }
+    
     public static void listarFichasByConveny(String idCnv) {
         GlobalValuesBD.listarFichasByConveny(idCnv);
     }
@@ -1254,5 +1262,13 @@ public class GV extends GlobalValuesCursor{
             fila[6] = temp.getUser().getNombre();
             modelo.addRow(fila);
         }
+    }
+
+    public static void setLugarEntregaFiltrar(String name) {
+        GlobalValuesVariables.setPlaceFilter(name);
+    }
+    
+    public static String getLugarEntregaFiltrar() {
+        return GlobalValuesVariables.getPlaceFilter();
     }
 }

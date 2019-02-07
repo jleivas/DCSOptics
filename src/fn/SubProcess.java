@@ -87,29 +87,6 @@ public class SubProcess {
         });
     }
     
-    public static void lblSyncStatus(JLabel txtTitle) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-            String text = txtTitle.getText();
-            if(!text.contains("%")){
-                defaultText = text;
-            }
-            int porcentaje = 0;
-                while(ejecucion){
-                    porcentaje = GV.porcentaje();
-                    if(porcentaje > 0){
-                        txtTitle.setText("Sincronizando dependencias... ("+porcentaje+"%)");
-                    }else{
-                        txtTitle.setText(defaultText);
-                    }
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SubProcess.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-        });
-    }
     public static void stopAll(){
         ejecucion = false;
     }
@@ -130,25 +107,6 @@ public class SubProcess {
             Send mail = new Send();
             mail.sendReportMail(title, message);
         });
-    }
-    
-    public static void isOnlineDeprecated() {
-        GV.chekOnline();
-        final Runnable beeper = new Runnable() {
-          public void run() { 
-              GV.chekOnline(); 
-              System.out.println(GV.isOnline());
-          }
-        };
-        final ScheduledFuture<?> beeperHandle =
-            scheduler.scheduleAtFixedRate(beeper, 5, 5, SECONDS);
-            scheduler.schedule(
-                    new Runnable() {
-                        public void run() { 
-                            beeperHandle.cancel(true); 
-                        }
-                    }
-                    , 60 * 60, SECONDS);
     }
     
     public static boolean ejecucion(){

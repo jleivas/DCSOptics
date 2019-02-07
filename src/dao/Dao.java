@@ -41,6 +41,7 @@ import fn.mail.Send;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sync.entities.LocalInventario;
@@ -562,6 +563,17 @@ public class Dao{
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Dao.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+        
+    public List<String> listarLugarEntrega(){
+        try {
+            List<String> lista = LocalInventario.listarLugaresDeEntrega();
+            return GlobalValuesFunctions.limpiarListaString(lista);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
+            Logger.getLogger(Dao.class.getName()).log(Level.SEVERE, null, ex);
+            OptionPane.showMsg("Error inesperado", "No se pudo obtener los recursos desde la base de datos", 3);
+        }
+        return new ArrayList<>();
     }
     
     public ArrayList<Object> listar(String param, Object type){

@@ -172,7 +172,7 @@ public class VFichas extends javax.swing.JPanel {
         });
 
         cboFilterOptions.setFont(new java.awt.Font("Segoe UI Light", 1, 11)); // NOI18N
-        cboFilterOptions.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Por Día", "Por Fechas", "Por Cliente", "Por Vendedor", "Por Vendedor y Fecha", "Por Convenios" }));
+        cboFilterOptions.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Por Día", "Por Fechas", "Por Cliente", "Por Vendedor", "Por Vendedor y Fecha", "Por Lugar y Fecha", "Por Convenios" }));
         cboFilterOptions.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cboFilterOptionsItemStateChanged(evt);
@@ -419,9 +419,11 @@ public class VFichas extends javax.swing.JPanel {
                         + "Debe hacer clic sobre un elemento de la tabla,\n"
                         + "Luego presione el botón \"Ver\".\n"
                         + "Otro posible error: el valor seleccionado no tiene un identificador válido.",2);
+                cDF();
             }
         }else{
             GV.mensajeAccessDenied();
+            cDF();
         }
     }//GEN-LAST:event_btnEliminarMouseClicked
 
@@ -597,32 +599,6 @@ public class VFichas extends javax.swing.JPanel {
     private void btnRestaurarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRestaurarMouseClicked
         OptionPane.showMsg("Funcion no disponible", "Esta opción no se encuentra disponible\n"
                 + "debe generar una ficha nuevamente", 3);
-//        if(GV.tipoUserAdmin()){
-//            try{
-//                cWT();
-//                int fila = tblListar.getSelectedRow();
-//                String folio = tblListar.getValueAt(fila, 0).toString();
-//                if(OptionPane.getConfirmation("Restaurar registro", "¿Esta seguro que desea restaurar el folio "+folio+"?", 2)){
-//                    cWT();
-//                    if(load.restore(folio,0, new Ficha()))
-//                    OptionPane.showMsg("Restaurar Ficha", "La ficha ha sido restaurada", 1);
-//                    else
-//                    OptionPane.showMsg("Restaurar Ficha", "No se pudo restaurar la ficha", 2);
-//                    cDF();
-//                }
-//                load();
-//
-//                cDF();
-//            }catch(Exception e){
-//                OptionPane.showMsg("Seleccione Ficha","Error al cargar valores,\n"
-//                    + "es posible que no se haya seleccionado un registro:\n"
-//                    + "Debe hacer clic sobre un elemento de la tabla,\n"
-//                    + "Luego presione el botón \"Ver\".\n"
-//                    + "Otro posible error: el valor seleccionado no tiene un identificador válido.",2);
-//            }
-//        }else{
-//            GV.mensajeAccessDenied();
-//        }
     }//GEN-LAST:event_btnRestaurarMouseClicked
 
 
@@ -697,7 +673,9 @@ public class VFichas extends javax.swing.JPanel {
     }
     
     private void verReporte(){
+        cWT();
         GlobalValuesFunctions.fichasVerReporte();
+        cDF();
     }
     
     private void openFilter(){
