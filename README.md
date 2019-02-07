@@ -33,6 +33,7 @@ técnico para la puesta en marcha del sistema.
  ## Registro de versiones del sistema
 
  #### [Version 4.1.4 (V414)](https://github.com/softdirex/DCSOptics/search?q=V414&type=Commits)
+ - [[V414-004]Filtro de fichas por lugar de entrega](https://github.com/softdirex/DCSOptics/search?q=V414-004&type=Commits)
  - [[V414-003]Titulos del panel principal validados en caso de no estar inicializados](https://github.com/softdirex/DCSOptics/search?q=V414-003&type=Commits)
  - [[V414-002]Refactoring de código para mostrar datos en las tablas](https://github.com/softdirex/DCSOptics/search?q=V414-002&type=Commits)
  - [[V414-001]Refactoring de código, optimización de las vistas](https://github.com/softdirex/DCSOptics/search?q=V414-001&type=Commits)
